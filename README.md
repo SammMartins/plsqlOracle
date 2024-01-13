@@ -106,9 +106,9 @@ WITH cteEmpregado AS (
 SELECT A.nome, B.cargo, B.funcao, B.salario
 FROM pessoa A
 INNER JOIN cteEmpregado B on A.nome = B.nome; /* O ideal é sempre ultilizar chaves únicas, mas também
-                                                 é possível usar chaves como nome correndo o risco de
+                                                 é possível usar chaves como 'nome'. Corre o risco de
                                                  haver outro nome igual ou nomes escritos errados em
-                                                 alguma das tabelas */
+                                                 alguma das tabelas. Esteja ciente ao usar. */
 ```
 As CTEs tornam as consultas mais organizadas e podem melhorar o desempenho em relação a subconsultas. Então prefira usá-las em lugar de subconsultas.
 
