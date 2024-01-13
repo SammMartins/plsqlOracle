@@ -1,0 +1,7 @@
+SELECT * FROM PCprest
+WHERE NUMCAR = 194238
+AND CODCLI = 14239
+AND duplic = 393533
+/*SELECT * from pcpedi
+WHERE codcli = 14239
+AND DATA > '27-jun-2023'
