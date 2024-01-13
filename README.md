@@ -1,6 +1,6 @@
 ## Introdução
 
-Bem-vindo! Aqui você encontrará uma coleção de consultas SQL e outros códigos PL/SQL abrangendo diversas áreas de manipulação e análise de dados.
+Bem-vindo! Aqui você encontrará uma coleção de consultas SQL e outros códigos PL/SQL abrangendo diversas áreas de manipulação e análise de dados. Explore os arquivos para ver diversas consultas criadas por mim durante minha atuação como Programador SQL. Abaixo você verá uma introdução a consultas SQL.
 
 ## Como Criar Consultas SQL
 
