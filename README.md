@@ -17,30 +17,30 @@ Isso seleciona tudo que a tabela exemplo contém.
 
 ## Selecionando Dados Básicos com filtros
 
-Selecione apenas os registros que atendem a uma condição específica usando a cláusula WHERE:
+Selecione apenas os registros que atendem a uma condição específica usando a cláusula `WHERE`:
 
 ```sql
 SELECT nome, idade
 FROM pessoa
 WHERE nome = 'Lucas';
 ```
-Isso seleciona as colunas nome e idade na tabela pessoa ONDE (WHERE) nome é Lucas.
+Isso seleciona as colunas nome e idade na tabela pessoa ONDE (WHERE) o nome é Lucas.
 
 ## Ordenando dados selecionados
 
-Faça o ordenamento dos dados usando ORDER BY:
+Faça o ordenamento dos dados usando `ORDER BY`:
 
 ```sql
 SELECT nome, idade
 FROM pessoa
 WHERE nome = 'Marcos'
-ORDER BY idade DESC;
+ORDER BY idade DESC; -- DESC = Decrescente
 ```
-Isso ordena da maior idade para a menor, onde o nome é Marcos, atrevés do ORDER BY e DESC. O contrário do DESC é o ASC. Ele torna a ordenação do menor para o maior.
+Isso ordena da maior idade para a menor, onde o nome é Marcos, atrevés do `ORDER BY` e `DESC`. O contrário do `DESC` é o `ASC`. Ele torna a ordenação do menor para o maior, ou seja, crescente.
 ```sql
-ORDER BY nome; -- Em caso de não haver a especificação ASC ou DESC, o padrão sempre será ASC.
+ORDER BY nome; -- O ASC e DESC também são usados para ordem alfabética.
 ```
-O ASC e DESC também são usados para ordem alfabética.
+Em caso de não haver a especificação `ASC` ou `DESC`, o padrão sempre será `ASC`.
 
 ## Avançando em Consultas
 
@@ -51,7 +51,7 @@ Agora, vamos explorar maneiras de ir além e aprimorar suas habilidades.
 O avanço no PL/SQL, assim como em qualquer linguagem, vem através da prática e da resolução de desafios mais complexos. Experimente projetos práticos e desafie-se com problemas do mundo real para consolidar seu conhecimento.
 
 ### Entendendo JOINs
-O JOIN é uma parte crucial para manipular dados em várias tabelas. Comece com o básico:
+O `JOIN` é uma parte crucial para manipular dados em várias tabelas. Comece com o básico:
 
 ```sql
 SELECT A.nome, B.cargo, A.idade, B.salario
@@ -63,7 +63,7 @@ Isso retorna dados combinados das duas tabelas com base nas colunas especificada
 
 #### INNER JOIN
 
-O INNER JOIN é a forma mais comum de JOIN e retorna registros que têm correspondências nas duas tabelas. A sintaxe básica é:
+O `INNER JOIN` é a forma mais comum de `JOIN` e retorna registros que têm correspondências nas duas tabelas. A sintaxe básica é:
 
 ```sql
 SELECT A.nome, B.cargo, A.idade, B.salario
@@ -73,9 +73,9 @@ INNER JOIN empregado B ON A.cpf = B.cpf; /* Nesta consulta, apenas as linhas em 
 ```
 #### LEFT e RIGHT JOIN
 
-O LEFT JOIN retorna todas as linhas da tabela à esquerda (primeira tabela mencionada após o 'ON' - pessoa A) e as linhas correspondentes da tabela à direita. Se não houver correspondência, os resultados da tabela à direita serão NULL.
+O `LEFT JOIN` retorna todas as linhas da tabela à esquerda (primeira tabela mencionada após o 'ON' - pessoa A) e as linhas correspondentes da tabela à direita. Se não houver correspondência, os resultados da tabela à direita serão NULL.
 
-O RIGHT JOIN é semelhante ao LEFT JOIN, mas retorna todas as linhas da tabela à direita (segunda tabela mencionada após o 'ON' - empregados B) e as linhas correspondentes da tabela à esquerda. Se não houver correspondência, os resultados da tabela à esquerda serão NULL.
+O `RIGHT JOIN` é semelhante ao `LEFT JOIN`, mas retorna todas as linhas da tabela à direita (segunda tabela mencionada após o 'ON' - empregados B) e as linhas correspondentes da tabela à esquerda. Se não houver correspondência, os resultados da tabela à esquerda serão NULL.
 
 ### Explorando Subconsultas
 As subconsultas são poderosas para filtrar dados complexos. Experimente:
@@ -113,10 +113,10 @@ INNER JOIN cteEmpregado B on A.nome = B.nome; /* O ideal é sempre ultilizar cha
 As CTEs tornam as consultas mais organizadas e podem melhorar o desempenho em relação a subconsultas. Então prefira usá-las em lugar de subconsultas.
 
 ### Pesquisando com Inteligência Artificial
-Chats de Inteligência Artificial são poderosas formas para você saber como fazer algo. Uma forma de você usar da maneira correta pode ser através do seguinte prompt:
-```
+Chats de Inteligência Artificial são poderosas formas para você saber como fazer algo. Uma forma de você usar da maneira correta pode ser através do seguinte prompt: <br>
+`
 Como faço para filtrar dados em uma consulta PL/SQL onde a data se encontra entre o primeiro dia do mês e hoje?
-```
+`
 ###### ChatGPT: 
 Para filtrar dados em uma consulta PL/SQL onde a data está entre o primeiro dia do mês e hoje, você pode usar a função TRUNC para obter o primeiro dia do mês atual e comparar com a data desejada. Aqui está um exemplo:
 ```
