@@ -73,7 +73,7 @@ INNER JOIN empregado B ON A.cpf = B.cpf; /* Nesta consulta, apenas as linhas em 
 ```
 #### LEFT e RIGHT JOIN
 
-O `LEFT JOIN` retorna todas as linhas da tabela à esquerda (primeira tabela mencionada após o 'ON' - pessoa A) e as linhas correspondentes da tabela à direita. Se não houver correspondência, os resultados da tabela à direita serão NULL.
+O `LEFT JOIN` retorna todas as linhas da tabela à esquerda (primeira tabela mencionada após o `ON` pessoa A) e as linhas correspondentes da tabela à direita. Se não houver correspondência, os resultados da tabela à direita serão NULL.
 
 O `RIGHT JOIN` é semelhante ao `LEFT JOIN`, mas retorna todas as linhas da tabela à direita (segunda tabela mencionada após o 'ON' - empregados B) e as linhas correspondentes da tabela à esquerda. Se não houver correspondência, os resultados da tabela à esquerda serão NULL.
 
