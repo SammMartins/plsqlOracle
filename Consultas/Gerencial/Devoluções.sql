@@ -131,9 +131,9 @@ WITH RELWINT AS (
 )
 ---------------------------------------------------------------------------------------------------------------------------
 SELECT
-    A.NUMNOTA,
+    A.NUMNOTA NF,
     W.NUMCARREGAMENTO AS NUMCAR,
-    W.CODSUPERVISOR,
+    W.CODSUPERVISOR SUP,
     C.CODUSUR1  || ' - ' ||    
     SUBSTR(
         USUR.NOME,
@@ -145,17 +145,17 @@ SELECT
     (CASE WHEN A.CODDEVOL = 106 THEN 0 ELSE
     (CASE WHEN A.VLTOTAL = 0 AND A.VLBONIFIC = 0 THEN A.VLTOTGER 
           WHEN A.VLTOTAL = 0 AND A.VLBONIFIC > 0 THEN A.VLBONIFIC 
-          WHEN A.VLTOTAL > 0 THEN A.VLTOTAL ELSE A.VLTOTGER END) END) VLTOTAL,
-    (CASE WHEN A.CODDEVOL IN (11, 5, 3, 29, 6, 17, 1, 28, 26, 30, 27, 31, 33, 14, 46, 13, 9, 32, 21, 110) 
-               THEN TRUNC((A.VLTOTGER * 0.10),2) ELSE 0 END) ABATIMENTO,
+          WHEN A.VLTOTAL > 0 THEN A.VLTOTAL ELSE A.VLTOTGER END) END) VALOR,
+    (CASE WHEN A.CODDEVOL IN (11, 5, 3, 29, 6, 17, 1, 28, 26, 30, 27, 31, 33, 14, 46, 13, 9, 32, 21, 110, 111)
+               THEN TRUNC((A.VLTOTGER * 0.10),2) ELSE 0 END) "ABAT. RCA",
     (CASE WHEN A.VLBONIFIC > 0 THEN 'SIM' ELSE 'NÃO' END) "BNF",    
-    A.CODDEVOL || ' - ' || B.MOTIVO MOTIVO, 
+    A.CODDEVOL || ' - ' || B.MOTIVO AS MOTIVO, 
     (CASE WHEN A.CODDEVOL IN (7, 4, 41, 45, 34, 15, 25, 12, 18, 105, 36, 43, 103, 16, 104, 8, 20, 19, 10) THEN 'L'
           WHEN A.CODDEVOL IN (11, 5, 3, 29, 6, 17, 1, 28, 26, 30, 27, 31, 33, 14, 46, 13, 9, 32, 21, 110, 111) THEN 'C'
           WHEN A.CODDEVOL IN (38, 39, 22, 42, 35, 109) THEN 'A'
           WHEN A.CODDEVOL IN (23, 44, 24, 2, 106) THEN 'O'
-          ELSE 'O' END) TIPO,    
-    A.OBS
+          ELSE 'n' END) AS TIPO,    
+    A.OBS AS "OBSERVAÇÕES"
 FROM
     PCNFENT A
 JOIN
@@ -179,4 +179,4 @@ AND
 AND 
     A.DTCANCEL IS NULL --Sem data de cancelamento
 ORDER BY
-    MOTIVO, CLIENTE, VLTOTAL DESC
+    MOTIVO, CLIENTE, VALOR DESC
