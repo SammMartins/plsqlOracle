@@ -33,9 +33,6 @@ cursor = con.cursor()
 with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Gerencial/Devoluções.sql', 'r') as arquivo: 
     consulta = arquivo.read()
 
-
-
-
 # Configuração do dashboard
 st.set_page_config(page_title="Devoluções", page_icon=":truck:", layout="wide", initial_sidebar_state="expanded")
 st.title("DEVOLUÇÕES PREMIUM DISTRIBUIDORA")
@@ -49,8 +46,14 @@ dataFim = st.sidebar.date_input("Escolha uma data final", value=pd.to_datetime('
 dataIni = dataIni.strftime('%d-%b-%Y')
 dataFim = dataFim.strftime('%d-%b-%Y')
 
-# Substitui '{dtIni}' e '{dtFim}' na consulta pelas datas selecionadas pelo usuário
-consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
+# Solicite ao usuário que escolha o supervisor
+sup = st.sidebar.multiselect("Escolha o supervisor", [2, 8, 9], default=[2, 8, 9])
+
+# Solicite ao usuário que escolha o RCA
+# rca = st.sidebar.multiselect("Escolha o RCA", rca_options, default=rca_options)
+
+# Substitui '{dtIni}', '{dtFim}', e '{sup}' na consulta pelas datas selecionadas pelo usuário
+consulta = consulta.format(dtIni=dataIni, dtFim=dataFim, sup=",".join(str(s) for s in sup))
 
 # Execute a consulta SQL
 cursor.execute(consulta)
@@ -64,8 +67,11 @@ df = pd.DataFrame(resultados, columns=[desc[0] for desc in cursor.description])
 
 # Estilos ao DataFrame
 df_styled = df.style.set_properties(**{'background-color': 'black',
-                                       'color': 'lawngreen',
-                                       'border-color': 'white'})
+                                       'color': 'white',
+                                       'border-color': 'grey',
+                                       'border-style': 'solid',
+                                       'text-align': 'center',
+                                       'border-width': '1px'})
 
 # Definir a opção para exibir todas as colunas sem truncar
 pd.set_option('display.max_columns', None)
