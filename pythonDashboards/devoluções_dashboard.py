@@ -33,11 +33,17 @@ cursor = con.cursor()
 with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Gerencial/Devoluções.sql', 'r') as arquivo: 
     consulta = arquivo.read()
 
+# Consulta de motivos Devolução
+cursor.execute("SELECT CODDEVOL, MOTIVO FROM PCTABDEV WHERE 1 = 1 AND TIPO = 'ED' ORDER BY MOTIVO")
+opcoes = cursor.fetchall()
+
 # Configuração do dashboard
 st.set_page_config(page_title="Devoluções", page_icon=":truck:", layout="wide", initial_sidebar_state="expanded")
 st.title("DEVOLUÇÕES PREMIUM DISTRIBUIDORA")
 st.markdown("Aqui você encontrará as informações completas sobre as devoluções.")
 
+# Solicita ao usuário a escolha dos motivos devolução
+motivoDev = st.sidebar.multiselect("Motivos de devolução", opcoes, format_func=lambda o: o[1], default=opcoes)
 # Solicite ao usuário que escolha uma data inicial
 dataIni = st.sidebar.date_input("Escolha uma data inicial", value=pd.to_datetime('today') - pd.Timedelta(days=30), format='DD/MM/YYYY')
 # Solicite ao usuário que escolha uma data final
