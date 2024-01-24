@@ -1,6 +1,6 @@
 SELECT 
-    CODPROD,
     CODFAB,
+    CODPROD,
     DESCRICAO
 FROM 
     PCPRODUT 
