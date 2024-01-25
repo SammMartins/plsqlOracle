@@ -1,15 +1,81 @@
-SELECT c.codfornec "FORNECEDOR", 
-       a.codprod,
-       c.descricao, a.qtest "ESTOQUE", 
-       a.custoultent "CUSTO + IMP.", 
-       (a.valorultent + vlultpcompra) / 2 "PREÇO",
-       a.qtvendmes1 "MÊS 1", a.qtvendmes2 "MÊS 2", a.qtvendmes3 "MÊS 3"
-FROM Pontual.PCEST A
-JOIN Pontual.pcprodut c on a.codprod = c.codprod
-JOIN Pontual.PCPRECO p on a.codprod = p.codprod
-where a.codfilial = 3
-AND c.codfornec in ({COMBOBOX1})
-AND TO_DATE(a.dtultent, 'DD/MM/YY') > SYSDATE-120          
-GROUP BY a.codprod, c.codfornec, c.descricao, a.qtest, a.custoultent, a.valorultent, vlultpcompra,a.qtvendmes1, a.qtvendmes2, a.qtvendmes3
-HAVING SUM(a.qtvendmes1 + a.qtvendmes2 + a.qtvendmes3) > 0 or a.qtest > 0
-ORDER BY c.codfornec, a.codprod
+WITH VENDAS1 AS (
+    SELECT A.CODPROD, SUM(A.QT) 
+    FROM PONTUAL.PCMOV A 
+    WHERE A.CODOPER = 'S' 
+    AND A.DTMOV > TRUNC(SYSDATE, 'MM')
+    AND A.DTMOV < SYSDATE+1
+    AND A.DTCANCEL IS NULL
+    AND A.CODCLI IS NOT NULL
+    GROUP BY A.CODPROD
+),
+
+DEVOLUCOES1 AS (
+    SELECT A.CODPROD, SUM(A.QT) 
+    FROM PONTUAL.PCMOV A 
+    WHERE A.CODOPER = 'ED' 
+    AND A.DTMOV > TRUNC(SYSDATE, 'MM')
+    AND A.DTMOV < SYSDATE+1
+    AND A.DTCANCEL IS NULL
+    AND A.CODCLI IS NOT NULL
+    GROUP BY A.CODPROD
+),
+
+VENDAS2 AS (
+    SELECT A.CODPROD, SUM(A.QT) 
+    FROM PONTUAL.PCMOV A 
+    WHERE A.CODOPER = 'S' 
+    AND A.DTMOV >= TRUNC(ADD_MONTHS(SYSDATE, -1), 'MM') -- Primeiro dia do mês anterior
+    AND A.DTMOV < TRUNC(SYSDATE, 'MM') -- Dia anterior ao Primeiro dia do mês atual
+    AND A.DTCANCEL IS NULL
+    AND A.CODCLI IS NOT NULL
+    GROUP BY A.CODPROD
+),
+
+DEVOLUCOES2 AS (
+    SELECT A.CODPROD, SUM(A.QT) 
+    FROM PONTUAL.PCMOV A 
+    WHERE A.CODOPER = 'ED' 
+    AND A.DTMOV >= TRUNC(ADD_MONTHS(SYSDATE, -1), 'MM') -- Primeiro dia do mês anterior
+    AND A.DTMOV < TRUNC(SYSDATE, 'MM') -- Dia anterior ao Primeiro dia do mês atual
+    AND A.DTCANCEL IS NULL
+    AND A.CODCLI IS NOT NULL
+    GROUP BY A.CODPROD
+),
+
+VENDAS3 AS (
+    SELECT A.CODPROD, SUM(A.QT) 
+    FROM PONTUAL.PCMOV A 
+    WHERE A.CODOPER = 'S' 
+    AND A.DTMOV >= TRUNC(ADD_MONTHS(SYSDATE, -1), 'MM') -- Primeiro dia do mês anterior
+    AND A.DTMOV < TRUNC(SYSDATE, 'MM') -- Dia anterior ao Primeiro dia do mês atual
+    AND A.DTCANCEL IS NULL
+    AND A.CODCLI IS NOT NULL
+    GROUP BY A.CODPROD
+),
+
+DEVOLUCOES3 AS (
+    SELECT A.CODPROD, SUM(A.QT) 
+    FROM PONTUAL.PCMOV A 
+    WHERE A.CODOPER = 'ED' 
+    AND A.DTMOV >= TRUNC(ADD_MONTHS(SYSDATE, -1), 'MM') -- Primeiro dia do mês anterior
+    AND A.DTMOV < TRUNC(SYSDATE, 'MM') -- Dia anterior ao Primeiro dia do mês atual
+    AND A.DTCANCEL IS NULL
+    AND A.CODCLI IS NOT NULL
+    GROUP BY A.CODPROD
+)
+
+SELECT C.CODFORNEC "FORNECEDOR", 
+    A.CODPROD,
+    C.DESCRICAO, A.QTEST "ESTOQUE", 
+    A.CUSTOULTENT "CUSTO + IMP.", 
+    (A.VALORULTENT + VLULTPCOMPRA) / 2 "PREÇO",
+    A.QTVENDMES1 "MÊS 1", A.QTVENDMES2 "MÊS 2", A.QTVENDMES3 "MÊS 3"
+FROM PONTUAL.PCEST A
+JOIN PONTUAL.PCPRODUT C ON A.CODPROD = C.CODPROD
+JOIN PONTUAL.PCPRECO P ON A.CODPROD = P.CODPROD
+WHERE A.CODFILIAL = 3
+AND C.CODFORNEC IN :FORNECEDOR--({COMBOBOX1})
+AND TO_DATE(A.DTULTENT, 'DD/MM/YY') > SYSDATE-120          
+GROUP BY A.CODPROD, C.CODFORNEC, C.DESCRICAO, A.QTEST, A.CUSTOULTENT, A.VALORULTENT, VLULTPCOMPRA,A.QTVENDMES1, A.QTVENDMES2, A.QTVENDMES3
+HAVING A.QTEST > 0
+ORDER BY C.CODFORNEC, A.CODPROD
