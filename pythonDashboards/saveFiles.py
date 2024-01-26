@@ -45,14 +45,14 @@ while True:
         break
 
 nA1 = "ESTOQUEFRO" # Prefixo + Sigla do Fornecededor
+nA2 = "COMODATOFRO" # Prefixo + Sigla do Fornecededor
 sysdate = datetime.datetime.now().strftime("%d%m%Y%H%M%S%f") # Dia + Mês + Ano + Hora + Minuto + Segundo + Milésimo de segundo
 extensao = ".txt" # Extensão do arquivo
 nomeArquivoEstoque = nA1 + sysdate + extensao # Nome completo do arquivo a ser salvo
-
-nA2 = "COMODATOFRO" # Prefixo + Sigla do Fornecededor
 nomeArquivoComodato = nA2 + sysdate + extensao # Nome completo do arquivo a ser salvo
 
-caminhoCompleto = os.path.join(diretorioAlvo, nomeArquivoEstoque) # Junta o diretório com o nome do arquivo
+estoqueCompleto = os.path.join(diretorioAlvo, nomeArquivoEstoque) # Junta o diretório com o nome do arquivo
+comodatoCompleto = os.path.join(diretorioAlvo, nomeArquivoComodato) 
 
 cursor = con.cursor() # Cria um cursor para executar a consulta
 
@@ -80,10 +80,14 @@ except cx.Error as error:
     print("Erro ao executar a consulta de comodato:", error)
     exit()
 
-with open(caminhoCompleto, "w") as arquivo: # Abre o arquivo para escrita
+with open(estoqueCompleto, "w") as arquivo: # Abre o arquivo para escrita
     for row in resultadoEstoque:
         arquivo.write(row[0] + "\n") # Escreve cada linha do resultadoEstoque no arquivo
         
-if os.path.exists(caminhoCompleto): # Verifica se o arquivo existe 
+with open(comodatoCompleto, "w") as arquivo: # Abre o arquivo para escrita
+    for row in resultadoComodato:
+        arquivo.write(row[0] + "\n") # Escreve cada linha do resultadoEstoque no arquivo
+        
+if os.path.exists(estoqueCompleto): # Verifica se o arquivo existe 
     time.sleep(1)
-    print("\nArquivo salvo com sucesso!") # Imprime uma mensagem de sucesso
+    print("\nArquivos salvos com sucesso!") # Imprime uma mensagem de sucesso
