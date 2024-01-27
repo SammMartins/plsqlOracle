@@ -1,2 +1,4 @@
 Consultas/Wint/*.sql
 pythonDashboards/helloWorldDashboard.py
+pythonDashboards/saveFiles.py
+Consultas/Mtrix/config.ini

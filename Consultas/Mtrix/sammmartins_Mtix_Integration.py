@@ -1,6 +1,7 @@
 import os
 import time
 import datetime
+import schedule
 import cx_Oracle as cx
 import configparser as cp
 import win32serviceutil
@@ -10,7 +11,7 @@ import servicemanager
 import socket
 
 class AppService(win32serviceutil.ServiceFramework):
-    _svc_name_ = 'SammmartinsMtixIntegration' # Nome do serviço
+    _svc_name_ = 'Sammmartins_MtixIntegration' # Nome do serviço
     _svc_display_name_ = "SammMartin's Mtix Integration" # Nome do serviço exibido
 
     def __init__(self, args):
@@ -26,12 +27,19 @@ class AppService(win32serviceutil.ServiceFramework):
         servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                               servicemanager.PYS_SERVICE_STARTED,
                               (self._svc_name_, ''))
-        self.main()
+        schedule.every(1).minutes.do(self.main)
+
+        # Mantenha o script em execução
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 
     def main(self):
+        print("Iniciando o serviço... \n Para parar o serviço, pressione Ctrl + C.")
+
         # Carregue o arquivo de configuração
         config = cp.ConfigParser()
-        config.read('/home/premium/db_config.ini')
+        config.read('./config.ini')
 
         # Conecte ao banco de dados Oracle
         username = config.get('oracle_db', 'username')
@@ -39,6 +47,7 @@ class AppService(win32serviceutil.ServiceFramework):
         host = config.get('oracle_db', 'host')
         port = config.get('oracle_db', 'port')
         sid = config.get('oracle_db', 'sid')
+        pastaAlvo = config.get('paths', 'pastaAlvo')
 
         # Verifique se todas as variáveis de ambiente estão definidas
         if None in [username, password, host, port, sid]:
@@ -56,11 +65,11 @@ class AppService(win32serviceutil.ServiceFramework):
             print("Erro ao conectar ao banco de dados:", error)
 
         while True:
-            print("Difina o diretório onde o arquivo será salvo:")
+            print("O diretório onde o arquivo será salvo é:")
             time.sleep(1) # Espera 1 segundo
-            print(">>> C:/caminho/para/diretorio # Exemplo")
-            time.sleep(2) 
-            diretorioAlvo = input(">>> ") # Diretório onde o arquivo será salvo
+            print(">>> " + pastaAlvo) # Imprime o diretório padrão
+            time.sleep(3) 
+            diretorioAlvo = pastaAlvo
             time.sleep(1)
 
             if not os.path.exists(diretorioAlvo): # Verifica se o diretório existe
@@ -81,10 +90,10 @@ class AppService(win32serviceutil.ServiceFramework):
 
         cursor = con.cursor() # Cria um cursor para executar a consulta
 
-        with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Mtrix/txtComodatoMtrix-Estoque.sql', 'r') as arquivo: 
+        with open('./txtComodatoMtrix-Estoque.sql', 'r') as arquivo: 
             consultaEstoque = arquivo.read() # Carrega a consulta de estoque
 
-        with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Mtrix/txtComodatoMtrix.sql', 'r') as arquivo: 
+        with open('./txtComodatoMtrix.sql', 'r') as arquivo: 
             consultaComodato = arquivo.read() # Carrega a consulta de comodato
 
         try:
@@ -118,9 +127,6 @@ class AppService(win32serviceutil.ServiceFramework):
             print("\nArquivos salvos com sucesso!") # Imprime uma mensagem de sucesso
         else:
             print("\nErro ao salvar os arquivos!")    
-        
-        while True:
-            pass  # Coloque aqui o código principal do seu serviço
 
 if __name__ == '__main__':
     win32serviceutil.HandleCommandLine(AppService)        
