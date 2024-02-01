@@ -107,8 +107,18 @@ def main():
 
 main()
 
-# Agende a função para ser executada a cada 5 minutos
-schedule.every(1).minutes.do(main)
+# Cria um objeto ConfigParser
+config = cp.ConfigParser()
+
+# Lê o arquivo config.ini no mesmo diretório que o script
+config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+
+# Obtém a hora e o minuto do arquivo config.ini
+hour = config.get('execution_time', 'hour')
+minute = config.get('execution_time', 'minute')
+
+# Agendamento
+schedule.every().day.at(f"{hour}:{minute}").do(main)
 
 # Mantenha o script em execução
 while True:
