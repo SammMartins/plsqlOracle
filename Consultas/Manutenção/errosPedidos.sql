@@ -132,33 +132,40 @@ and c.codplpag not in (8)
 AND c.posicao NOT IN ('F', 'C')
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
-SELECT DISTINCT 
-    c.codcli AS Cliente,
-    c.codusur AS RCA,
-    'PEDIDOS BLOQUEADOS' AS Tipo,
-    (CASE
-        WHEN c.posicao LIKE 'B' THEN c.posicao || 'loqueado' 
-        WHEN c.posicao LIKE 'C' THEN c.posicao || 'ancelado'
-        WHEN c.posicao LIKE 'P' THEN c.posicao || 'endente'
-        WHEN c.posicao LIKE 'M' THEN c.posicao || 'ontado'
-        ELSE c.posicao || 'iberado'
-    END) AS Status
+SELECT 
+    liberados.Cliente,
+    liberados.RCA,
+    liberados.Contagem || ' Liberado(s), ' || NVL(bloqueados.Contagem, 0) || ' Bloqueado(s)' AS Tipo,
+    '' AS Status
 FROM
-    PONTUAL.PCPEDC c 
-WHERE
-    C.data BETWEEN SYSDATE-7 AND SYSDATE
-AND
-    C.posicao = 'L' --LIBERADO
-AND EXISTS (
-        SELECT 1 
-        FROM 
-            PONTUAL.pcpedc b
-        WHERE 
-            b.data = C.DATA
-        AND 
-            C.codcli = b.codcli
-        AND 
-            B.NUMPED != C.NUMPED
-        AND 
-            (B.posicao = 'P' OR B.posicao = 'B') --PENDENTE OU BLOQUEADO
-        )
+    (SELECT 
+        c.codcli AS Cliente,
+        c.codusur AS RCA,
+        COUNT(DISTINCT c.numped) AS Contagem
+    FROM
+        PONTUAL.PCPEDC c 
+    WHERE
+        c.data BETWEEN SYSDATE-7 AND SYSDATE
+    AND 
+        c.posicao = 'L' --LIBERADO
+    GROUP BY 
+        c.codcli, 
+        c.codusur) liberados
+LEFT JOIN
+    (SELECT 
+        b.codcli AS Cliente,
+        b.codusur AS RCA,
+        COUNT(DISTINCT b.numped) AS Contagem
+    FROM
+        PONTUAL.PCPEDC b 
+    WHERE
+        b.data BETWEEN SYSDATE-7 AND SYSDATE
+    AND 
+        b.posicao IN ('P', 'B') --PENDENTE OU BLOQUEADO
+    GROUP BY 
+        b.codcli, 
+        b.codusur) bloqueados
+ON
+    liberados.Cliente = bloqueados.Cliente --AND liberados.RCA = bloqueados.RCA
+WHERE 
+    bloqueados.Contagem IS NOT NULL
