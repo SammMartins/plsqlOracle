@@ -135,7 +135,7 @@ UNION ALL
 SELECT 
     liberados.Cliente,
     liberados.RCA,
-    liberados.Contagem || ' Liberado(s), ' || NVL(bloqueados.Contagem, 0) || ' Bloqueado(s)' AS Tipo,
+    liberados.Contagem || ' Liberado(s), ' || NVL(bloqueados.Contagem, 0) || ' BLOQUEADO(s)' AS Tipo,
     '' AS Status
 FROM
     (SELECT 
@@ -169,3 +169,10 @@ ON
     liberados.Cliente = bloqueados.Cliente --AND liberados.RCA = bloqueados.RCA
 WHERE 
     bloqueados.Contagem IS NOT NULL
+AND (
+        (TO_CHAR(SYSDATE, 'D') BETWEEN 2 AND 5 AND TO_CHAR(SYSDATE, 'HH24:MI') > '15:30')
+        OR
+        (TO_CHAR(SYSDATE, 'D') = 6 AND TO_CHAR(SYSDATE, 'HH24:MI') > '11:45')
+        OR
+        TO_CHAR(SYSDATE, 'D') = 7
+    )    
