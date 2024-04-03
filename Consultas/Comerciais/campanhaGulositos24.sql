@@ -2,7 +2,7 @@ WITH UN AS (
     SELECT 
         D.CODUSUR,
         SUM(CASE WHEN D.CODPROD IN (18394, 18637, 18639) THEN D.QT ELSE 0 END) AS UNIDADES_TORTILLA,
-        SUM(CASE WHEN D.CODPROD IN (18636, 18776, 18641, 18644) THEN D.QT ELSE 0 END) AS UNIDADES_ASSADO
+        SUM(CASE WHEN D.CODPROD IN (18592,18591,18589,18590,18593,18646,18642,18644,18636,18776,18641,18766,18635,18643) THEN D.QT ELSE 0 END) AS UNIDADES_ASSADO
     FROM
         PCPEDI D
     WHERE
@@ -49,10 +49,10 @@ SELECT '2 - ADAILTON' AS "VENDEDOR",
        (SUM(CASE WHEN A.CODUSUR IN (143, 145, 148, 150, 151, 152, 153, 154, 164, 168, 174)
                 THEN A.UNIDADES_ASSADO ELSE 0 END) / 10) AS "CX GULÃO ASSADO",
         --------------------------------------------------------------------
-       (CASE WHEN (((SUM(CASE WHEN A.CODUSUR IN (143, 145, 148, 150, 151, 152, 153, 154, 164, 168, 174)
-                    THEN A.UNIDADES_TORTILLA ELSE 0 END) / 20) / 11) + 
-                  ((SUM(CASE WHEN A.CODUSUR IN (143, 145, 148, 150, 151, 152, 153, 154, 164, 168, 174)
-                    THEN A.UNIDADES_ASSADO ELSE 0 END) / 10) / 11)) > 50 THEN 500 ELSE 0 END) AS "R$ TOTAL"
+       (CASE WHEN ((SUM(CASE WHEN A.CODUSUR IN (143, 145, 148, 150, 151, 152, 153, 154, 164, 168, 174)
+                    THEN A.UNIDADES_TORTILLA ELSE 0 END) / 20) / 11) > 50 THEN 500 ELSE 0 END) +
+       (CASE WHEN ((SUM(CASE WHEN A.CODUSUR IN (143, 145, 148, 150, 151, 152, 153, 154, 164, 168, 174)
+                    THEN A.UNIDADES_ASSADO ELSE 0 END) / 10) / 11) > 30 THEN 300 ELSE 0 END) AS "R$ TOTAL"
 FROM UN A
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -65,10 +65,10 @@ SELECT '8 - VILMAR' AS "VENDEDOR",
        SUM(CASE WHEN A.CODUSUR IN (140, 141, 142, 147, 155, 156, 157, 158, 161, 167, 169, 170, 172)
                 THEN A.UNIDADES_ASSADO ELSE 0 END) / 10 AS "CX GULÃO ASSADO",
         --------------------------------------------------------------------
-       (CASE WHEN (((SUM(CASE WHEN A.CODUSUR IN (140, 141, 142, 147, 155, 156, 157, 158, 161, 167, 169, 170, 172)
-                    THEN A.UNIDADES_TORTILLA ELSE 0 END) / 20) / 13) + 
-                  ((SUM(CASE WHEN A.CODUSUR IN (140, 141, 142, 147, 155, 156, 157, 158, 161, 167, 169, 170, 172)
-                    THEN A.UNIDADES_ASSADO ELSE 0 END) / 10) / 13)) > 50 THEN 500 ELSE 0 END) AS "R$ TOTAL"
+       ((CASE WHEN ((SUM(CASE WHEN A.CODUSUR IN (140, 141, 142, 147, 155, 156, 157, 158, 161, 167, 169, 170, 172)
+                    THEN A.UNIDADES_TORTILLA ELSE 0 END) / 20) / 13) > 50 THEN 500 ELSE 0 END) +
+       (CASE WHEN ((SUM(CASE WHEN A.CODUSUR IN (140, 141, 142, 147, 155, 156, 157, 158, 161, 167, 169, 170, 172)
+                    THEN A.UNIDADES_ASSADO ELSE 0 END) / 10) / 13) > 30 THEN 300 ELSE 0 END)) AS "R$ TOTAL"
 FROM UN A
 ORDER BY VENDEDOR
 ----------------------------------------------------------------------------------------------------------------------------------------

@@ -4,7 +4,8 @@ WITH FatStm AS
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
     WHERE prod.codfornec = 1541
-        AND ped.data BETWEEN '01-set-2023' and '30-nov-2023'
+        AND ped.data BETWEEN '01-mar-2024' and '31-mar-2024'
+        AND prod.CODSEC = 10001
         AND ped.posicao NOT LIKE 'C'
         AND ped.vlbonific = 0
     Group By ped.codusur),
@@ -16,7 +17,8 @@ DNDIST AS
             JOIN pontual.PCPEDI pedi on pedi.numped = ped.numped
             JOIN pontual.pcprodut prod on pedi.codprod = prod.codprod
         WHERE prod.codfornec = 1541
-            AND ped.data BETWEEN '01-set-2023' and '30-nov-2023'
+            AND ped.data BETWEEN '01-mar-2024' and '31-mar-2024'
+            AND prod.CODSEC = 10001            
             AND PED.DTCANCEL IS NULL
             AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
         GROUP BY ped.codusur),
@@ -56,21 +58,34 @@ META AS (
 
 -----------------------------------------------------------------------------------------------------------
 
-SELECT  RANK() OVER (ORDER BY ((fat.faturamento / m.cliposprev)) DESC) AS "Rank",
+SELECT  RANK() OVER (ORDER BY (((a.DN / m.METADN))) DESC, fat.faturamento DESC) AS "Rank",
         USUR.CODSUPERVISOR SUP,usur.codusur cod,
         SUBSTR(usur.nome, INSTR(usur.nome, ' ') + 1, INSTR(usur.nome, ' ', INSTR(usur.nome, ' ') + 1) - INSTR(usur.nome, ' ') - 1) AS RCA, -- Extrai o nome
-        m.cliposprev AS "OBJETIVO",
-        fat.faturamento AS "REALIZADO",
-        (fat.faturamento / m.cliposprev) as "%",
-        GREATEST(TRUNC(((NVL(m.cliposprev,1)) - fat.faturamento),2),0)   as "R.A.F.",
-        m.METADN "META",
+        fat.faturamento AS "VENDIDO",
+        m.METADN "META DN",
         a.DN AS "DN",
-        (a.DN / m.METADN) AS " %",
-        m.METADN - a.DN as "GAP"
+        ((m.METADN - a.DN) * 1) as "GAP",
+        (a.DN / m.METADN) AS " %"
 FROM pontual.PCUSUARI usur
     JOIN FatStm fat ON usur.codusur = fat.RCA
     JOIN DNDIST a ON usur.codusur = a.RCA
     JOIN META m ON m.codusur = usur.codusur 
 WHERE usur.nome like 'PMU%'
-ORDER BY "%" DESC, " %" desc
 
+
+UNION ALL
+SELECT 25 AS "Rank",
+       0 AS SUP,
+       0 AS COD,
+       '- TOTAL PREMIUM -' AS RCA,
+       SUM(fat.faturamento) AS "VENDIDO",
+       800 AS "META DN",
+       SUM(a.DN) AS "DN",
+       SUM(m.METADN - a.DN) as "GAP",
+       SUM(a.DN) / SUM(m.METADN) AS " %"       
+FROM pontual.PCUSUARI usur
+    JOIN FatStm fat ON usur.codusur = fat.RCA
+    JOIN DNDIST a ON usur.codusur = a.RCA
+    JOIN META m ON m.codusur = usur.codusur 
+WHERE usur.nome like 'PMU%'
+ORDER BY "Rank", "VENDIDO" DESC       
