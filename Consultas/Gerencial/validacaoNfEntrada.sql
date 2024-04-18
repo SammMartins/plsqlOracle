@@ -1,0 +1,1 @@
+select codprod, descricao from pcprodut where codfornec = 1488

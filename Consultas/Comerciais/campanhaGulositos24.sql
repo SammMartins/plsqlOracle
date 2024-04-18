@@ -6,7 +6,7 @@ WITH UN AS (
     FROM
         PCPEDI D
     WHERE
-        D.DATA BETWEEN '01-MAR-2024' AND '31-MAR-2024'
+        D.DATA BETWEEN '01-apr-2024' AND '30-apr-2024'
     AND
         D.POSICAO NOT LIKE 'C'
     --AND 
