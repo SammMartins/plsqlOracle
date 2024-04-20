@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.express as px
 from dataset import df1, df2
 from utils import format_number
+from grafic import grafico_vend_sup
 
 # Configuração do dashboard
 st.set_page_config(page_title="Premium Dashboards", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
@@ -52,6 +53,10 @@ with aba1:
                 with coluna3:
                     for i in df2_result[3]:
                         st.metric("DN", i)
+    with aba1_2:
+        coluna1, coluna2 = st.columns(2)
+        with coluna1:
+            st.plotly_chart(grafico_vend_sup, use_container_width=True, scale='auto')
                                     
 
 # streamlit run app.py
