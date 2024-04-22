@@ -15,5 +15,3 @@ def data_semana_ini(): # retorna data de início da semana
 def data_semana_fim(): # retorna data de fim da semana
     hoje = datetime.date.today()
     return hoje + datetime.timedelta(days=6 - hoje.weekday())
-
-
