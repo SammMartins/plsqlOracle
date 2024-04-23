@@ -24,7 +24,7 @@ DN AS (SELECT ped.codsupervisor codsupervisor,
 SELECT (CASE WHEN f.codsupervisor = 2 THEN 'ADAILTON'
              WHEN f.codsupervisor = 8 THEN 'VILMAR'
              ELSE 'ERRO! CONTATE A TI' END) SUPERVISOR,
-             f.valor VENDIDO, D.DN DN
+             f.valor VENDIDO, D.DN DN, f.codsupervisor
 FROM FAT F
 JOIN DN D on d.codsupervisor = f.codsupervisor
 WHERE f.codsupervisor in (2,8)
