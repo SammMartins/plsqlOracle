@@ -26,7 +26,7 @@ else:
     grafico_vend_sup.update_traces(
         text = df[df.columns[2]].apply(lambda x: format_number(x, 'R$')),
         textposition = 'inside',
-        textfont = dict(color='black', family='Arial Black'),
+        textfont = dict(color='black', family='Verdana', size=12),
         name = 'Linha tracejada é a média de vendas dos RCA'
     )
 
@@ -42,27 +42,8 @@ else:
     )
 
 
-    # ------------------------- GRÁFICO TOP VENDA POR RCA -------------------------
-    grafico_top_rca = px.bar(
-        df.head(5),
-        x = df.columns[1],
-        y = df.columns[2], 
-        title = "TOP 5 RCA DA SEMANA ATUAL",
-        range_y = (0, df[2].max()),
-        color = df.columns[2]
-    )
-
-    grafico_top_rca.update_traces(
-        text = df[df.columns[2]].apply(lambda x: format_number(x, 'R$')),
-        textposition = 'inside',
-        textfont = dict(color='black', family='Arial Black')
-    )
-
-    df_2 = df[df[df.columns[0]] == 2]
-    df_8 = df[df[df.columns[0]] == 8]
-
-
     # ------------------------- GRÁFICO VENDA POR RCA TIME SUL -------------------------    
+    df_2 = df[df[df.columns[0]] == 2]
     grafico_top_rca2 = px.bar(
         df_2,
         x = df.columns[1],
@@ -76,7 +57,7 @@ else:
     grafico_top_rca2.update_traces(
         text = df_2[df_2.columns[2]].apply(lambda x: format_number(x, 'R$')),
         textposition = 'inside',
-        textfont = dict(color='black', family='Arial Black')
+        textfont = dict(color='black', family='Verdana', size=12)
     )
 
     grafico_top_rca2.add_shape(
@@ -91,6 +72,7 @@ else:
     )
 
     # ------------------------- GRÁFICO VENDA POR RCA TIME SERTÃO -------------------------
+    df_8 = df[df[df.columns[0]] == 8]
     grafico_top_rca8 = px.bar(
         df_8,
         x = df.columns[1],
@@ -104,7 +86,7 @@ else:
     grafico_top_rca8.update_traces(
         text = df_8[df_8.columns[2]].apply(lambda x: format_number(x, 'R$')),
         textposition = 'inside',
-        textfont = dict(color='black', family='Arial Black')
+        textfont = dict(color='black', family='Verdana', size=12)
     )
 
     grafico_top_rca8.add_shape(
