@@ -1,0 +1,5 @@
+-- Com base na rotina 589
+
+SELECT * FROM PCDIASUTEIS
+WHERE CODFILIAL= 3
+AND TO_CHAR(DATA,'MM/YYYY') = TO_CHAR(sysdate, 'MM/YYYY')

@@ -28,7 +28,7 @@ with aba1:
             sup_filtro = st.multiselect(
                 "Escolha um Supervisor", 
                 df2_result[0].unique(), 
-                key='tabela_vend3',
+                key='tabela_vend3'
             )
         with coluna3:
             st.write(" ") # Espaço em branco para centralizar os widgets
@@ -122,8 +122,34 @@ with aba1:
                     st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0], delta = "-12º")
 
 
-    with aba1_3:
+    with aba1_3: # add média de venda por cliente
         coluna1, coluna2, coluna3 = st.columns(3)
+        with coluna1:
+            subcoluna1, subcoluna2 = st.columns(2)
+            with subcoluna1:
+                dataIni_cli = st.date_input("Escolha uma data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
+            with subcoluna2:
+                dataFim_cli = st.date_input("Escolha uma data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
+        with coluna2:
+            df3_result = df3(dataIni, dataFim)
+            rca_filtro = st.multiselect(
+                "Escolha um RCA", 
+                df3_result[2].unique(), 
+                default=[],
+                key='tabela_cli3'
+            )
+        with coluna3:
+            st.write(" ") # Espaço em branco para centralizar os widgets
+            st.write(" ") # Espaço em branco para centralizar os widgets
+            if st.button("Carregar Dados", key='tabela_cli'):
+                df3_result = df3(dataIni_cli, dataFim_cli)
+                if rca_filtro:
+                    df3_result = df3_result[df3_result[2].isin(rca_filtro)]
+                    with coluna1:
+                        for i in df3_result[0]:
+                            st.metric("Cliente", i[:20])
+
+
 
 
 # streamlit run app.py
