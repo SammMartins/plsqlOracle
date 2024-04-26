@@ -29,7 +29,7 @@ BASE AS (SELECT c.CODUSUR1, COUNT(DISTINCT(c.CODCLI)) BASE
 -----------------------------------------------------------------------------------------------------------------------
 SELECT U.codsupervisor, f.codusur || ' - ' || 
        SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) AS RCA,
-       f.valor, D.DN, b.base
+       NVL(f.valor,0), NVL(D.DN,0), b.base
 FROM FAT F
 JOIN DN D on d.codusur = f.codusur
 JOIN pontual.pcusuari u on u.codusur = f.codusur

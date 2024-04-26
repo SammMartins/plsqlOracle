@@ -8,12 +8,15 @@ from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 
 # Configuração do dashboard
 st.set_page_config(page_title="Premium Dashboards", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
-st.title("Premium Dashboards :bar_chart:")
+st.title("PREMIUM DASHBOARDS :bar_chart:")
 st.markdown("Este é um o projeto inicial de Dashboards em Python para a Premium Distribuidora")
+st.markdown("Selecione a aba desejada para visualizar os dados.")
 
-aba1, aba2, aba3 = st.tabs(["Vendas Tempo Real", "Dashboard 2", "Dashboard 3"])
+aba1, aba2, aba3 = st.tabs(["Vendas Tempo Real", "Dashboard INATIVO", "Dashboard INATIVO"])
 
 with aba1:
+    st.subheader("PAINEL BASEADO NA 146 WINTHOR :dollar:")
+
     aba1_1, aba1_2, aba1_3, aba1_4 = st.tabs(["Tabelas", "Gráficos", "Clientes", "Fornecedores"])
     with aba1_1:
         coluna1, coluna2, coluna3 = st.columns(3)
@@ -26,7 +29,7 @@ with aba1:
         with coluna2:
             df2_result = df2(dataIni, dataFim)
             sup_filtro = st.multiselect(
-                "Escolha um Supervisor", 
+                "Escolha o Supervisor", 
                 df2_result[0].unique(), 
                 key='tabela_vend3'
             )
@@ -40,38 +43,46 @@ with aba1:
                 # ----------------- Tabela de Vendas por Supervisor -----------------
                 if sup_filtro:
                     df1_result = df1_result[df1_result[3].isin(sup_filtro)]
-                    with coluna1: # -> Supervisor
-                        for index, i in enumerate(df1_result[0]):
-                            st.metric("Supervisor", i, delta=index+1, delta_color='off')
-                    with coluna2: # -> VENDIDO
-                        for i in df1_result[1]:
-                            st.metric("VENDIDO", format_number(i, 'R$'))
-                    with coluna3: # -> DN
-                        for i in df1_result[2]:
-                            st.metric("DN", i)
+                    with coluna1: 
+                        for i in (df1_result[0]):
+                            st.metric("Supervisor", i)
+                    with coluna2: 
+                        subcol1, subcol2 = st.columns([2,1])
+                        with subcol1:
+                            for i in df1_result[1]:
+                                st.metric("VENDIDO", format_number(i, 'R$'))
+                        with subcol2:
+                            for i in df1_result[2]:
+                                st.metric("DN", i)
                     if len(sup_filtro) > 1:
-                        with coluna1: # -> Supervisor
+                        with coluna1: 
                             st.metric("Total", 'TOTAL')
-                        with coluna2: # -> VENDIDO
-                            st.metric("Total Vendido", format_number(df1_result[1].sum(), 'R$'))
-                        with coluna3: # -> DN
-                            st.metric("Total DN", df1_result[2].sum())
+                        with coluna2: 
+                            subcol1, subcol2 = st.columns([2,1])
+                            with subcol1:
+                                st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum(), 'R$'))
+                            with subcol2:
+                                st.metric("TOTAL DN", df1_result[2].sum())
                 else:
-                    with coluna1: # -> Supervisor
-                        for index, i in enumerate(df1_result[0]):
-                            st.metric("Supervisor", i, delta=index+1, delta_color='off')
-                    with coluna2: # -> VENDIDO
-                        for i in df1_result[1]:
-                            st.metric("VENDIDO", format_number(i, 'R$'))
-                    with coluna3: # -> DN
-                        for i in df1_result[2]:
-                            st.metric("DN", i)
-                    with coluna1: # -> Supervisor
+                    with coluna1: 
+                        for i in (df1_result[0]):
+                            st.metric("Supervisor", i)
+                    with coluna2: 
+                        subcol1, subcol2 = st.columns([2,1])
+                        with subcol1:
+                            for i in df1_result[1]:
+                                st.metric("VENDIDO", format_number(i, 'R$'))
+                        with subcol2:
+                            for i in df1_result[2]:
+                                st.metric("DN", i)
+                    with coluna1: 
                         st.metric("Total", 'TOTAL')
-                    with coluna2: # -> VENDIDO
-                        st.metric("Total Vendido", format_number(df1_result[1].sum(), 'R$'))
-                    with coluna3: # -> DN
-                        st.metric("Total DN", df1_result[2].sum())
+                    with coluna2: 
+                            subcol1, subcol2 = st.columns([2,1])
+                            with subcol1:
+                                st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum(), 'R$'))
+                            with subcol2:
+                                st.metric("TOTAL DN", df1_result[2].sum())
                 
                 # ----------------- Tabela de Vendas por RCA -----------------
                 if sup_filtro:
@@ -80,46 +91,56 @@ with aba1:
                         for i in df2_result[1]:
                             st.metric("RCA", i)
                     with coluna2:
-                        for i in df2_result[2]:
-                            st.metric("VENDIDO", format_number(i, 'R$'))
-                    with coluna3:
-                        for i in df2_result[3]:
-                            st.metric("DN", i)
+                        subcol1, subcol2 = st.columns([2,1])
+                        with subcol1:
+                            for i in df2_result[2]:
+                                st.metric("VENDIDO", format_number(i, 'R$'))
+                        with subcol2:
+                            for i in df2_result[3]:
+                                st.metric("DN", i)
                 else:
                     with coluna1:
                         for i in df2_result[1]:
                             st.metric("RCA", i)
                     with coluna2:
-                        for i in df2_result[2]:
-                            st.metric("VENDIDO", format_number(i, 'R$'))
-                    with coluna3:
-                        for i in df2_result[3]:
-                            st.metric("DN", i)            
+                        subcol1, subcol2 = st.columns([2,1])
+                        with subcol1:
+                            for i in df2_result[2]:
+                                st.metric("VENDIDO", format_number(i, 'R$'))
+                        with subcol2:
+                            for i in df2_result[3]:
+                                st.metric("DN", i)            
     with aba1_2:
+        st.subheader("Legenda:")
+        st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
+        st.markdown("  2. A linha branca tracejada representa o valor da média de vendas na semana atual.")
         if st.button("Carregar Dados", key='grafico_vend_sup'):
-            st.plotly_chart(grafico_vend_sup, use_container_width=True)
-            st.subheader("Legenda:")
-            st.subheader("  1. A linha branca tracejada representa o valor da média de vendas na semana atual.")
-            coluna1, coluna2 = st.columns(2)
             start_of_week = data_semana_ini()
             end_of_week = data_semana_fim()
             df2_result = df2(start_of_week, end_of_week)
+            st.plotly_chart(grafico_vend_sup, use_container_width=True)
+            metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
+            with metric_col2: 
+                st.metric(label = "TOP MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0], delta = "1º")
+            with metric_col3:
+                st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0], delta = "-24º")
+            coluna1, coluna2 = st.columns(2)
             df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
             df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
             with coluna1:
                 st.plotly_chart(grafico_top_rca8, use_container_width=True)
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    st.metric(label = "TOP VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0], delta = "1º")
+                    st.metric(label = "TOP MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0], delta = "1º")
                 with subcoluna2:
                     st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0], delta = "-13º")
             with coluna2:
                 st.plotly_chart(grafico_top_rca2, use_container_width=True)
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    st.metric(label = "TOP VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0], delta = "1º")
+                    st.metric(label = "TOP MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0], delta = "1º")
                 with subcoluna2:
-                    st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0], delta = "-12º")
+                    st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0], delta = "-11º")
 
 
     with aba1_3: # add média de venda por cliente
@@ -147,9 +168,15 @@ with aba1:
                     df3_result = df3_result[df3_result[2].isin(rca_filtro)]
                     with coluna1:
                         for i in df3_result[0]:
-                            st.metric("Cliente", i[:20])
-
-
-
+                            st.metric("Cliente", i[:25])
+                    with coluna2:
+                        for i in df3_result[2]:
+                            st.metric("RCA", i)
+                    with coluna3:
+                        for i in df3_result[3]:
+                            st.metric("VENDIDO", format_number(i, 'R$'))
+    with aba1_4:
+        pass
+                    
 
 # streamlit run app.py

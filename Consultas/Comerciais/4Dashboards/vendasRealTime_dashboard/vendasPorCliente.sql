@@ -15,7 +15,7 @@ WITH Fat AS
 -----------------------------------------------------------------------------------------------------------------------
 SELECT  f.codcli || ' - ' || C.CLIENTE,
         U.codsupervisor, 
-        f.codusur || ' - ' || SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) AS RCA,
+        f.codusur || ' - ' || SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) || ' Sup. ' || U.codsupervisor AS RCA,
         F.valor
 FROM FAT F
 JOIN pontual.pcusuari u on u.codusur = f.codusur
