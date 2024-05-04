@@ -19,7 +19,7 @@ DN AS (SELECT ped.codusur codusur,
                 JOIN pontual.pcprodut prod on pedi.codprod = prod.codprod
             WHERE ped.DATA BETWEEN '{dtIni}' AND '{dtFim}'
                 AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-                AND A.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
+                AND ped.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
             GROUP BY ped.codusur),
 -----------------------------------------------------------------------------------------------------------------------
 BASE AS (SELECT c.CODUSUR1, COUNT(DISTINCT(c.CODCLI)) BASE
