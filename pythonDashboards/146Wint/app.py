@@ -16,6 +16,7 @@ aba1, aba2, aba3 = st.tabs(["Vendas Tempo Real", "Dashboard INATIVO", "Dashboard
 
 with aba1:
     st.subheader("PAINEL BASEADO NA 146 WINTHOR :dollar:")
+    st.markdown("Apenas pedidos digitados pelo vendedor em seu aparelho.")
 
     aba1_1, aba1_2, aba1_3, aba1_4 = st.tabs(["Tabelas", "Gráficos", "Clientes", "Fornecedores"])
     with aba1_1:
@@ -176,7 +177,28 @@ with aba1:
                         for i in df3_result[3]:
                             st.metric("VENDIDO", format_number(i, 'R$'))
     with aba1_4:
-        pass
+        coluna1, coluna2, coluna3 = st.columns(3)
+        with coluna1:
+            subcol1, subcol2 = st.columns(2)
+            with subcol1:
+                dataIni_cli = st.date_input("Escolha uma data inicial", 
+                                            value=pd.to_datetime('today'), 
+                                            format='DD/MM/YYYY', 
+                                            key='tabela_fornec1')
+            with subcol2:
+                dataFim_cli = st.date_input("Escolha uma data final", 
+                                            value=pd.to_datetime('today'), 
+                                            format='DD/MM/YYYY', 
+                                            key='tabela_fornec2')
+        with coluna2:
+            df3_result = df3(dataIni, dataFim)
+            rca_filtro = st.multiselect(
+                "Escolha um RCA", df3_result[2].unique(), default=[],key='tabela_fornec3'
+            )
+            # df5_result = df5(dataIni, dataFim)
+            fornec_filtro = st.multiselect(
+                "Escolha um RCA", df3_result[2].unique(), default=[],key='tabela_fornec3'
+            )
+        with coluna3:
+            pass
                     
-
-# streamlit run app.py

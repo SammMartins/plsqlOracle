@@ -9,7 +9,7 @@ WITH Fat AS
           AND a.CODCOB IN ('7563','CH','C','D','DH')
           AND a.vlbonific = 0
           AND A.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
-          --AND c.TIPOFJ = 'J' 
+          AND A.NUMPED IN (SELECT NUMPED FROM pontual.PCPEDI WHERE CODPROD IN (SELECT CODPROD FROM pontual.PCPRODUT WHERE CODFORNEC IN ({fornec})))
           GROUP BY a.codusur),
 -----------------------------------------------------------------------------------------------------------------------
 DN AS (SELECT ped.codusur codusur,
@@ -20,21 +20,15 @@ DN AS (SELECT ped.codusur codusur,
             WHERE ped.DATA BETWEEN '{dtIni}' AND '{dtFim}'
                 AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
                 AND ped.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
-            GROUP BY ped.codusur),
------------------------------------------------------------------------------------------------------------------------
-BASE AS (SELECT c.CODUSUR1, COUNT(DISTINCT(c.CODCLI)) BASE
-         FROM pontual.pcclient c
-         JOIN pontual.pcusuari u on c.CODUSUR1 = u.CODUSUR
-         WHERE u.nome LIKE 'PMU%'
-         GROUP BY c.CODUSUR1
-         ORDER BY c.CODUSUR1)
+                AND ped.NUMPED IN (SELECT NUMPED FROM pontual.PCPEDI WHERE CODPROD IN (SELECT CODPROD FROM pontual.PCPRODUT WHERE CODFORNEC IN ({fornec})))
+            GROUP BY ped.codusur)
 -----------------------------------------------------------------------------------------------------------------------
 SELECT U.codsupervisor, f.codusur || ' - ' || 
        SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) AS RCA,
-       NVL(f.valor,0), NVL(D.DN,0), b.base
+       NVL(f.valor,0), NVL(D.DN,0)
 FROM FAT F
 JOIN DN D on d.codusur = f.codusur
 JOIN pontual.pcusuari u on u.codusur = f.codusur
-JOIN BASE B on b.CODUSUR1= f.codusur
 WHERE f.codusur not in (10,50)
+AND F.CODUSUR IN ({rca})
 ORDER BY  f.valor desc
