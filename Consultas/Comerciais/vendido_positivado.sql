@@ -4,7 +4,7 @@ WITH FATSTM AS
     FROM PONTUAL.PCPEDI PED
         JOIN PONTUAL.PCPRODUT PROD ON PED.CODPROD = PROD.CODPROD
     WHERE PROD.CODFORNEC = 1658
-        AND PED.DATA BETWEEN '01-feb-2024' AND '30-apr-2024'
+        AND PED.DATA BETWEEN '01-FEB-2024' AND '31-MAY-2024'
         --AND PROD.CODSEC = 10001
         AND PED.POSICAO NOT LIKE 'C'
         AND PED.VLBONIFIC = 0
@@ -17,7 +17,7 @@ DNDIST AS
             JOIN PONTUAL.PCPEDI PEDI ON PEDI.NUMPED = PED.NUMPED
             JOIN PONTUAL.PCPRODUT PROD ON PEDI.CODPROD = PROD.CODPROD
         WHERE PROD.CODFORNEC = 1658
-            AND PED.DATA BETWEEN '01-feb-2024' AND '29-feb-2024'
+            AND PED.DATA BETWEEN '01-FEB-2024' AND '29-FEB-2024'
             --AND PROD.CODSEC = 10001            
             AND PED.DTCANCEL IS NULL
             AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
@@ -41,7 +41,19 @@ DNDIST3 AS
             JOIN PONTUAL.PCPEDI PEDI ON PEDI.NUMPED = PED.NUMPED
             JOIN PONTUAL.PCPRODUT PROD ON PEDI.CODPROD = PROD.CODPROD
         WHERE PROD.CODFORNEC = 1658
-            AND PED.DATA BETWEEN '01-apr-2024' AND '30-apr-2024'
+            AND PED.DATA BETWEEN '01-APR-2024' AND '30-APR-2024'
+            --AND PROD.CODSEC = 10001            
+            AND PED.DTCANCEL IS NULL
+            AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
+        GROUP BY PED.CODUSUR),
+DNDIST4 AS
+    (SELECT PED.CODUSUR AS RCA,
+            COUNT(DISTINCT PED.CODCLI) AS DN
+        FROM PONTUAL.PCPEDC PED
+            JOIN PONTUAL.PCPEDI PEDI ON PEDI.NUMPED = PED.NUMPED
+            JOIN PONTUAL.PCPRODUT PROD ON PEDI.CODPROD = PROD.CODPROD
+        WHERE PROD.CODFORNEC = 1658
+            AND PED.DATA BETWEEN '01-MAY-2024' AND '31-MAY-2024'
             --AND PROD.CODSEC = 10001            
             AND PED.DTCANCEL IS NULL
             AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
@@ -49,14 +61,16 @@ DNDIST3 AS
         
 -----------------------------------------------------------------------------------------------------------
 
-SELECT  usur.codusur cod,
-        SUBSTR(usur.nome, INSTR(usur.nome, ' ') + 1, INSTR(usur.nome, ' ', INSTR(usur.nome, ' ') + 1) - INSTR(usur.nome, ' ') - 1) AS RCA, -- Extrai o nome
-        fat.faturamento AS "VENDIDO",
-        a.DN + b.DN + c.DN AS "DN"
-FROM pontual.PCUSUARI usur
-    JOIN FatStm fat ON usur.codusur = fat.RCA
-    JOIN DNDIST a ON usur.codusur = a.RCA
-    JOIN DNDIST2 b ON usur.codusur = b.RCA    
-    JOIN DNDIST3 c ON usur.codusur = c.RCA        
-WHERE usur.nome like 'PMU%'        
+SELECT  USUR.CODUSUR COD,
+        SUBSTR(USUR.NOME, INSTR(USUR.NOME, ' ') + 1, INSTR(USUR.NOME, ' ', INSTR(USUR.NOME, ' ') + 1) - INSTR(USUR.NOME, ' ') - 1) AS RCA, -- EXTRAI O NOME
+        FAT.FATURAMENTO AS "VENDIDO",
+        NVL(A.DN,0) + NVL(B.DN,0) + NVL(C.DN,0) + NVL(D.DN,0) AS "DN"
+FROM PONTUAL.PCUSUARI USUR
+    left JOIN FATSTM FAT ON USUR.CODUSUR = FAT.RCA
+    left JOIN DNDIST A ON USUR.CODUSUR = A.RCA
+    left JOIN DNDIST2 B ON USUR.CODUSUR = B.RCA    
+    left JOIN DNDIST3 C ON USUR.CODUSUR = C.RCA        
+    left JOIN DNDIST4 D ON USUR.CODUSUR = D.RCA    
+WHERE USUR.NOME LIKE 'PMU%'        
+AND USUR.CODUSUR NOT IN (2,10,160)
 ORDER BY VENDIDO DESC, DN DESC

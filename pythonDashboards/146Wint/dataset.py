@@ -2,16 +2,17 @@ import pandas as pd
 import cx_Oracle as cx
 from configparser import ConfigParser
 
+config = ConfigParser()
+config.read('/home/premium/db_config.ini')
+username = config.get('oracle_db', 'username')
+password = config.get('oracle_db', 'password')
+host = config.get('oracle_db', 'host')
+port = config.get('oracle_db', 'port')
+sid = config.get('oracle_db', 'sid')
+
+
+
 def df1(dataIni, dataFim):
-    config = ConfigParser()
-    config.read('/home/premium/db_config.ini')
-
-    username = config.get('oracle_db', 'username')
-    password = config.get('oracle_db', 'password')
-    host = config.get('oracle_db', 'host')
-    port = config.get('oracle_db', 'port')
-    sid = config.get('oracle_db', 'sid')
-
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
@@ -27,26 +28,19 @@ def df1(dataIni, dataFim):
     dataFim = dataFim.strftime('%d-%b-%Y')
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
+    try:
+        cursor.execute(consulta)
 
-    cursor.execute(consulta)
 
-    # Obtenha os resultados da consulta
-    resultados = cursor.fetchall()
+        resultados = cursor.fetchall()
 
-    df = pd.DataFrame.from_dict(resultados)
-
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
     return df
 
 def df2(dataIni, dataFim):
-    config = ConfigParser()
-    config.read('/home/premium/db_config.ini')
-
-    username = config.get('oracle_db', 'username')
-    password = config.get('oracle_db', 'password')
-    host = config.get('oracle_db', 'host')
-    port = config.get('oracle_db', 'port')
-    sid = config.get('oracle_db', 'sid')
-
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
@@ -63,25 +57,19 @@ def df2(dataIni, dataFim):
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
 
-    cursor.execute(consulta)
+    try:
+        cursor.execute(consulta)
 
-    # Obtenha os resultados da consulta
-    resultados = cursor.fetchall()
 
-    df = pd.DataFrame.from_dict(resultados)
+        resultados = cursor.fetchall()
 
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
     return df
 
 def df3(dataIni, dataFim):
-    config = ConfigParser()
-    config.read('/home/premium/db_config.ini')
-
-    username = config.get('oracle_db', 'username')
-    password = config.get('oracle_db', 'password')
-    host = config.get('oracle_db', 'host')
-    port = config.get('oracle_db', 'port')
-    sid = config.get('oracle_db', 'sid')
-
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
@@ -98,25 +86,19 @@ def df3(dataIni, dataFim):
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
 
-    cursor.execute(consulta)
+    try:
+        cursor.execute(consulta)
 
-    # Obtenha os resultados da consulta
-    resultados = cursor.fetchall()
 
-    df = pd.DataFrame.from_dict(resultados)
+        resultados = cursor.fetchall()
 
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
     return df
 
-def df4(dataIni, dataFim, rca_, fornec_):
-    config = ConfigParser()
-    config.read('/home/premium/db_config.ini')
-
-    username = config.get('oracle_db', 'username')
-    password = config.get('oracle_db', 'password')
-    host = config.get('oracle_db', 'host')
-    port = config.get('oracle_db', 'port')
-    sid = config.get('oracle_db', 'sid')
-
+def df4(dataIni, dataFim):
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
@@ -131,48 +113,16 @@ def df4(dataIni, dataFim, rca_, fornec_):
     dataIni = dataIni.strftime('%d-%b-%Y')
     dataFim = dataFim.strftime('%d-%b-%Y')
 
-    consulta = consulta.format(dtIni=dataIni, dtFim=dataFim, rca=rca_, fornec=fornec_)
-
-    cursor.execute(consulta)
-
-    # Obtenha os resultados da consulta
-    resultados = cursor.fetchall()
-
-    df = pd.DataFrame.from_dict(resultados)
-
-    return df
-
-def df5(dataIni, dataFim):
-    config = ConfigParser()
-    config.read('/home/premium/db_config.ini')
-
-    username = config.get('oracle_db', 'username')
-    password = config.get('oracle_db', 'password')
-    host = config.get('oracle_db', 'host')
-    port = config.get('oracle_db', 'port')
-    sid = config.get('oracle_db', 'sid')
-
-    if None in [username, password, host, port, sid]:
-        raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
-
-    dsn_tns = cx.makedsn(host, port, sid)
-    con = cx.connect(user=username, password=password, dsn=dsn_tns)
-
-    cursor = con.cursor()
-
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Comerciais/4Dashboards/vendasRealTime_dashboard/selectFornec.sql', 'r') as arquivo: 
-        consulta = arquivo.read()
-
-    dataIni = dataIni.strftime('%d-%b-%Y')
-    dataFim = dataFim.strftime('%d-%b-%Y')
-
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
 
-    cursor.execute(consulta)
+    try:
+        cursor.execute(consulta)
 
-    # Obtenha os resultados da consulta
-    resultados = cursor.fetchall()
 
-    df = pd.DataFrame.from_dict(resultados)
+        resultados = cursor.fetchall()
 
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
     return df

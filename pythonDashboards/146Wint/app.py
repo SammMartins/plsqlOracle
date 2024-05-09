@@ -2,7 +2,7 @@ from email.policy import default
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from dataset import df1, df2, df3
+from dataset import df1, df2, df3, df4
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 
@@ -24,9 +24,9 @@ with aba1:
         with coluna1:
             subcoluna1, subcoluna2 = st.columns(2)
             with subcoluna1:
-                dataIni = st.date_input("Escolha uma data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
+                dataIni = st.date_input("Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
             with subcoluna2:
-                dataFim = st.date_input("Escolha uma data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
+                dataFim = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
         with coluna2:
             df2_result = df2(dataIni, dataFim)
             sup_filtro = st.multiselect(
@@ -145,13 +145,14 @@ with aba1:
 
 
     with aba1_3: # add média de venda por cliente
+        col = st.columns(1)
         coluna1, coluna2, coluna3 = st.columns(3)
         with coluna1:
             subcoluna1, subcoluna2 = st.columns(2)
             with subcoluna1:
-                dataIni_cli = st.date_input("Escolha uma data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
+                dataIni_cli = st.date_input("Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
             with subcoluna2:
-                dataFim_cli = st.date_input("Escolha uma data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
+                dataFim_cli = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
         with coluna2:
             df3_result = df3(dataIni, dataFim)
             rca_filtro = st.multiselect(
@@ -181,24 +182,35 @@ with aba1:
         with coluna1:
             subcol1, subcol2 = st.columns(2)
             with subcol1:
-                dataIni_cli = st.date_input("Escolha uma data inicial", 
+                dataIni_cli = st.date_input("Data inicial", 
                                             value=pd.to_datetime('today'), 
                                             format='DD/MM/YYYY', 
                                             key='tabela_fornec1')
             with subcol2:
-                dataFim_cli = st.date_input("Escolha uma data final", 
+                dataFim_cli = st.date_input("Data final", 
                                             value=pd.to_datetime('today'), 
                                             format='DD/MM/YYYY', 
                                             key='tabela_fornec2')
         with coluna2:
-            df3_result = df3(dataIni, dataFim)
-            rca_filtro = st.multiselect(
-                "Escolha um RCA", df3_result[2].unique(), default=[],key='tabela_fornec3'
-            )
-            # df5_result = df5(dataIni, dataFim)
+            df4_result = df4(dataIni, dataFim)
             fornec_filtro = st.multiselect(
-                "Escolha um RCA", df3_result[2].unique(), default=[],key='tabela_fornec3'
+                "Escolha o Fornecedor", df4_result[1].unique(), default=[], key='tabela_fornec3'
             )
         with coluna3:
-            pass
-                    
+            subcol1, subcol2 = st.columns(2)
+            with subcol1:
+                df2_result = df2(dataIni, dataFim)
+                sup_filtro = st.multiselect(
+                    "Escolha o Supervisor", df2_result[0].unique(), key='tabela_fornec4'
+                )
+            with subcol2:
+                if st.button("Carregar Dados", key='tabela_fornec'):
+                    with col:
+                        df4_result = df4(dataIni_cli, dataFim_cli)
+                        if fornec_filtro and sup_filtro:
+                            df4_result = df4_result[df4_result[1].isin(fornec_filtro) & df4_result[0].isin(sup_filtro)]
+                        elif fornec_filtro:
+                            df4_result = df4_result[df4_result[1].isin(fornec_filtro)]
+                        elif sup_filtro:
+                            df4_result = df4_result[df4_result[0].isin(sup_filtro)]
+                        st.dataframe(df4_result)
