@@ -12,8 +12,10 @@ FROM
 JOIN 
     PCCIDADE B ON A.CODCIDADE = B.CODCIDADE
 WHERE 
-    A.CODCLI IN (SELECT DISTINCT(CODCLI) FROM PCMOV WHERE DTMOV > SYSDATE-91 AND DTMOV < SYSDATE )
+    A.dtultcomp > '31-jan-2024' and A.dtultcomp < '01-may-2024'
 AND
-    CODUSUR1 IN (SELECT CODUSUR FROM pcusuari WHERE CODSUPERVISOR in (2,8))    
+    a.CODUSUR1 IN (SELECT CODUSUR FROM pcusuari WHERE CODSUPERVISOR in (2,8))   
+and
+    a.codcli in (select codcli from pcpedi where codprod in (select codprod from pcprodut where codfornec = 588)) 
 ORDER BY 
     CODCLI    

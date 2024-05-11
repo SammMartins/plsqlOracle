@@ -21,7 +21,7 @@ def df1(dataIni, dataFim):
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Comerciais/4Dashboards/vendasRealTime_dashboard/vendasPorSupervisor.sql', 'r') as arquivo: 
+    with open('./4Dashboards/vendasRealTime_dashboard/vendasPorSupervisor.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
@@ -49,7 +49,7 @@ def df2(dataIni, dataFim):
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Comerciais/4Dashboards/vendasRealTime_dashboard/vendasPorRCA.sql', 'r') as arquivo: 
+    with open('./4Dashboards/vendasRealTime_dashboard/vendasPorRCA.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
@@ -78,7 +78,7 @@ def df3(dataIni, dataFim):
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Comerciais/4Dashboards/vendasRealTime_dashboard/vendasPorCliente.sql', 'r') as arquivo: 
+    with open('./4Dashboards/vendasRealTime_dashboard/vendasPorCliente.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
@@ -107,7 +107,7 @@ def df4(dataIni, dataFim):
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/Consultas/Comerciais/4Dashboards/vendasRealTime_dashboard/vendaPorFornecedor.sql', 'r') as arquivo: 
+    with open('./4Dashboards/vendasRealTime_dashboard/vendasPorFornecedor.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
