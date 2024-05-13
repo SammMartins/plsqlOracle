@@ -224,12 +224,12 @@ with aba1:
         df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
         # Renomear colunas
         df4_result = df4_result.rename(columns={
-            0: 'Cod',
+            0: 'Cód',
             1: 'Fornecedor',
             3: 'Supervisor',
-            4: 'Cod',
+            4: 'Cód',
             5: 'RCA',
-            7: 'Valor r$'
+            7: 'Valor R$'
         })
         html_table = df4_result.to_html() # Convertendo o DataFrame para HTML
         st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit

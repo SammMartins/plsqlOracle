@@ -5,14 +5,13 @@ SELECT
     A.CGCENT,  --REPLACE(REPLACE(REPLACE(A.CGCENT, '.', ''), '-', ''), '/', '') AS CGCENT,
     A.ENDERENT ||', ' || NUMEROENT ENDEREÇO,
     A.BAIRROENT AS BAIRRO,
-    B.NOMECIDADE CIDADE,
-    A.dtultcomp
+    B.NOMECIDADE CIDADE
 FROM 
     PCCLIENT A
 JOIN 
     PCCIDADE B ON A.CODCIDADE = B.CODCIDADE
 WHERE 
-    A.dtultcomp > '31-jan-2024' and A.dtultcomp < '01-may-2024'
+    codcli in (select codcli from pcpedi where data > '31-jan-2024' and data < '01-may-2024')
 AND
     a.CODUSUR1 IN (SELECT CODUSUR FROM pcusuari WHERE CODSUPERVISOR in (2,8))   
 and
