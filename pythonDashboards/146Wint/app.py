@@ -21,8 +21,8 @@ with aba1:
     st.markdown("Apenas pedidos digitados pelo vendedor em seu aparelho.")
     st.markdown("  ")
     st.markdown("  ")
-
-    aba1_1, aba1_2, aba1_3, aba1_4 = st.tabs(["Geral", "Gráfico", "Por Cliente", "Por Fornecedor"])
+    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs(["Geral", "Gráfico", "Por Cliente", "Por Fornecedor", "Por Seção - Inativa"])
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
     with aba1_1:
         container = st.container(border=True)
         coluna1, coluna2, coluna3 = st.columns(3)
@@ -117,7 +117,7 @@ with aba1:
                             with subcol2:
                                 for i in df2_result[3]:
                                     st.metric("DN", i)    
-
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
     with aba1_2:
         st.subheader("Legenda:")
         st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
@@ -149,8 +149,7 @@ with aba1:
                     st.metric(label = "TOP MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0], delta = "1º")
                 with subcoluna2:
                     st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0], delta = "-11º")
-
-
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
     with aba1_3: # add média de venda por cliente
         container = st.container(border=True)
         col = st.columns(1)
@@ -186,7 +185,7 @@ with aba1:
                         with coluna3:
                             for i in df3_result[3]:
                                 st.metric("VENDIDO", format_number(i, 'R$'))
-
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
     with aba1_4:
         container = st.container(border=False)
         coluna1, coluna2, coluna3 = st.columns(3)
