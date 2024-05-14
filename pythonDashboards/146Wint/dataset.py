@@ -2,14 +2,23 @@ import pandas as pd
 import cx_Oracle as cx
 from configparser import ConfigParser
 
+with open('/home/ti_premium/dbpath.txt', 'r') as file:
+    dbpath = file.read().strip().strip("'")
 config = ConfigParser()
-config.read('/home/premium/db_config.ini')
-username = config.get('oracle_db', 'username')
-password = config.get('oracle_db', 'password')
-host = config.get('oracle_db', 'host')
-port = config.get('oracle_db', 'port')
-sid = config.get('oracle_db', 'sid')
+files = config.read(dbpath)
+if not files:
+    raise ValueError(f"Não foi possível ler o arquivo: {dbpath}")
 
+path = '/home/ti_premium/PyDashboards/PremiumDashboards/4Dashboards/'
+
+try:
+    username = config.get('oracle_db', 'username')
+    password = config.get('oracle_db', 'password')
+    host = config.get('oracle_db', 'host')
+    port = config.get('oracle_db', 'port')
+    sid = config.get('oracle_db', 'sid')
+except Exception as e:
+    raise ValueError("Erro ao obter as informações de conexão do arquivo de configuração") from e
 
 
 def df1(dataIni, dataFim):
@@ -17,11 +26,20 @@ def df1(dataIni, dataFim):
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
     dsn_tns = cx.makedsn(host, port, sid)
-    con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/pythonDashboards/146Wint/4Dashboards/vendasPorSupervisor.sql', 'r') as arquivo: 
+    with open(path + 'vendasPorSupervisor.sql', 'r') as arquivo:
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
@@ -45,11 +63,20 @@ def df2(dataIni, dataFim):
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
     dsn_tns = cx.makedsn(host, port, sid)
-    con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/pythonDashboards/146Wint/4Dashboards/vendasPorRCA.sql', 'r') as arquivo: 
+    with open(path + 'vendasPorRCA.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
@@ -74,11 +101,20 @@ def df3(dataIni, dataFim):
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
     dsn_tns = cx.makedsn(host, port, sid)
-    con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/pythonDashboards/146Wint/4Dashboards/vendasPorCliente.sql', 'r') as arquivo: 
+    with open(path + 'vendasPorCliente.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')
@@ -103,11 +139,20 @@ def df4(dataIni, dataFim):
         raise ValueError("Uma ou mais variáveis necessárias não estão definidas")
 
     dsn_tns = cx.makedsn(host, port, sid)
-    con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
 
     cursor = con.cursor()
 
-    with open('/mnt/g/Documentos/Sammuel/Arquivos/Consultas/principais/PLSQL/pythonDashboards/146Wint/4Dashboards/vendasPorFornecedor.sql', 'r') as arquivo: 
+    with open(path + 'vendasPorFornecedor.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     dataIni = dataIni.strftime('%d-%b-%Y')

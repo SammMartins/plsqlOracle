@@ -126,29 +126,29 @@ with aba1:
             start_of_week = data_semana_ini()
             end_of_week = data_semana_fim()
             df2_result = df2(start_of_week, end_of_week)
+            df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
+            df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
             st.plotly_chart(grafico_vend_sup, use_container_width=True)
             metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
             with metric_col2: 
-                st.metric(label = "TOP MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0], delta = "1º")
+                st.metric(label = "TOP MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
             with metric_col3:
-                st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0], delta = "-24º")
+                st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0][6:], delta = "-24º")
             coluna1, coluna2 = st.columns(2)
-            df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
-            df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
             with coluna1:
                 st.plotly_chart(grafico_top_rca8, use_container_width=True)
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    st.metric(label = "TOP MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0], delta = "1º")
+                    st.metric(label = "TOP MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
                 with subcoluna2:
-                    st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0], delta = "-13º")
+                    st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
             with coluna2:
                 st.plotly_chart(grafico_top_rca2, use_container_width=True)
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    st.metric(label = "TOP MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0], delta = "1º")
+                    st.metric(label = "TOP MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
                 with subcoluna2:
-                    st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0], delta = "-11º")
+                    st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-11º")
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
     with aba1_3: # add média de venda por cliente
         container = st.container(border=True)
