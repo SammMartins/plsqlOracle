@@ -2,26 +2,30 @@ from email.policy import default
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from dataset import df1, df2, df3, df4
+from dataset import df1, df2, df3, df4, diasUteis
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 
 # Configuração do dashboard
-st.set_page_config(page_title="Premium Dashboards", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
-st.title("PREMIUM DASHBOARDS :bar_chart:")
-st.markdown("Este é um o projeto inicial de Dashboards em Python para a Premium Distribuidora")
-st.markdown("Selecione a aba desejada para visualizar os dados.")
+st.set_page_config(page_title="Premium Dash", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
+st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/premium_transp.png')
+st.title("PREMIUM INTELLIGENCE DASHBOARDS")
+st.subheader("Ferramenta de Business Intelligence em construção :construction:")
 st.markdown("  ")
+st.markdown("  ")
+st.markdown(":arrow_double_down: Selecione uma a aba abaixo para visualizar os dados")
 st.markdown("  ")
 
-aba1, aba2, aba3 = st.tabs(["Vendas Tempo Real", "Dashboard INATIVO", "Dashboard INATIVO"])
+aba1, aba2, aba3 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":lock: INATIVO"])
 
 with aba1:
-    st.subheader("PAINEL BASEADO NA 146 WINTHOR :dollar:")
-    st.markdown("Apenas pedidos digitados pelo vendedor em seu aparelho.")
+    st.header("PAINEL DE VENDAS")
+    st.subheader("Legenda:")
+    st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
+    st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
     st.markdown("  ")
     st.markdown("  ")
-    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs(["Geral", "Gráfico", "Por Cliente", "Por Fornecedor", "Por Seção - Inativa"])
+    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":busts_in_silhouette: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
     with aba1_1:
         container = st.container(border=True)
@@ -119,7 +123,7 @@ with aba1:
                                     st.metric("DN", i)    
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
     with aba1_2:
-        st.subheader("Legenda:")
+        st.markdown("Legenda:")
         st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
         st.markdown("  2. A linha branca tracejada representa o valor da média de vendas na semana atual.")
         if st.button("Carregar Dados", key='grafico_vend_sup'):
@@ -232,3 +236,22 @@ with aba1:
         })
         html_table = df4_result.to_html() # Convertendo o DataFrame para HTML
         st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
+with aba2:
+    st.header("RELATÓRIO FLASH")
+    st.subheader("Legenda:")
+    st.markdown(":construction: :red[Painel em construção]")
+    faturadoOnly = st.toggle("Apenas pedidos faturados", help="Selecione para exibir apenas os pedidos faturados")
+    st.markdown("  ")
+    if st.button("Carregar", key='flash'):
+        aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: Gerencial", ":male-office-worker: Supervisor - Inativo", ":man: Vendedor - Inativo"])
+        dias_uteis_result = str(diasUteis()).split()[-1]
+        # -------------------------------- # -------------------------------- # 
+        with aba2_1:
+            st.header(dias_uteis_result + " DIAS ÚTEIS")
+            # -------------------------------- # 
+            if faturadoOnly:
+                pass
+            # -------------------------------- # 
+            else:
+                pass
