@@ -1,19 +1,22 @@
 from email.policy import default
 import pandas as pd
 import streamlit as st
+import time as tm
+import math
 import plotly.express as px
-from dataset import df1, df2, df3, df4, diasUteis
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 
 # Configuração do dashboard
-st.set_page_config(page_title="Premium Dash", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
-st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/premium_transp.png')
-st.title("PREMIUM INTELLIGENCE DASHBOARDS")
-st.subheader("Ferramenta de Business Intelligence em construção :construction:")
+
+st.set_page_config(page_title="PREMIUM Dashboard", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
+st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/premium_transp.png', width=250)
+st.title(":blue[PAINEL] :blue[INTELIGENTE] :red[PREMIUM]")
+st.caption(":red[Ferramenta de Business Intelligence em construção] :construction:")
 st.markdown("  ")
 st.markdown("  ")
-st.markdown(":arrow_double_down: Selecione uma a aba abaixo para visualizar os dados")
+# st.markdown(":arrow_double_down: Selecione uma a aba abaixo para visualizar os dados")
 st.markdown("  ")
 
 aba1, aba2, aba3 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":lock: INATIVO"])
@@ -22,10 +25,10 @@ with aba1:
     st.header("PAINEL DE VENDAS")
     st.subheader("Legenda:")
     st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
-    st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
+    st.markdown(":iphone:   Apenas pedidos digitados pelo vendedor são exibidos")
     st.markdown("  ")
     st.markdown("  ")
-    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":busts_in_silhouette: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
+    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
     with aba1_1:
         container = st.container(border=True)
@@ -48,8 +51,10 @@ with aba1:
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 if st.button("Carregar Dados", key='tabela_vend'):
-                    df1_result = df1(dataIni, dataFim)
-                    df2_result = df2(dataIni, dataFim)
+                    with st.spinner('Caregando dados...'):
+                        tm.sleep(3)
+                        df1_result = df1(dataIni, dataFim)
+                        df2_result = df2(dataIni, dataFim)
 
                     # ----------------- Tabela de Vendas por Supervisor -----------------
                     if sup_filtro:
@@ -127,11 +132,13 @@ with aba1:
         st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
         st.markdown("  2. A linha branca tracejada representa o valor da média de vendas na semana atual.")
         if st.button("Carregar Dados", key='grafico_vend_sup'):
-            start_of_week = data_semana_ini()
-            end_of_week = data_semana_fim()
-            df2_result = df2(start_of_week, end_of_week)
-            df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
-            df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
+            with st.spinner('Caregando dados...'):
+                tm.sleep(3)
+                start_of_week = data_semana_ini()
+                end_of_week = data_semana_fim()
+                df2_result = df2(start_of_week, end_of_week)
+                df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
+                df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
             st.plotly_chart(grafico_vend_sup, use_container_width=True)
             metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
             with metric_col2: 
@@ -177,7 +184,9 @@ with aba1:
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 if st.button("Carregar Dados", key='tabela_cli'):
-                    df3_result = df3(dataIni_cli, dataFim_cli)
+                    with st.spinner('Caregando dados...'):
+                        tm.sleep(3)
+                        df3_result = df3(dataIni_cli, dataFim_cli)
                     if rca_filtro:
                         df3_result = df3_result[df3_result[2].isin(rca_filtro)]
                         with coluna1:
@@ -221,8 +230,10 @@ with aba1:
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 if st.button("Carregar", key='tabela_fornec'):
-                    if fornec_filtro:
-                        df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
+                    with st.spinner('Caregando dados...'):
+                        tm.sleep(3)
+                        if fornec_filtro:
+                            df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
         df4_result = df4_result.iloc[:, [0, 1, 3, 4, 5, 7]]
         df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
         # Renomear colunas
@@ -240,15 +251,53 @@ with aba1:
 with aba2:
     st.header("RELATÓRIO FLASH")
     st.subheader("Legenda:")
-    st.markdown(":construction: :red[Painel em construção]")
+    st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas ")
+    st.markdown(":money_mouth_face: Tenha controle sobre sua :green[remuneração]")
+    st.markdown(":building_construction: :red[Painel em construção]")
     faturadoOnly = st.toggle("Apenas pedidos faturados", help="Selecione para exibir apenas os pedidos faturados")
     st.markdown("  ")
     if st.button("Carregar", key='flash'):
-        aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: Gerencial", ":male-office-worker: Supervisor - Inativo", ":man: Vendedor - Inativo"])
-        dias_uteis_result = str(diasUteis()).split()[-1]
+        with st.spinner('Caregando dados...'):
+            tm.sleep(3)
+            aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: Gerencial", ":male-office-worker: Supervisor - Inativo", ":man: Vendedor - Inativo"])
+            dias_uteis_result = str(diasUteis()).split()[-1]
+            dias_decor_result = str(diasDecorridos()).split()[-1]
         # -------------------------------- # -------------------------------- # 
         with aba2_1:
-            st.header(dias_uteis_result + " DIAS ÚTEIS")
+            col1, col2, col3 = st.columns(3)
+            du = diasUteis().values[0][0]
+            dd = diasDecorridos().values[0][0]
+            velocidade = dd / du
+            velStr = str(math.floor(velocidade * 100))
+            with col1:
+                st.header(dias_uteis_result + " DIAS ÚTEIS")
+            with col2:
+                st.subheader(velStr + "% - VELOCIDADE")
+                if (velocidade == 0):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/0porcent.png', width=180)
+                elif (velocidade > 0 and velocidade <= 0.10):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/10porcent.png', width=180)
+                elif (velocidade > 0.10 and velocidade <= 0.20):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/20porcent.png', width=180)
+                elif (velocidade > 0.20 and velocidade <= 0.30):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/30porcent.png', width=180)
+                elif (velocidade > 0.30 and velocidade <= 0.40):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/40porcent.png', width=180)
+                elif (velocidade > 0.40 and velocidade <= 0.50):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/50porcent.png', width=180)
+                elif (velocidade > 0.50 and velocidade <= 0.60):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/60porcent.png', width=180)
+                elif (velocidade > 0.60 and velocidade <= 0.70):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/70porcent.png', width=180)
+                elif (velocidade > 0.70 and velocidade <= 0.80):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/80porcent.png', width=180)
+                elif (velocidade > 0.80 and velocidade <= 0.90):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/90porcent.png', width=180)
+                elif (velocidade > 0.90 and velocidade <= 1):
+                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/100porcent.png', width=180)
+
+            with col3:
+                st.header(dias_decor_result + " DIAS DECORRIDOS")
             # -------------------------------- # 
             if faturadoOnly:
                 pass
