@@ -1,3 +1,4 @@
+from ast import With
 from email.policy import default
 import pandas as pd
 import streamlit as st
@@ -9,21 +10,26 @@ from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 
 # Configuração do dashboard
-
-st.set_page_config(page_title="PREMIUM Dashboard", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
-st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/premium_transp.png', width=250)
-st.title(":blue[PAINEL] :blue[INTELIGENTE] :red[PREMIUM]")
-st.caption(":red[Ferramenta de Business Intelligence em construção] :construction:")
+st.set_page_config(page_title="Performax B.I.", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
+placeholder = st.empty()
+columP1, columP2, columP3, columP4 = st.columns(4)
+with columP2:
+    st.title(":green[$ PERFORMAX]", help="Plataforma de Excelência para Resultados e Fornecimento de Melhorias e Análises")
+    #st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/performax_.png', width=180)
+with columP3:
+    st.markdown("  ")
+    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/premium_transp.png', width=180)
+#st.header("  ", divider="gray")
 st.markdown("  ")
 st.markdown("  ")
-# st.markdown(":arrow_double_down: Selecione uma a aba abaixo para visualizar os dados")
 st.markdown("  ")
+st.markdown(":arrow_double_down: Selecione uma a aba abaixo :arrow_double_down:")
 
 aba1, aba2, aba3 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":lock: INATIVO"])
 
 with aba1:
     st.header("PAINEL DE VENDAS")
-    st.subheader("Legenda:")
+    st.markdown("Legenda:")
     st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
     st.markdown(":iphone:   Apenas pedidos digitados pelo vendedor são exibidos")
     st.markdown("  ")
@@ -250,57 +256,119 @@ with aba1:
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
     st.header("RELATÓRIO FLASH")
-    st.subheader("Legenda:")
+    #st.subheader("Legenda:")
     st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas ")
-    st.markdown(":money_mouth_face: Tenha controle sobre sua :green[remuneração]")
+    st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
     st.markdown(":building_construction: :red[Painel em construção]")
-    faturadoOnly = st.toggle("Apenas pedidos faturados", help="Selecione para exibir apenas os pedidos faturados")
+    notFatOn = st.toggle("Incluir Pedidos não Faturados", help="Selecione para exibir pedidos digitados que não foram faturados")
     st.markdown("  ")
-    if st.button("Carregar", key='flash'):
-        with st.spinner('Caregando dados...'):
-            tm.sleep(3)
-            aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: Gerencial", ":male-office-worker: Supervisor - Inativo", ":man: Vendedor - Inativo"])
-            dias_uteis_result = str(diasUteis()).split()[-1]
-            dias_decor_result = str(diasDecorridos()).split()[-1]
-        # -------------------------------- # -------------------------------- # 
-        with aba2_1:
-            col1, col2, col3 = st.columns(3)
-            du = diasUteis().values[0][0]
-            dd = diasDecorridos().values[0][0]
-            velocidade = dd / du
-            velStr = str(math.floor(velocidade * 100))
-            with col1:
-                st.header(dias_uteis_result + " DIAS ÚTEIS")
-            with col2:
-                st.subheader(velStr + "% - VELOCIDADE")
-                if (velocidade == 0):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/0porcent.png', width=180)
-                elif (velocidade > 0 and velocidade <= 0.10):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/10porcent.png', width=180)
-                elif (velocidade > 0.10 and velocidade <= 0.20):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/20porcent.png', width=180)
-                elif (velocidade > 0.20 and velocidade <= 0.30):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/30porcent.png', width=180)
-                elif (velocidade > 0.30 and velocidade <= 0.40):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/40porcent.png', width=180)
-                elif (velocidade > 0.40 and velocidade <= 0.50):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/50porcent.png', width=180)
-                elif (velocidade > 0.50 and velocidade <= 0.60):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/60porcent.png', width=180)
-                elif (velocidade > 0.60 and velocidade <= 0.70):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/70porcent.png', width=180)
-                elif (velocidade > 0.70 and velocidade <= 0.80):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/80porcent.png', width=180)
-                elif (velocidade > 0.80 and velocidade <= 0.90):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/90porcent.png', width=180)
-                elif (velocidade > 0.90 and velocidade <= 1):
-                    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/100porcent.png', width=180)
 
-            with col3:
-                st.header(dias_decor_result + " DIAS DECORRIDOS")
-            # -------------------------------- # 
-            if faturadoOnly:
-                pass
-            # -------------------------------- # 
-            else:
-                pass
+    with st.spinner('Caregando dados...'):
+        tm.sleep(2)
+        aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: Gerencial - Inativo", ":male-office-worker: Supervisor - Inativo", ":man: Vendedor"])
+        dias_uteis_result = str(diasUteis()).split()[-1]
+        dias_decor_result = str(diasDecorridos()).split()[-1]
+    # -------------------------------- # -------------------------------- # 
+    with aba2_3: # Vendedor
+        col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+        du = diasUteis().values[0][0]
+        dd = diasDecorridos().values[0][0]
+        velocidade = dd / du
+        velStr = str(math.floor(velocidade * 100))
+        with col2:
+            st.markdown("   ")
+            st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
+            st.markdown(dias_decor_result + " DIAS DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+            st.markdown(velStr + "% - VELOCIDADE", unsafe_allow_html=False, help="Velocidade de vendas realizadas no mês.")
+        with col1:
+            if (velocidade == 0):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/0porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0 and velocidade <= 0.10):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/10porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.10 and velocidade <= 0.20):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/20porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.20 and velocidade <= 0.30):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/30porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.30 and velocidade <= 0.40):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/40porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.40 and velocidade <= 0.50):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/50porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.50 and velocidade <= 0.60):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/60porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.60 and velocidade <= 0.70):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/70porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.70 and velocidade <= 0.80):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/80porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.80 and velocidade <= 0.90):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/90porcent.png', width=200, caption='VELOCIDADE')
+            elif (velocidade > 0.90 and velocidade <= 1):
+                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/100porcent.png', width=200, caption='VELOCIDADE')
+
+        with col3:
+            vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key=None, help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+            if vendedorName == "LEONARDO":
+                vendedorCod = st.selectbox("CÓDIGO", (140,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "EDNALDO":
+                vendedorCod = st.selectbox("CÓDIGO", (141,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "VAGNER":
+                vendedorCod = st.selectbox("CÓDIGO", (142,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "DEIVID":
+                vendedorCod = st.selectbox("CÓDIGO", (143,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "BISMARCK":
+                vendedorCod = st.selectbox("CÓDIGO", (145,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "LUCIANA":
+                vendedorCod = st.selectbox("CÓDIGO", (147,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "MATHEUS":
+                vendedorCod = st.selectbox("CÓDIGO", (148,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "MARCIO":
+                vendedorCod = st.selectbox("CÓDIGO", (150,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "LEANDRO":
+                vendedorCod = st.selectbox("CÓDIGO", (151,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "REGINALDO":
+                vendedorCod = st.selectbox("CÓDIGO", (152,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "ROBSON":
+                vendedorCod = st.selectbox("CÓDIGO", (153,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "JOAO":
+                vendedorCod = st.selectbox("CÓDIGO", (154,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "TAYANE":
+                vendedorCod = st.selectbox("CÓDIGO", (155,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "MURILO":
+                vendedorCod = st.selectbox("CÓDIGO", (156,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "LUCAS":
+                vendedorCod = st.selectbox("CÓDIGO", (157,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "DEYVISON":
+                vendedorCod = st.selectbox("CÓDIGO", (158,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "ZEFERINO":
+                vendedorCod = st.selectbox("CÓDIGO", (161,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "EPAMINONDAS":
+                vendedorCod = st.selectbox("CÓDIGO", (164,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "GLAUBER":
+                vendedorCod = st.selectbox("CÓDIGO", (167,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "TARCISIO":
+                vendedorCod = st.selectbox("CÓDIGO", (168,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "THIAGO":
+                vendedorCod = st.selectbox("CÓDIGO", (169,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "FILIPE":
+                vendedorCod = st.selectbox("CÓDIGO", (170,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "ROMILSON":
+                vendedorCod = st.selectbox("CÓDIGO", (172,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            elif vendedorName == "VALDEME":
+                vendedorCod = st.selectbox("CÓDIGO", (174,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+        with col4:
+            with st.container(height=220, border=False):
+                with st.expander("O que é o Flash?"): 
+                    st.write('''
+                    O FLASH é um relatório primordial para o acompanhamento de vendas e remuneração.
+                    Ele foi criado com objetivo de facilitar o acompanhamento do Vendedor. 
+                    Em seu modelo antigo, era necessário atualizar uma planilha Excel de forma manual
+                    por alguém apto. 
+                    ''')
+                    st.image("/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/oldFlash.png")
+        # -------------------------------- # Não Faturado Incluso
+        if notFatOn:
+            with st.container(border=True):
+                st.write("This is inside the container " * 10)
+        # -------------------------------- # Faturado
+        else:
+            with st.container(border=True):
+                st.write("This is inside the container " * 1000)
