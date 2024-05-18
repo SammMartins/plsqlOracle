@@ -1,20 +1,20 @@
-from ast import With
 from email.policy import default
 import pandas as pd
 import streamlit as st
 import time as tm
 import math
-import plotly.express as px
 from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 
-# Configuração do dashboard
+
+# ----------------------- Configuração do dashboard
 st.set_page_config(page_title="Performax B.I.", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
-placeholder = st.empty()
-columP1, columP2, columP3, columP4 = st.columns(4)
+
+# ----------------------- Dashboard Layout
+columP1, columP2, columP3, columP4 = st.columns([1, 1.8, 1, 1])
 with columP2:
-    st.title(":green[$ PERFORMAX]", help="Plataforma de Excelência para Resultados e Fornecimento de Melhorias e Análises")
+    st.title(":green[PERFORMAX]", help="Plataforma de Excelência para Resultados e Fornecimento de Melhorias e Análises")
     #st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/performax_.png', width=180)
 with columP3:
     st.markdown("  ")
@@ -23,11 +23,15 @@ with columP3:
 st.markdown("  ")
 st.markdown("  ")
 st.markdown("  ")
-st.markdown(":arrow_double_down: Selecione uma a aba abaixo :arrow_double_down:")
+st.markdown(" Selecione uma a aba abaixo :arrow_double_down:")
 
 aba1, aba2, aba3 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":lock: INATIVO"])
 
 with aba1:
+    st.markdown("  ")
+    st.markdown("  ")
+    st.markdown("  ")
+    st.markdown("  ")
     st.header("PAINEL DE VENDAS")
     st.markdown("Legenda:")
     st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
@@ -48,11 +52,14 @@ with aba1:
                     dataFim = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
             with coluna2:
                 df2_result = df2(dataIni, dataFim)
-                sup_filtro = st.multiselect(
-                    "Escolha o Supervisor", 
-                    df2_result[0].unique(), 
-                    key='tabela_vend3'
-                )
+                if df2_result.empty:
+                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+                else:
+                    sup_filtro = st.multiselect(
+                        "Escolha o Supervisor", 
+                        df2_result[0].unique(), 
+                        key='tabela_vend3'
+                    )
             with coluna3:
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 st.write(" ") # Espaço em branco para centralizar os widgets
@@ -148,7 +155,7 @@ with aba1:
             st.plotly_chart(grafico_vend_sup, use_container_width=True)
             metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
             with metric_col2: 
-                st.metric(label = "TOP MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
+                st.metric(label = "MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
             with metric_col3:
                 st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0][6:], delta = "-24º")
             coluna1, coluna2 = st.columns(2)
@@ -156,14 +163,14 @@ with aba1:
                 st.plotly_chart(grafico_top_rca8, use_container_width=True)
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    st.metric(label = "TOP MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
+                    st.metric(label = "MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
                 with subcoluna2:
                     st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
             with coluna2:
                 st.plotly_chart(grafico_top_rca2, use_container_width=True)
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    st.metric(label = "TOP MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
+                    st.metric(label = "MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
                 with subcoluna2:
                     st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-11º")
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
@@ -223,13 +230,16 @@ with aba1:
         df4_result = df4(dataIni_fornec, dataFim_fornec)
         with coluna2:
             df4_resultF = df4(dataIni_fornec, dataFim_fornec)
-            fornec_filtro = st.selectbox(
-                "Filtro Fornecedor", 
-                df4_resultF[1].unique(), 
-                index=None, 
-                key='tabela_fornec3',
-                placeholder="Selecione o Fornecedor...",
-            )
+            if df4_resultF.empty:
+                st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+            else: 
+                fornec_filtro = st.selectbox(
+                    "Filtro Fornecedor", 
+                    df4_resultF[1].unique(), 
+                    index=None, 
+                    key='tabela_fornec3',
+                    placeholder="Selecione o Fornecedor...",
+                )
         with coluna3:
             subcol1, subcol2 = st.columns(2)
             with subcol1:
@@ -240,19 +250,22 @@ with aba1:
                         tm.sleep(3)
                         if fornec_filtro:
                             df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
-        df4_result = df4_result.iloc[:, [0, 1, 3, 4, 5, 7]]
-        df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
-        # Renomear colunas
-        df4_result = df4_result.rename(columns={
-            0: 'Cód',
-            1: 'Fornecedor',
-            3: 'Supervisor',
-            4: 'Cód',
-            5: 'RCA',
-            7: 'Valor R$'
-        })
-        html_table = df4_result.to_html() # Convertendo o DataFrame para HTML
-        st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+        if df4_resultF.empty:
+            st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+        else: 
+            df4_result = df4_result.iloc[:, [0, 1, 3, 4, 5, 7]]
+            df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
+            # Renomear colunas
+            df4_result = df4_result.rename(columns={
+                0: 'Cód',
+                1: 'Fornecedor',
+                3: 'Supervisor',
+                4: 'Cód',
+                5: 'RCA',
+                7: 'Valor R$'
+            })
+            html_table = df4_result.to_html() # Convertendo o DataFrame para HTML
+            st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
     st.header("RELATÓRIO FLASH")
@@ -270,7 +283,7 @@ with aba2:
         dias_decor_result = str(diasDecorridos()).split()[-1]
     # -------------------------------- # -------------------------------- # 
     with aba2_3: # Vendedor
-        col1, col2, col3, col4 = st.columns([1, 1, 1, 2])
+        col1, col2, col3, col4 = st.columns([1.1, 1, 1, 1.60])
         du = diasUteis().values[0][0]
         dd = diasDecorridos().values[0][0]
         velocidade = dd / du
@@ -278,7 +291,7 @@ with aba2:
         with col2:
             st.markdown("   ")
             st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
-            st.markdown(dias_decor_result + " DIAS DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+            st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
             st.markdown(velStr + "% - VELOCIDADE", unsafe_allow_html=False, help="Velocidade de vendas realizadas no mês.")
         with col1:
             if (velocidade == 0):
@@ -364,11 +377,21 @@ with aba2:
                     por alguém apto. 
                     ''')
                     st.image("/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/oldFlash.png")
-        # -------------------------------- # Não Faturado Incluso
-        if notFatOn:
-            with st.container(border=True):
-                st.write("This is inside the container " * 10)
         # -------------------------------- # Faturado
+        if notFatOn == False:
+            col1, col2 = st.columns([1, 0.15])
+            with col1:
+                if st.button("CARREGAR"):
+                    with st.container(border=True):
+                        st.write("Faturado apenas" * 10)
+            with col2:
+                st.markdown("Faturados", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
+        # -------------------------------- # Não Faturado incluso
         else:
-            with st.container(border=True):
-                st.write("This is inside the container " * 1000)
+            col1, col2 = st.columns([1, 0.15])
+            with col1:
+                if st.button("CARREGAR"):
+                    with st.container(border=True):
+                        st.write("Não faturado incluso " * 100)
+            with col2:
+                st.markdown("Todos", help="Todos os pedidos digitados. Essa opção trás um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
