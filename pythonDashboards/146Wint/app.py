@@ -403,8 +403,8 @@ with aba2:
                                 1: "SEÇÃO",
                                 2: "OBJETIVO",
                                 3: "REALIZADO",
-                                4: "% ATINGIDO",
-                                5: "% TENDÊNCIA",
+                                4: "ATINGIDO",
+                                5: "TENDÊNCIA",
                                 6: "R.A.F.",
                                 7: "NECESS. DIA",
                                 8: "MÉDIA DIA",
@@ -412,44 +412,25 @@ with aba2:
                             })
                             formatarMoeda = ["OBJETIVO", "REALIZADO", "R.A.F.", "NECESS. DIA", "MÉDIA DIA"]
                             for coluna in formatarMoeda:
-                                flash_result[coluna] = flash_result[coluna].apply(lambda x: 'R${:,.2f}'.format(x))
-                            formatarPorcent = ["% ATINGIDO", "% TENDÊNCIA"]
+                                flash_result[coluna] = flash_result[coluna].apply(lambda x: 'R${:,.0f}'.format(x))
+                            formatarPorcent = ["ATINGIDO", "TENDÊNCIA"]
                             for coluna in formatarPorcent:
                                 flash_result[coluna] = flash_result[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
 
-                            # ----------------- Exibição da tabela -----------------
-                            # DataFrame para HTML e adicione estilos CSS personalizados
+                            # ------ DataFrame para HTML 
                             table_html = flash_result.to_html(classes='table-style', index=False)
-
-                            # Defina seus estilos CSS personalizados
-                            css = """
+                            table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>') # Difinindo a classe positivo para aplicar estilos
+                            table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>') # Difinindo a classe negativo para aplicar estilos
+                            # ------ Estilos CSS personalizados
+                            with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/flash.css', "r") as file:
+                                flash_css = file.read()
+                            css = f"""
                             <style>
-                                .table-style {
-                                    font-family: "Arial", Arial, sans-serif;
-                                    font-size: 15px;
-                                    border-collapse: collapse;
-                                    width: 100%;
-                                    text-align: center;
-                                }
-                                .table-style td, .table-style th {
-                                    border: 1px solid #073c55;
-                                    padding: 8px;
-                                }
-                                .table-style tr:nth-child(even) {
-                                    background-color: #0f101a;
-                                }
-                                .table-style th {
-                                    font-family: "Arial Black", Arial, sans-serif;
-                                    font-size: 15px;
-                                    padding-top: 12px;
-                                    padding-bottom: 12px;
-                                    text-align: left;
-                                    background-color: #0f101a;
-                                    color: rgb(237, 239, 255);
-                                }
+                                {flash_css}
+                            </style>
                             """
 
-                            # Exiba a tabela HTML personalizada no Streamlit
+                            # ----------------- Exibição da tabela -----------------
                             st.markdown(css, unsafe_allow_html=True)
                             st.markdown(table_html, unsafe_allow_html=True)                            
                         

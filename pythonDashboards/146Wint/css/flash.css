@@ -10,14 +10,24 @@
     padding: 8px;
 }
 .table-style tr:nth-child(even) {
-    background-color: #0f101a;
+    background-color: #070717;
 }
 .table-style th {
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 15px;
     padding-top: 12px;
     padding-bottom: 12px;
-    text-align: left;
-    background-color: #0f101a;
+    text-align: center;
+    background-color: #070717;
     color: rgb(237, 239, 255);
+}
+.positivo {
+    color: #00FF00;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 15px;    
+}
+.negativo {
+    color: #FF0000;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 15px;    
 }
