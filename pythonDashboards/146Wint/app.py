@@ -1,11 +1,11 @@
-from email.policy import default
 import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
+path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
 
 # ----------------------- Configuração do dashboard
@@ -18,7 +18,7 @@ with columP2:
     #st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/performax_.png', width=180)
 with columP3:
     st.markdown("  ")
-    st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/premium_transp.png', width=180)
+    st.image(path + 'Imagens/premium_transp.png', width=180)
 #st.header("  ", divider="gray")
 st.markdown("  ")
 st.markdown("  ")
@@ -264,7 +264,7 @@ with aba1:
                 5: 'RCA',
                 7: 'Valor R$'
             })
-            html_table = df4_result.to_html() # Convertendo o DataFrame para HTML
+            html_table = df4_result.to_html(index=False) # Convertendo o DataFrame para HTML
             st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
@@ -295,78 +295,80 @@ with aba2:
             st.markdown(velStr + "% - VELOCIDADE", unsafe_allow_html=False, help="Velocidade de vendas realizadas no mês.")
         with col1:
             if (velocidade == 0):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/0porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/0porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0 and velocidade <= 0.10):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/10porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/10porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.10 and velocidade <= 0.20):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/20porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/20porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.20 and velocidade <= 0.30):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/30porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/30porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.30 and velocidade <= 0.40):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/40porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/40porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.40 and velocidade <= 0.50):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/50porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/50porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.50 and velocidade <= 0.60):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/60porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/60porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.60 and velocidade <= 0.70):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/70porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/70porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.70 and velocidade <= 0.80):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/80porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/80porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.80 and velocidade <= 0.90):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/90porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/90porcent.png', width=200, caption='VELOCIDADE')
             elif (velocidade > 0.90 and velocidade <= 1):
-                st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/100porcent.png', width=200, caption='VELOCIDADE')
+                st.image(path + 'Imagens/100porcent.png', width=200, caption='VELOCIDADE')
 
         with col3:
             vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key=None, help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
             if vendedorName == "LEONARDO":
-                vendedorCod = st.selectbox("CÓDIGO", (140,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (140,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "EDNALDO":
-                vendedorCod = st.selectbox("CÓDIGO", (141,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (141,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "VAGNER":
-                vendedorCod = st.selectbox("CÓDIGO", (142,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (142,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "DEIVID":
-                vendedorCod = st.selectbox("CÓDIGO", (143,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (143,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "BISMARCK":
-                vendedorCod = st.selectbox("CÓDIGO", (145,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (145,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "LUCIANA":
-                vendedorCod = st.selectbox("CÓDIGO", (147,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (147,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "MATHEUS":
-                vendedorCod = st.selectbox("CÓDIGO", (148,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (148,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "MARCIO":
-                vendedorCod = st.selectbox("CÓDIGO", (150,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (150,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "LEANDRO":
-                vendedorCod = st.selectbox("CÓDIGO", (151,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (151,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "REGINALDO":
-                vendedorCod = st.selectbox("CÓDIGO", (152,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (152,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "ROBSON":
-                vendedorCod = st.selectbox("CÓDIGO", (153,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (153,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "JOAO":
-                vendedorCod = st.selectbox("CÓDIGO", (154,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (154,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "TAYANE":
-                vendedorCod = st.selectbox("CÓDIGO", (155,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (155,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "MURILO":
-                vendedorCod = st.selectbox("CÓDIGO", (156,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (156,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "LUCAS":
-                vendedorCod = st.selectbox("CÓDIGO", (157,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (157,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "DEYVISON":
-                vendedorCod = st.selectbox("CÓDIGO", (158,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (158,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "ZEFERINO":
-                vendedorCod = st.selectbox("CÓDIGO", (161,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (161,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "EPAMINONDAS":
-                vendedorCod = st.selectbox("CÓDIGO", (164,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (164,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "GLAUBER":
-                vendedorCod = st.selectbox("CÓDIGO", (167,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (167,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "TARCISIO":
-                vendedorCod = st.selectbox("CÓDIGO", (168,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (168,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "THIAGO":
-                vendedorCod = st.selectbox("CÓDIGO", (169,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (169,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "FILIPE":
-                vendedorCod = st.selectbox("CÓDIGO", (170,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (170,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "ROMILSON":
-                vendedorCod = st.selectbox("CÓDIGO", (172,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (172,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "VALDEME":
-                vendedorCod = st.selectbox("CÓDIGO", (174,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO ERP", (174,), index=0, key=None, help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+            else:
+                vendedorCod = st.selectbox("ERRO", (0,), index=0, key=None, help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
         with col4:
             with st.container(height=220, border=False):
                 with st.expander("O que é o Flash?"): 
@@ -379,19 +381,77 @@ with aba2:
                     st.image("/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/oldFlash.png")
         # -------------------------------- # Faturado
         if notFatOn == False:
-            col1, col2 = st.columns([1, 0.15])
+            col1, col2 = st.columns([1, 0.1])
             with col1:
                 if st.button("CARREGAR"):
-                    with st.container(border=True):
+                    with st.container(border=False):
                         st.write("Faturado apenas" * 10)
             with col2:
-                st.markdown("Faturados", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
+                st.caption("Fatur.", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
         # -------------------------------- # Não Faturado incluso
         else:
-            col1, col2 = st.columns([1, 0.15])
+            col1, col2 = st.columns([1, 0.1])
             with col1:
                 if st.button("CARREGAR"):
-                    with st.container(border=True):
-                        st.write("Não faturado incluso " * 100)
+                    flash_result = flash322RCA(vendedorCod)
+                    if flash_result.empty:
+                        st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+                    else:
+                        with st.container(border=False):
+                            # ----------------- Formatação da tabela -----------------
+                            flash_result = flash_result.iloc[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]].rename(columns={
+                                1: "SEÇÃO",
+                                2: "OBJETIVO",
+                                3: "REALIZADO",
+                                4: "% ATINGIDO",
+                                5: "% TENDÊNCIA",
+                                6: "R.A.F.",
+                                7: "NECESS. DIA",
+                                8: "MÉDIA DIA",
+                                9: "STATUS"
+                            })
+                            formatarMoeda = ["OBJETIVO", "REALIZADO", "R.A.F.", "NECESS. DIA", "MÉDIA DIA"]
+                            for coluna in formatarMoeda:
+                                flash_result[coluna] = flash_result[coluna].apply(lambda x: 'R${:,.2f}'.format(x))
+                            formatarPorcent = ["% ATINGIDO", "% TENDÊNCIA"]
+                            for coluna in formatarPorcent:
+                                flash_result[coluna] = flash_result[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+
+                            # ----------------- Exibição da tabela -----------------
+                            # DataFrame para HTML e adicione estilos CSS personalizados
+                            table_html = flash_result.to_html(classes='table-style', index=False)
+
+                            # Defina seus estilos CSS personalizados
+                            css = """
+                            <style>
+                                .table-style {
+                                    font-family: "Arial", Arial, sans-serif;
+                                    font-size: 15px;
+                                    border-collapse: collapse;
+                                    width: 100%;
+                                    text-align: center;
+                                }
+                                .table-style td, .table-style th {
+                                    border: 1px solid #073c55;
+                                    padding: 8px;
+                                }
+                                .table-style tr:nth-child(even) {
+                                    background-color: #0f101a;
+                                }
+                                .table-style th {
+                                    font-family: "Arial Black", Arial, sans-serif;
+                                    font-size: 15px;
+                                    padding-top: 12px;
+                                    padding-bottom: 12px;
+                                    text-align: left;
+                                    background-color: #0f101a;
+                                    color: rgb(237, 239, 255);
+                                }
+                            """
+
+                            # Exiba a tabela HTML personalizada no Streamlit
+                            st.markdown(css, unsafe_allow_html=True)
+                            st.markdown(table_html, unsafe_allow_html=True)                            
+                        
             with col2:
-                st.markdown("Todos", help="Todos os pedidos digitados. Essa opção trás um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
+                st.caption("Todos", help="Todos os pedidos digitados. Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")

@@ -7,13 +7,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10040,10042,120239)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023'  --'{DATAI}' and '{DATAF}'
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR
     ORDER By FAT DESC),
     
@@ -28,13 +28,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10040)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),
     
@@ -49,13 +49,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10042)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),
     
@@ -70,19 +70,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (120239)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),
     
        ---------------------------------------------------------------       
            
-SUPUHT --UHT DANONE
+SUPUHT -- UHT DANONE
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -91,13 +91,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10046)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC), 
     
@@ -112,13 +112,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10047)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),    
     
@@ -133,13 +133,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10048)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),       
           
@@ -154,19 +154,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10050)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),  
     
 --------------------------------------------------------------------------------
            
-SUPDCL --DOCILE
+SUPDCL --FINI
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -174,20 +174,20 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (120423)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+    WHERE prod.codsec in (11007)
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),           
     
 --------------------------------------------------------------------------------
            
-SUPGUL --GULOSITOS
+SUPGUL --GULOZITOS
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -196,19 +196,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10044)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),             
               
 --------------------------------------------------------------------------------
            
-SUPFLO --FLORESTAL
+SUPFLO --ECOFRESH
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -216,14 +216,14 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10043)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+    WHERE prod.codsec in (120427)
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),             
     
@@ -238,13 +238,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (120387)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),        
 --------------------------------------------------------------------------------
@@ -258,40 +258,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (120424)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),    
     
 --------------------------------------------------------------------------------
            
-SUPBVT --BIVOLT
-AS (SELECT  pedc.CODSUPERVISOR,
-            ped.codusur,
-            prod.codsec,
-            To_number(SUM(ped.qt*ped.pvenda)) as Fat
-    FROM pontual.PCPEDI ped
-        JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
-        JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (6004)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
-        AND ped.posicao NOT IN ('C')
-        AND ped.vlbonific = 0
-        AND NVL(ped.BONIFIC, 'N') =  'N'
-        AND pedc.DTCANCEL IS NULL
-        AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
-    Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
-    ORDER By FAT DESC),        
-     
---------------------------------------------------------------------------------
-           
-SUPSEA --SEARA MASSA LEVE
+SUPSEA -- SEARA MASSA LEVE
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -300,19 +279,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10001)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),       
      
 --------------------------------------------------------------------------------
            
-SUPHYT --HYTS
+SUPHYT -- HYTS
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -321,19 +300,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (1005)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),     
      
 --------------------------------------------------------------------------------
            
-SUPSTM --SANTA MASSA
+SUPSTM -- SANTA MASSA
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -342,19 +321,19 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (1023)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),  
      
 --------------------------------------------------------------------------------
            
-SUPFTP --FRUTAP
+SUPFTP -- FRUTAP
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -363,13 +342,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (10041)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),  
      
@@ -384,13 +363,13 @@ AS (SELECT  pedc.CODSUPERVISOR,
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
     WHERE prod.codsec in (1003)
-        AND ped.data BETWEEN '01-ago-2023' and '31-ago-2023' 
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
         AND NVL(ped.BONIFIC, 'N') =  'N'
         AND pedc.DTCANCEL IS NULL
         AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-        AND pedc.CODSUPERVISOR in (2,8,9)
+        AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),  
                                                                                      
@@ -405,10 +384,26 @@ FROM pontual.PCMETA M
 JOIN pontual.PCUSUARI C ON M.CODUSUR = C.CODUSUR
 JOIN pontual.PCSUPERV D ON C.CODSUPERVISOR = D.CODSUPERVISOR
 JOIN pontual.PCSECAO E ON M.CODIGO = E.CODSEC
-WHERE M.data = '01-Ago-2023' --'{DATAI}'
+WHERE M.data = TRUNC(SYSDATE, 'MM')
 AND M.TIPOMETA = 'S'
-AND E.CODSEC IN (10040,1003,10042,10048,120239,10050,10047,10046,120423,10044,10043,120387,120424,6004,10001,1005,1023,10041,1003)
-AND d.CODSUPERVISOR IN (2,8,9)
+AND E.CODSEC IN (10040, -- ACTIVIA DANONE
+                1003, -- MARGARINA
+                10042, -- DANONINHO DANONE
+                10048, -- YOPRO DANONE
+                120239, -- GRANADA DANONE
+                10050, -- SULMINAS
+                10047, -- REQUEIJÃO DANONE
+                10046, -- UHT DANONE
+                11007, -- FINI
+                10044, -- GULOZITOS
+                120427, -- ECOFRESH
+                120387, -- DAFRUTA
+                120424, -- DANILLA
+                10001, -- SEARA MASSA LEVE
+                1005, -- HYTS
+                1023, -- SANTA MASSA
+                10041) -- FRUTAP
+AND d.CODSUPERVISOR IN (2,8)
 ),
 -------------------------------------------------------------------------------------------------
 
@@ -443,14 +438,14 @@ SELECT 0 AS "ORDER", -- Pseudocoluna criada para fazer a ordenão das linhas
        to_number((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (10040,10042,120239) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR)) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR)) AS OBJETIVO,
     -------------------------------------------------------------------
        to_number(SUM(A.fat)) AS Realizado,
     -------------------------------------------------------------------
        to_number(TRUNC((SUM(A.FAT) / (SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (10040,10042,120239) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR)),5))
+            AND m.CODUSUR = a.CODUSUR)),5))
             as "% ATING.",
     -------------------------------------------------------------------
        to_number(TRUNC((
@@ -458,14 +453,14 @@ SELECT 0 AS "ORDER", -- Pseudocoluna criada para fazer a ordenão das linhas
                     /    (SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (10040,10042,120239) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR)
+                                AND m.CODUSUR = a.CODUSUR)
         ),5)) AS "% TEND.",
     -------------------------------------------------------------------    
         to_number(GREATEST(TRUNC((
         ((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (10040,10042,120239) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR)) - SUM(A.fat) 
             
          ),2),0))   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -473,7 +468,7 @@ SELECT 0 AS "ORDER", -- Pseudocoluna criada para fazer a ordenão das linhas
          ((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (10040,10042,120239) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0)) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -483,15 +478,15 @@ SELECT 0 AS "ORDER", -- Pseudocoluna criada para fazer a ordenão das linhas
           (SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (10040,10042,120239) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPPLF A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis
 
 
 ---------------------------------------ACTIVIA---------------------------------------------------
@@ -502,28 +497,28 @@ SELECT 1.0 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -531,7 +526,7 @@ SELECT 1.0 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -541,15 +536,15 @@ SELECT 1.0 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------               
               
 FROM SUPACT A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 
 --------------------------------------DANONINHO--------------------------------------------------
@@ -560,28 +555,28 @@ SELECT 1.1 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -589,7 +584,7 @@ SELECT 1.1 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -599,15 +594,15 @@ SELECT 1.1 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------                 
               
 FROM SUPDHO A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 
 ---------------------------------------GRANADA---------------------------------------------------
@@ -618,28 +613,28 @@ SELECT 1.2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -647,7 +642,7 @@ SELECT 1.2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -657,15 +652,15 @@ SELECT 1.2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------            
               
 FROM SUPGRA A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 -----------------------------------------UHT-----------------------------------------------------
 UNION
@@ -675,28 +670,28 @@ SELECT 1.3 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -704,7 +699,7 @@ SELECT 1.3 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -714,15 +709,15 @@ SELECT 1.3 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------                 
               
 FROM SUPUHT A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ----------------------------------------REQUEIJÃO------------------------------------------------
 UNION
@@ -732,28 +727,28 @@ SELECT 1.4 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -761,7 +756,7 @@ SELECT 1.4 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -771,15 +766,15 @@ SELECT 1.4 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------                 
               
 FROM SUPREQ A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 -------------------------------------------YOPRO-------------------------------------------------
 UNION
@@ -789,28 +784,28 @@ SELECT 1.5 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -818,7 +813,7 @@ SELECT 1.5 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -828,15 +823,15 @@ SELECT 1.5 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPYOP A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ----------------------------------------SULMINAS-------------------------------------------------
 UNION
@@ -846,28 +841,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -875,7 +870,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -885,46 +880,46 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPSUL A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
-----------------------------------------DOCILE--------------------------------------------
+----------------------------------------FINI--------------------------------------------
 UNION
 SELECT 2 AS "ORDER",
-       'DOCILE' as CATEGORIA, 
+       'FINI' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -932,7 +927,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -942,46 +937,46 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPDCL A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
-----------------------------------------DOCILE--------------------------------------------
+----------------------------------------GULOZITOS--------------------------------------------
 UNION
 SELECT 2 AS "ORDER",
-       'GULOSITOS' as CATEGORIA, 
+       'GULOZITOS' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -989,7 +984,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -999,46 +994,46 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPGUL A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
----------------------------------------FLORESTAL-----------------------------------------
+---------------------------------------ECOFRESH-----------------------------------------
 UNION
 SELECT 2 AS "ORDER",
-       'FLORESTAL' as CATEGORIA, 
+       'ECOFRESH' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1046,7 +1041,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1056,15 +1051,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPFLO A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ---------------------------------------DAFRUTA-----------------------------------------
 UNION
@@ -1074,28 +1069,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1103,7 +1098,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1113,15 +1108,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPDFT A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ---------------------------------------DANILLA-----------------------------------------
 UNION
@@ -1131,28 +1126,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1160,7 +1155,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1170,72 +1165,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPDNL A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
-
----------------------------------------BIVOLT-----------------------------------------
-UNION
-SELECT 2 AS "ORDER",
-       'BIVOLT' as CATEGORIA, 
-    -------------------------------------------------------------------
-    NVL((SELECT SUM(m.cliposprev)
-            from META m 
-            WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
-    -------------------------------------------------------------------
-       SUM(A.fat) AS Realizado,
-    -------------------------------------------------------------------
-       TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
-            from META m 
-            WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
-    -------------------------------------------------------------------
-       TRUNC((
-       ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
-                    /    NVL((SELECT SUM(m.cliposprev)
-                                from META m 
-                                WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
-        ),5) AS "% TEND.",
-    -------------------------------------------------------------------    
-        GREATEST(TRUNC((
-        (NVL((SELECT SUM(m.cliposprev)
-            from META m 
-            WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
-            
-         ),2),0)   as "R.A.F.",
-    -------------------------------------------------------------------  
-         GREATEST(( 
-         (nvl((SELECT SUM(m.cliposprev)
-            from META m 
-            WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
-            / (D.DIASUTEIS - D.diasdecorr) 
-         ),0) as "NECECIDADE DIA",
-    -------------------------------------------------------------------    
-        to_number(TRUNC((SUM(A.fat) / D.DIASDECORR),2)) AS "MEDIA DIA",
-    ------------------------------------------------------------------- 
-        (CASE WHEN (TRUNC(((SUM(A.FAT) / D.DIASDECORR) * D.DIASUTEIS) /
-          NVL((SELECT SUM(m.cliposprev)
-            from META m 
-            WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
-            THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
-            ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
-            END) AS STATUS
-    -------------------------------------------------------------------              
-              
-FROM SUPBVT A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ---------------------------------------SEARA-----------------------------------------
 UNION
@@ -1245,28 +1183,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1274,7 +1212,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1284,15 +1222,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPSEA A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ---------------------------------------HYTS-----------------------------------------
 UNION
@@ -1302,28 +1240,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1331,7 +1269,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1341,15 +1279,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPHYT A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 --------------------------------------SANTA MASSA---------------------------------------
 UNION
@@ -1359,28 +1297,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1388,7 +1326,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1398,15 +1336,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPSTM A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 ------------------------------------------FRUTAP----------------------------------------
 UNION
@@ -1416,28 +1354,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1445,7 +1383,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1455,15 +1393,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPFTP A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 -----------------------------------------MARGARINA----------------------------------------
 UNION
@@ -1473,28 +1411,28 @@ SELECT 2 AS "ORDER",
     NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
     -------------------------------------------------------------------
        SUM(A.fat) AS Realizado,
     -------------------------------------------------------------------
        TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
        ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE M.codsec in (a.codsec) 
-                                AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)
+                                AND m.CODUSUR = a.CODUSUR),1)
         ),5) AS "% TEND.",
     -------------------------------------------------------------------    
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.fat) 
+            AND m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
             
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
@@ -1502,7 +1440,7 @@ SELECT 2 AS "ORDER",
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.fat)) 
+            AND m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
@@ -1512,15 +1450,15 @@ SELECT 2 AS "ORDER",
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE M.codsec in (a.codsec) 
-            AND m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
             THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------              
               
 FROM SUPMGN A, DIAS d
-WHERE a.CODSUPERVISOR = 2
-GROUP BY a.CODSUPERVISOR,d.DIASDECORR,d.DIASuteis,a.codsec
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
 
 
