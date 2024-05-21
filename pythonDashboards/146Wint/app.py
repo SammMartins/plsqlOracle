@@ -381,16 +381,18 @@ with aba2:
                     st.image("/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/oldFlash.png")
         # -------------------------------- # Faturado
         if notFatOn == False:
-            col1, col2 = st.columns([1, 0.1])
+            col1, col2 = st.columns([1, 0.12])
             with col1:
                 if st.button("CARREGAR"):
                     with st.container(border=False):
                         st.write("Faturado apenas" * 10)
             with col2:
-                st.caption("Fatur.", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
+                st.caption("Faturado", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
         # -------------------------------- # Não Faturado incluso
         else:
-            col1, col2 = st.columns([1, 0.1])
+            col1, col2 = st.columns([1, 0.12])
+            with col2:
+                st.caption("Todos", help="Todos os pedidos digitados. Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
             with col1:
                 if st.button("CARREGAR"):
                     flash_result = flash322RCA(vendedorCod)
@@ -405,12 +407,12 @@ with aba2:
                                 3: "REALIZADO",
                                 4: "ATINGIDO",
                                 5: "TENDÊNCIA",
-                                6: "R.A.F.",
+                                6: " R. A. F. ",
                                 7: "NECESS. DIA",
                                 8: "MÉDIA DIA",
                                 9: "STATUS"
                             })
-                            formatarMoeda = ["OBJETIVO", "REALIZADO", "R.A.F.", "NECESS. DIA", "MÉDIA DIA"]
+                            formatarMoeda = ["OBJETIVO", "REALIZADO", " R. A. F. ", "NECESS. DIA", "MÉDIA DIA"]
                             for coluna in formatarMoeda:
                                 flash_result[coluna] = flash_result[coluna].apply(lambda x: 'R${:,.0f}'.format(x))
                             formatarPorcent = ["ATINGIDO", "TENDÊNCIA"]
@@ -421,6 +423,7 @@ with aba2:
                             table_html = flash_result.to_html(classes='table-style', index=False)
                             table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>') # Difinindo a classe positivo para aplicar estilos
                             table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>') # Difinindo a classe negativo para aplicar estilos
+                            table_html = table_html.replace('<td>', '<td class="linha-table">') # D
                             # ------ Estilos CSS personalizados
                             with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/flash.css', "r") as file:
                                 flash_css = file.read()
@@ -431,8 +434,31 @@ with aba2:
                             """
 
                             # ----------------- Exibição da tabela -----------------
-                            st.markdown(css, unsafe_allow_html=True)
-                            st.markdown(table_html, unsafe_allow_html=True)                            
+                            st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+
+                            st.markdown("<h3 class='dnH3'>TABELA FLASH</h3>", unsafe_allow_html=True) # Título
+
+                            st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit  
+
+                            # ------------- Tabela Distribuição Numérica ----------
+                            st.markdown("<h3 class='dnH3'>DISTRIBUIÇÃO NUMÉRICA</h3>", unsafe_allow_html=True)
+
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.markdown("<p class='dn' id='Danone'>DANONE</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='danilla'>DANILLA</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='santa'>SANTA MASSA</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='fini'>FINI</p>", unsafe_allow_html=True)
+
+                            with col2:
+                                st.markdown("<p class='dn' id='sul'>SULMINAS</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='gulozitos'>GULOZITOS</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='hyts'>HYTS</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
+
+                            with col3:
+                                st.markdown("<p class='dn' id='dafruta'>DAFRUTA</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='massa'>MASSA LEVE</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='margarina'>MARGARINA</p>", unsafe_allow_html=True)
+                                st.markdown("<p class='dn' id='eco'>ECO FRESH</p>", unsafe_allow_html=True)
                         
-            with col2:
-                st.caption("Todos", help="Todos os pedidos digitados. Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")

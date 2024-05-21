@@ -6,7 +6,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10040,10042,120239)
+    WHERE prod.codsec in (10040,10042,120239) -- PLF
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -27,7 +27,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10040)
+    WHERE prod.codsec in (10040) -- ACTIVIA
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -48,7 +48,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10042)
+    WHERE prod.codsec in (10042) -- DANONINHO
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -69,7 +69,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (120239)
+    WHERE prod.codsec in (120239) -- GRANADA
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -90,7 +90,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10046)
+    WHERE prod.codsec in (10046) --UHT
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -103,7 +103,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     
        ---------------------------------------------------------------       
            
-SUPREQ --REQUEIJÃO DANONE
+SUPREQ --REQUEIJAO DANONE
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -111,7 +111,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10047)
+    WHERE prod.codsec in (10047) --REQUEIJAO
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -132,7 +132,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10048)
+    WHERE prod.codsec in (10048) -- YOPRO
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -153,7 +153,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10050)
+    WHERE prod.codsec in (10050) -- SULMINAS
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -166,7 +166,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     
 --------------------------------------------------------------------------------
            
-SUPDCL --FINI
+SUPFIN --FINI
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -174,7 +174,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (11007)
+    WHERE prod.codsec in (11007) -- FINI
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -195,7 +195,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10044)
+    WHERE prod.codsec in (10044) -- GULOZITOS
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -208,7 +208,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
               
 --------------------------------------------------------------------------------
            
-SUPFLO --ECOFRESH
+SUPECO --ECOFRESH
 AS (SELECT  pedc.CODSUPERVISOR,
             ped.codusur,
             prod.codsec,
@@ -216,7 +216,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (120427)
+    WHERE prod.codsec in (120427) -- ECOFRESH
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -237,7 +237,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (120387)
+    WHERE prod.codsec in (120387) -- DAFRUTA
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -257,7 +257,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (120424)
+    WHERE prod.codsec in (120424)  --DANILLA
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -278,7 +278,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10001)
+    WHERE prod.codsec in (10001) -- SEARA MASSA LEVE
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -299,7 +299,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (1005)
+    WHERE prod.codsec in (1005) -- HYTS
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -320,7 +320,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (1023)
+    WHERE prod.codsec in (1023) -- SANTA MASSA
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -341,7 +341,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (10041)
+    WHERE prod.codsec in (10041) -- FRUTAP
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -362,7 +362,7 @@ AS (SELECT  pedc.CODSUPERVISOR,
     FROM pontual.PCPEDI ped
         JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
         JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
-    WHERE prod.codsec in (1003)
+    WHERE prod.codsec in (1003) --MARGARINA
         AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
         AND ped.posicao NOT IN ('C')
         AND ped.vlbonific = 0
@@ -372,6 +372,27 @@ AS (SELECT  pedc.CODSUPERVISOR,
         AND pedc.CODSUPERVISOR in (2,8)
     Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
     ORDER By FAT DESC),  
+
+--------------------------------------------------------------------------------
+           
+TOTAL --TOTAL
+AS (SELECT  pedc.CODSUPERVISOR,
+            ped.codusur,
+            prod.codsec,
+            To_number(SUM(ped.qt*ped.pvenda)) as Fat
+    FROM pontual.PCPEDI ped
+        JOIN pontual.pcprodut prod on ped.codprod = prod.codprod
+        JOIN pontual.pcpedc pedc on ped.NUMPED = pedc.NUMPED
+    WHERE prod.codsec in (10041,1023,1005,10001,120424,120387,120427,10044,11007,10046,10047,120239,10048,10042,1003,10040)
+        AND ped.data BETWEEN TRUNC(SYSDATE, 'MM') and LAST_DAY(SYSDATE)
+        AND ped.posicao NOT IN ('C')
+        AND ped.vlbonific = 0
+        AND NVL(ped.BONIFIC, 'N') =  'N'
+        AND pedc.DTCANCEL IS NULL
+        AND pedc.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
+        AND pedc.CODSUPERVISOR in (2,8)
+    Group By ped.codusur,pedc.CODSUPERVISOR,prod.codsec
+    ORDER By FAT DESC),     
                                                                                      
 ------------------------------------------META---------------------------------------------------    
 META -- (Essa CTE obtem os valores da meta dos vendedores - que posteriormente é somado para a obtenção dos valores por vendedor)
@@ -943,7 +964,7 @@ SELECT 2 AS "ORDER",
             END) AS STATUS
     -------------------------------------------------------------------              
               
-FROM SUPDCL A, DIAS d
+FROM SUPFIN A, DIAS d
 WHERE a.CODUSUR = {rca}
 GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
@@ -1057,7 +1078,7 @@ SELECT 2 AS "ORDER",
             END) AS STATUS
     -------------------------------------------------------------------              
               
-FROM SUPFLO A, DIAS d
+FROM SUPECO A, DIAS d
 WHERE a.CODUSUR = {rca}
 GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
@@ -1459,6 +1480,57 @@ SELECT 2 AS "ORDER",
 FROM SUPMGN A, DIAS d
 WHERE a.CODUSUR = {rca}
 GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
+
+-----------------------------------------MARGARINA----------------------------------------
+UNION
+SELECT 3 AS "ORDER",
+       'TOTAL' as CATEGORIA, 
+    -------------------------------------------------------------------
+    NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
+    -------------------------------------------------------------------
+       SUM(A.fat) AS Realizado,
+    -------------------------------------------------------------------
+       TRUNC((SUM(A.FAT) / NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
+    -------------------------------------------------------------------
+       TRUNC((
+       ((SUM(A.fat) / d.DIASDECORR)   *   (d.DIASuteis))    
+                    /    NVL((SELECT SUM(m.cliposprev)
+                                from META m 
+                                WHERE m.CODUSUR = a.CODUSUR),1)
+        ),5) AS "% TEND.",
+    -------------------------------------------------------------------    
+        GREATEST(TRUNC((
+        (NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE m.CODUSUR = a.CODUSUR),1)) - SUM(A.fat) 
+            
+         ),2),0)   as "R.A.F.",
+    -------------------------------------------------------------------  
+         GREATEST(( 
+         (nvl((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE m.CODUSUR = a.CODUSUR),1) - SUM(A.fat)) 
+            / (D.DIASUTEIS - D.diasdecorr) 
+         ),0) as "NECECIDADE DIA",
+    -------------------------------------------------------------------    
+        to_number(TRUNC((SUM(A.fat) / D.DIASDECORR),2)) AS "MEDIA DIA",
+    ------------------------------------------------------------------- 
+        (CASE WHEN (TRUNC(((SUM(A.FAT) / D.DIASDECORR) * D.DIASUTEIS) /
+          NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
+            THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
+            ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
+            END) AS STATUS
+    -------------------------------------------------------------------              
+
+FROM TOTAL A, DIAS d
+WHERE a.CODUSUR = {rca}
+GROUP BY a.CODUSUR, D.DIASUTEIS, D.diasdecorr, D.DIASUTEIS, D.diasdecorr
 
 
 
