@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 .table-style {
-    font-family: "Arial", Arial, sans-serif;
+    font-family: "Roboto", Arial, sans-serif;
     font-size: 15px;
     border-collapse: collapse;
     width: 100%;
@@ -12,6 +14,15 @@
 .table-style tr:nth-child(even) {
     background-color: #070717;
 }
+
+.linha-table:hover {
+    background-color: #073c55;
+    transition: background-color 0.3s ease-in-out;
+    transition: font-family 0.3s ease-in-out;
+    font-size: 15px;
+    font-weight: 600;    
+}
+
 .table-style th {
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 15px;
@@ -52,26 +63,19 @@
     text-align: center;
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 18px;    
-    margin: 20px;
+    margin: 20px 20px 0px;
     padding: 20px;
     border: 1px solid #073c55;
     background-color: #070717;
 }
 
 .dn:hover {
-    color: #e2332c;
+    color: #073c55;
     transition: color 0.3s ease-in-out;
-    border: 1px outset #e2332c;
+    border: 1px ridge #073c55;
     transition: border 0.3s ease-in-out;
 }
 
-.linha-table:hover {
-    background-color: #073c55;
-    transition: background-color 0.3s ease-in-out;
-    font-family: "Arial Black", Arial, sans-serif;    
-    transition: font-family 0.3s ease-in-out;
-    font-size: 14px;
-}
 
 .dnH3 {
     text-align: center;
@@ -84,8 +88,39 @@
 }
 
 .dnH3:hover {
-    color: #e2332c;
+    color: #073c55;
     transition: color 0.3s ease-in-out;
-    border: 2px outset #e2332c;
+    border: 2px ridge #073c55;
     transition: border 0.2s ease-in-out;
+}
+
+
+.table-dn { /* Tabela */
+    font-family: "Roboto", Arial, sans-serif;
+    border-collapse: collapse;
+    width: 85%;
+    text-align: center;
+    margin: auto;
+}
+.table-dn td, .table-dn th { /* Linhas, colunas */
+    border: 1px solid #073c55;
+    padding: 2px 1px;
+}
+
+.table-dn td {
+    font-size: auto;
+}
+
+.table-dn:hover { /* Ao passar o mouse */
+    background-color: #073c55;
+    transition: background-color 0.3s ease-in-out;
+    transition: font-family 0.3s ease-in-out;
+    font-weight: 600;    
+    font-size: auto;
+}
+
+.table-dn th { /* Cabeçalho */
+    font-size: 10px;
+    text-align: center;
+    background-color: #070717;
 }
