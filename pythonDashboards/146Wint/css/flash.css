@@ -70,9 +70,8 @@
 }
 
 .dn:hover {
-    color: #073c55;
     transition: color 0.3s ease-in-out;
-    border: 1px ridge #073c55;
+    border: 1px ridge #ffffff;
     transition: border 0.3s ease-in-out;
 }
 
@@ -83,15 +82,17 @@
     font-size: 30px;    
     margin: 10px;
     padding: 10px;
-    border: 2px solid #ffffff;
-    background-color: #070717;
+    border: 3px ridge #ffffff;
+    background-color: #070720;
 }
 
 .dnH3:hover {
-    color: #073c55;
+    color: #ffffff;
     transition: color 0.3s ease-in-out;
-    border: 2px ridge #073c55;
+    border: 3px ridge #ffffff;
     transition: border 0.2s ease-in-out;
+    background-color: #070717;
+    transition: background-color 0.3s ease-in-out;
 }
 
 

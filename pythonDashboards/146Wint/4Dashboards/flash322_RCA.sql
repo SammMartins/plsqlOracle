@@ -513,7 +513,7 @@ GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis
 ---------------------------------------ACTIVIA---------------------------------------------------
 UNION
 SELECT 1.0 AS "ORDER",
-       'PLF /Activia' as CATEGORIA,
+       'PLF/Activia' as CATEGORIA,
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
             from META m 
@@ -571,7 +571,7 @@ GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 --------------------------------------DANONINHO--------------------------------------------------
 UNION
 SELECT 1.1 AS "ORDER",
-       'PLF /Danoninho' as CATEGORIA,
+       'PLF/Danoninho' as CATEGORIA,
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
             from META m 
@@ -629,7 +629,7 @@ GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 ---------------------------------------GRANADA---------------------------------------------------
 UNION
 SELECT 1.2 AS "ORDER",
-       'PLF /Granada' as CATEGORIA, 
+       'PLF/Granada' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
             from META m 
@@ -1481,7 +1481,7 @@ FROM SUPMGN A, DIAS d
 WHERE a.CODUSUR = {rca}
 GROUP BY a.CODUSUR, d.DIASDECORR, d.DIASuteis, a.codsec
 
------------------------------------------MARGARINA----------------------------------------
+-----------------------------------------TOTAL----------------------------------------
 UNION
 SELECT 3 AS "ORDER",
        'TOTAL' as CATEGORIA, 
