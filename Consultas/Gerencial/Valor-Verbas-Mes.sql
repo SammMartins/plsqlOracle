@@ -6,9 +6,10 @@
         (CASE WHEN VENDAS.CODUSUR = 160 THEN 2000+((2000/6)*5)
               WHEN VENDAS.CODUSUR = 2 THEN 2000+((2000/6)) ELSE
         (SUM(NVL(VENDAS.VLVENDA,0) - NVL(DEVOLUCAO.VLDEVOLUCAO,0))) * 0.0175 END) AS VERBA,
-        (CASE WHEN VENDAS.CODUSUR = 160 THEN 400 -- Troca de Luciana 21/05/24 & 22/05/24 | Pediu mais 100 reais 23/05/24
-              WHEN VENDAS.CODUSUR = 2 THEN  1000
-         ELSE 0 END) AS ABATIMENTOS, 0 AS TOTAL
+        (CASE WHEN VENDAS.CODUSUR = 160 THEN 470 -- Troca de Luciana 21/05/24 & 22/05/24 | Pediu mais 100 reais 23/05/24 | 70 solicitado dia 24/05 antes do fechamento da carga
+              WHEN VENDAS.CODUSUR = 2 THEN  1500 -- Solicitações do supervisor
+         ELSE 0 END) AS ABATIMENTOS, 
+         0 AS TOTAL
       
 FROM  (SELECT CODUSUR,
               NOME,

@@ -270,6 +270,40 @@ def flash322RCA(rca):
         con.close()
     return df
 
+def flash322RCA_semDev(rca):
+    if None in [username, password, host, port, sid]:
+        raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
+
+    dsn_tns = cx.makedsn(host, port, sid)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
+
+    cursor = con.cursor()
+
+    with open(path + 'flash322_RCA_semDev.sql', 'r') as arquivo: 
+        consulta = arquivo.read()
+
+    consulta = consulta.format(rca=rca)
+
+    try:
+        cursor.execute(consulta)
+
+        resultados = cursor.fetchall()
+
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
+    return df
+
 def flashDN322RCA(rca, fornec):
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
@@ -292,6 +326,74 @@ def flashDN322RCA(rca, fornec):
         consulta = arquivo.read()
 
     consulta = consulta.format(rca=rca, fornec=fornec)
+
+    try:
+        cursor.execute(consulta)
+
+        resultados = cursor.fetchall()
+
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
+    return df
+
+def flashDN1464RCA(rca, fornec):
+    if None in [username, password, host, port, sid]:
+        raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
+
+    dsn_tns = cx.makedsn(host, port, sid)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
+
+    cursor = con.cursor()
+
+    with open(path + 'dn_RCA1464.sql', 'r') as arquivo: 
+        consulta = arquivo.read()
+
+    consulta = consulta.format(rca=rca, fornec=fornec)
+
+    try:
+        cursor.execute(consulta)
+
+        resultados = cursor.fetchall()
+
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
+    return df
+
+def flash1464RCA(rca):
+    if None in [username, password, host, port, sid]:
+        raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
+
+    dsn_tns = cx.makedsn(host, port, sid)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
+
+    cursor = con.cursor()
+
+    with open(path + 'flash1464_RCA.sql', 'r') as arquivo: 
+        consulta = arquivo.read()
+
+    consulta = consulta.format(rca=rca)
 
     try:
         cursor.execute(consulta)

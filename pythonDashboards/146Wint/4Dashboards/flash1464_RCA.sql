@@ -947,7 +947,7 @@ FROM (SELECT CODSUPERVISOR,
         (NVL(TOTPESO, 0) <> 0)  OR (NVL(VLMETA,0) <> 0) OR (NVL(QTMETA,0) <> 0) OR (NVL(VLBONIFIC,0) <> 0 ) OR (NVL(QTCLIPOS,0) <> 0 ))
     GROUP BY CODSUPERVISOR, SUPERV, CODUSUR, NOME, CODEPTO, DEPARTAMENTO, CODSEC, SECAO 
     ORDER BY CODSUPERVISOR, SUPERV, CODUSUR, NOME, CODEPTO, DEPARTAMENTO, VLVENDA DESC)
-    WHERE CODUSUR = 140),
+    WHERE CODUSUR = {rca}),
 ------------------------------------------META---------------------------------------------------    
 META -- (ESSA CTE OBTEM OS VALORES DA META DOS VENDEDORES - QUE POSTERIORMENTE é SOMADO PARA A OBTENçãO DOS VALORES POR VENDEDOR)
 AS (
@@ -1061,7 +1061,7 @@ AND E.CODSEC IN (10040, -- ACTIVIA DANONE
                     -------------------------------------------------------------------              
                               
                 FROM WINT A, DIAS D
-                WHERE A.CODUSUR = 140
+                WHERE A.CODUSUR = {rca}
                 AND A.CODSEC IN (10040,10042,120239)
                 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS
 
@@ -1119,7 +1119,7 @@ AND E.CODSEC IN (10040, -- ACTIVIA DANONE
                     -------------------------------------------------------------------               
                               
                 FROM WINT A, DIAS D
-                WHERE A.CODUSUR = 140
+                WHERE A.CODUSUR = {rca}
                 AND A.CODSEC IN (10040)
                 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1177,7 +1177,7 @@ AND E.CODSEC IN (10040, -- ACTIVIA DANONE
                     -------------------------------------------------------------------               
                               
                 FROM WINT A, DIAS D
-                WHERE A.CODUSUR = 140
+                WHERE A.CODUSUR = {rca}
                 AND A.CODSEC IN (10042)
                 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1235,7 +1235,7 @@ SELECT 1.2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (120239)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1293,7 +1293,7 @@ SELECT 1.3 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10046)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1351,7 +1351,7 @@ SELECT 1.4 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10047)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1409,7 +1409,7 @@ SELECT 1.5 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10048)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1467,7 +1467,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10050)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1525,7 +1525,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (11007)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1583,7 +1583,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10044)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1641,7 +1641,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (120427)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1699,7 +1699,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (120387)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1757,7 +1757,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (120424)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1815,7 +1815,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10001)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1873,7 +1873,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (1005)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1931,7 +1931,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (1023)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -1989,7 +1989,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10041)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -2047,7 +2047,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (1003)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -2105,7 +2105,7 @@ SELECT 2 AS "ORDER",
     -------------------------------------------------------------------               
               
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (1003)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
@@ -2155,5 +2155,5 @@ SELECT 3 AS "ORDER",
             END) AS STATUS
     -------------------------------------------------------------------    
 FROM WINT A, DIAS D
-WHERE A.CODUSUR = 140
+WHERE A.CODUSUR = {rca}
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS

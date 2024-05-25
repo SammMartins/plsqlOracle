@@ -24,7 +24,7 @@ else:
     )
 
     grafico_vend_sup.update_traces(
-        text = df[df.columns[2]].apply(lambda x: format_number(x, 'R$')),
+        text = df[df.columns[2]].apply(lambda x: format_number(x)),
         textposition = 'inside',
         textfont = dict(color='black', family='Verdana', size=12),
         name = 'Linha tracejada é a média de vendas dos RCA'
@@ -55,7 +55,7 @@ else:
     )
 
     grafico_top_rca2.update_traces(
-        text = df_2[df_2.columns[2]].apply(lambda x: format_number(x, 'R$')),
+        text = df_2[df_2.columns[2]].apply(lambda x: format_number(x)),
         textposition = 'inside',
         textfont = dict(color='black', family='Verdana', size=12)
     )
@@ -84,7 +84,7 @@ else:
     )
 
     grafico_top_rca8.update_traces(
-        text = df_8[df_8.columns[2]].apply(lambda x: format_number(x, 'R$')),
+        text = df_8[df_8.columns[2]].apply(lambda x: format_number(x)),
         textposition = 'inside',
         textfont = dict(color='black', family='Verdana', size=12)
     )

@@ -8,6 +8,7 @@ WITH DN_TOTAL as (   --TOTAL
             AND PROD.CODFORNEC = {fornec}
             AND PED.CODUSUR = {rca}
             AND PED.DTCANCEL IS NULL
+            AND PED.POSICAO IN ('F')
             AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
         GROUP BY PED.CODUSUR),
 

@@ -3,8 +3,8 @@ import pandas as pd
 import datetime
 
 # ----------------- Função para formatar números -----------------
-def format_number(value, prefix = ''):
-    return f'{prefix}{value:,.2f}'.replace(',', '#').replace('.', ',').replace('#', '.')
+def format_number(value):
+    return 'R${:,.0f}'.format(value).replace(",", "v").replace(".", ",").replace("v", ".")
 
 # ----------------- Função Define datas -----------------
 def data_semana_ini(): # retorna data de início da semana
