@@ -1119,12 +1119,14 @@ AND E.CODSEC IN (10040, -- ACTIVIA DANONE
                 11007, -- FINI
                 10044, -- GULOZITOS
                 120427, -- ECOFRESH
-                                120387, -- DAFRUTA
-                                120424, -- DANILLA
-                                10001, -- SEARA MASSA LEVE
-                                1005, -- HYTS
-                                1023, -- SANTA MASSA
-                                10041) -- FRUTAP
+                120387, -- DAFRUTA
+                120424, -- DANILLA
+                10001, -- SEARA MASSA LEVE
+                1005, -- HYTS
+                1023, -- SANTA MASSA
+                10041, -- FRUTAP
+                120432, -- TAKE HOME
+                120430) -- IMPULSO
                 AND D.CODSUPERVISOR IN (2,8)
                 ),
                 -------------------------------------------------------------------------------------------------
@@ -1564,6 +1566,124 @@ SELECT 1.5 AS "ORDER",
 FROM WINT A, DIAS D, WINT_NOTFAT C
 WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (10048)
+AND A.CODSEC = C.CODSEC (+)
+GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
+
+-------------------------------------------TAKE HOME-------------------------------------------------
+UNION
+SELECT 1.7 AS "ORDER",
+       'TAKE HOME' as CATEGORIA, 
+    -------------------------------------------------------------------
+    NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
+    -------------------------------------------------------------------
+       (SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) AS Realizado,
+    -------------------------------------------------------------------
+       TRUNC(((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
+    -------------------------------------------------------------------
+       TRUNC((
+       (((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / d.DIASDECORR)   *   (d.DIASuteis))    
+                    /    NVL((SELECT SUM(m.cliposprev)
+                                from META m 
+                                WHERE M.codsec in (a.codsec) 
+                                AND m.CODUSUR = a.CODUSUR),1)
+        ),5) AS "% TEND.",
+    -------------------------------------------------------------------    
+        GREATEST(TRUNC((
+        (NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1)) - (SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) 
+            
+         ),2),0)   as "R.A.F.",
+    -------------------------------------------------------------------  
+         GREATEST(( 
+         (nvl((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1) - (SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1))) 
+            / (D.DIASUTEIS - D.diasdecorr) 
+         ),0) as "NECECIDADE DIA",
+    -------------------------------------------------------------------    
+        to_number(TRUNC(((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / D.DIASDECORR),2)) AS "MEDIA DIA",
+    ------------------------------------------------------------------- 
+        (CASE WHEN (TRUNC((((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / D.DIASDECORR) * D.DIASUTEIS) /
+          NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
+            THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
+            ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
+            END) AS STATUS
+    -------------------------------------------------------------------                       
+              
+FROM WINT A, DIAS D, WINT_NOTFAT C
+WHERE A.CODUSUR = {rca}
+AND A.CODSEC IN (120432)
+AND A.CODSEC = C.CODSEC (+)
+GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
+
+-------------------------------------------IMPULSO-------------------------------------------------
+UNION
+SELECT 1.75 AS "ORDER",
+       'IMPULSO' as CATEGORIA, 
+    -------------------------------------------------------------------
+    NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1) AS OBJETIVO,
+    -------------------------------------------------------------------
+       (SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) AS Realizado,
+    -------------------------------------------------------------------
+       TRUNC(((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1)),5) as "ATING.",
+    -------------------------------------------------------------------
+       TRUNC((
+       (((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / d.DIASDECORR)   *   (d.DIASuteis))    
+                    /    NVL((SELECT SUM(m.cliposprev)
+                                from META m 
+                                WHERE M.codsec in (a.codsec) 
+                                AND m.CODUSUR = a.CODUSUR),1)
+        ),5) AS "% TEND.",
+    -------------------------------------------------------------------    
+        GREATEST(TRUNC((
+        (NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1)) - (SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) 
+            
+         ),2),0)   as "R.A.F.",
+    -------------------------------------------------------------------  
+         GREATEST(( 
+         (nvl((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1) - (SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1))) 
+            / (D.DIASUTEIS - D.diasdecorr) 
+         ),0) as "NECECIDADE DIA",
+    -------------------------------------------------------------------    
+        to_number(TRUNC(((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / D.DIASDECORR),2)) AS "MEDIA DIA",
+    ------------------------------------------------------------------- 
+        (CASE WHEN (TRUNC((((SUM(A.VLVENDA)+NVL(SUM(C.PVENDA),1)) / D.DIASDECORR) * D.DIASUTEIS) /
+          NVL((SELECT SUM(m.cliposprev)
+            from META m 
+            WHERE M.codsec in (a.codsec) 
+            AND m.CODUSUR = a.CODUSUR),1) * 100,1)) >= 100
+            THEN (SELECT UNISTR('\2191')||UNISTR('\2191')||UNISTR('\2191') FROM dual) 
+            ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
+            END) AS STATUS
+    -------------------------------------------------------------------                       
+              
+FROM WINT A, DIAS D, WINT_NOTFAT C
+WHERE A.CODUSUR = {rca}
+AND A.CODSEC IN (120430)
 AND A.CODSEC = C.CODSEC (+)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 

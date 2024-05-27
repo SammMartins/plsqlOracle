@@ -405,3 +405,37 @@ def flash1464RCA(rca):
         cursor.close()
         con.close()
     return df
+
+def flash1464SUP(sup):
+    if None in [username, password, host, port, sid]:
+        raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
+
+    dsn_tns = cx.makedsn(host, port, sid)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
+
+    cursor = con.cursor()
+
+    with open(path + 'flash1464_SUP.sql', 'r') as arquivo: 
+        consulta = arquivo.read()
+
+    consulta = consulta.format(sup=sup)
+
+    try:
+        cursor.execute(consulta)
+
+        resultados = cursor.fetchall()
+
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
+    return df
