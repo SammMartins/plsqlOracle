@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
@@ -282,10 +282,10 @@ with aba2:
 
     with st.spinner('Caregando dados...'):
         tm.sleep(2)
-        aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: :red[Gerencial - Inativo]", ":male-office-worker: Supervisor", ":man: Vendedor"])
+        aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: :red[Gerencial - Inativo]", ":male-office-worker: :blue[Supervisor]", ":man: :green[Vendedor]"])
         dias_uteis_result = str(diasUteis()).split()[-1]
         dias_decor_result = str(diasDecorridos()).split()[-1]
-    # -------------------------------- SUPERVISOR -------------------------------- # 
+    # -------------------------------- SUPERVISOR -------------------------------- # -------------------------------- #
     with aba2_2:
         col1, col2, col3, col4 = st.columns([1.1, 1, 1, 1.60])
         du = diasUteis().values[0][0]
@@ -359,10 +359,104 @@ with aba2:
                     flash_result = flash1464SUP(supCod)
                     # --------------- DN  -----------------------
                     formatarPorcent = ['ATINGIDO']
-
-
-
-                    dataframes = [flash_result]
+                    # --- DANONE
+                    dnFlashDanone = flashDN1464SUP(supCod, 588)
+                    if dnFlashDanone.empty:
+                        dnFlashDanone = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashDanone = dnFlashDanone.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashDanone[coluna] = dnFlashDanone[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- NESTLE
+                    dnFlashNestle = flashDN1464SUP(supCod, 1841)
+                    if dnFlashNestle.empty:
+                        dnFlashNestle = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashNestle = dnFlashNestle.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashNestle[coluna] = dnFlashNestle[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- DANILLA
+                    dnFlashDanilla = flashDN1464SUP(supCod, 1658)
+                    if dnFlashDanilla.empty:
+                        dnFlashDanilla = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashDanilla = dnFlashDanilla.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashDanilla[coluna] = dnFlashDanilla[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- SANTA MASSA
+                    dnFlashSantaMassa = flashDN1464SUP(supCod, 1623)
+                    if dnFlashSantaMassa.empty:
+                        dnFlashSantaMassa = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashSantaMassa = dnFlashSantaMassa.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashSantaMassa[coluna] = dnFlashSantaMassa[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- FINI
+                    dnFlashFini =flashDN1464SUP(supCod, 1488)
+                    if dnFlashFini.empty:
+                        dnFlashFini = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashFini = dnFlashFini.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashFini[coluna] = dnFlashFini[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- SULMINAS
+                    dnFlashSulMinas = flashDN1464SUP(supCod, 1321)
+                    if dnFlashSulMinas.empty:
+                        dnFlashSulMinas = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashSulMinas = dnFlashSulMinas.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashSulMinas[coluna] = dnFlashSulMinas[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- GULOZITOS
+                    dnFlashGulozitos = flashDN1464SUP(supCod, 1719)
+                    if dnFlashGulozitos.empty:
+                        dnFlashGulozitos = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashGulozitos = dnFlashGulozitos.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashGulozitos[coluna] = dnFlashGulozitos[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- HYTS
+                    dnFlashHyts = flashDN1464SUP(supCod, 1607)
+                    if dnFlashHyts.empty:
+                        dnFlashHyts = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashHyts = dnFlashHyts.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashHyts[coluna] = dnFlashHyts[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- FRUTAP
+                    dnFlashFrutap = flashDN1464SUP(supCod, 1728)
+                    if dnFlashFrutap.empty:
+                        dnFlashFrutap = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])   
+                    else:
+                        dnFlashFrutap = dnFlashFrutap.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashFrutap[coluna] = dnFlashFrutap[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- DAFRUTA
+                    dnFlashDaFruta = flashDN1464SUP(supCod, 1225)
+                    if dnFlashDaFruta.empty:
+                        dnFlashDaFruta = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashDaFruta = dnFlashDaFruta.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashDaFruta[coluna] = dnFlashDaFruta[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- Seara
+                    dnFlashSeara = flashDN1464SUP(supCod, 1541)
+                    if dnFlashSeara.empty:
+                        dnFlashSeara = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashSeara = dnFlashSeara.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashSeara[coluna] = dnFlashSeara[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    # --- Eco fresh
+                    dnFlashEcofresh = flashDN1464SUP(supCod, 1894)
+                    if dnFlashEcofresh.empty:
+                        dnFlashEcofresh = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashEcofresh = dnFlashEcofresh.rename(columns={0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashEcofresh[coluna] = dnFlashEcofresh[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                    
+                    dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh]
                     if any(df.empty for df in dataframes):
                         st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
                     else:
@@ -394,21 +488,94 @@ with aba2:
                             table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>') # Difinindo a classe negativo para aplicar estilos
                             table_html = table_html.replace('<td>', '<td class="linha-table">') # Difinindo a classe linha-table para aplicar estilos
                             # --- DN
+                            dnFlashDanone = dnFlashDanone.to_html(classes='table-dn', index=False)
+                            dnFlashNestle = dnFlashNestle.to_html(classes='table-dn', index=False)
+                            dnFlashDanilla = dnFlashDanilla.to_html(classes='table-dn', index=False)
+                            dnFlashSantaMassa = dnFlashSantaMassa.to_html(classes='table-dn', index=False)
+                            dnFlashFini = dnFlashFini.to_html(classes='table-dn', index=False)
+                            dnFlashSulMinas = dnFlashSulMinas.to_html(classes='table-dn', index=False)
+                            dnFlashGulozitos = dnFlashGulozitos.to_html(classes='table-dn', index=False)
+                            dnFlashHyts = dnFlashHyts.to_html(classes='table-dn', index=False)
+                            dnFlashFrutap = dnFlashFrutap.to_html(classes='table-dn', index=False)
+                            dnFlashDaFruta = dnFlashDaFruta.to_html(classes='table-dn', index=False)
+                            dnFlashSeara = dnFlashSeara.to_html(classes='table-dn', index=False)
+                            dnFlashEcofresh = dnFlashEcofresh.to_html(classes='table-dn', index=False)
 
                             # ----------------- Exibição da tabela -----------------
                             st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
-
                             st.markdown("<h3 class='dnH3'>TABELA FLASH SUPERVISOR</h3>", unsafe_allow_html=True) # Título da seção
+                            st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit 
 
-                            st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit  
+                            # ------------- Tabela Distribuição Numérica ----------
+                            st.markdown("<br>", unsafe_allow_html=True)
+                            st.markdown("<h3 class='dnH3'>DISTRIBUIÇÃO NUMÉRICA SUPERVISOR</h3>", unsafe_allow_html=True)
 
-                    
+                            col1, col2, col3 = st.columns(3)
+                            with col1:
+                                st.markdown("<p class='dn' id='Danone'>DANONE</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashDanone, unsafe_allow_html=True)
 
-        # ------------------ Não Faturado incluso ABATENDO DEVOLUÇÃO ------------------
+                                st.markdown("<p class='dn' id='danilla'>DANILLA</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashDanilla, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='santa'>SANTA MASSA</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashSantaMassa, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='fini'>FINI</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashFini, unsafe_allow_html=True)
+
+                            with col2:
+                                st.markdown("<p class='dn' id='sul'>SULMINAS</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashSulMinas, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='gulozitos'>GULOZITOS</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashGulozitos, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='hyts'>HYTS</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashHyts, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='nestle'>NESTLÉ</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashNestle, unsafe_allow_html=True)
+
+                            with col3:
+                                st.markdown("<p class='dn' id='dafruta'>DAFRUTA</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashDaFruta, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='massa'>SEARA</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashSeara, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='eco'>ECO FRESH</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashEcofresh, unsafe_allow_html=True)
+
+                                st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
+                                st.markdown(dnFlashFrutap, unsafe_allow_html=True) 
+
+
+        
+        # ------------------ Não Faturado ABATENDO DEVOLUÇÃO ------------------
+        else:
+            col1, col2 = st.columns([1, 0.12])
+            with col2:
+                st.caption("Não Faturado", help="Pedidos digitados que não foram faturados. Abatendo devoluções.")
+            with col1:
+                if st.button("CARREGAR", key="flash1464SUPnotFat"):
+                    # --------------- FAT -----------------------
+                    flash_result = flash322SUP(supCod)
+                    # --------------- DN  -----------------------
+                    formatarPorcent = ['ATINGIDO']
+                    # --- DANONE
+                    dnFlashDanone = None #flashDN322SUP(supCod, 588)
+                    if dnFlashDanone.empty:
+                        dnFlashDanone = pd.DataFrame([[0, 0, 0, 0]], columns=['OBJETIVO', 'REALIZADO', 'R.A.F.', 'ATINGIDO'])
+                    else:
+                        dnFlashDanone = dnFlashDanone.rename(columns={ 0: 'OBJETIVO', 1: 'REALIZADO', 2: 'R.A.F.', 3: 'ATINGIDO'})
+                        for coluna in formatarPorcent:
+                            dnFlashDanone[coluna] = dnFlashDanone[coluna].apply(lambda x: '{:.1f}%'.format(x * 100)) 
+                    # --- NESTLE              
 
 
 
-    # -------------------------------- VENDEDOR -------------------------------- # 
+    # -------------------------------- VENDEDOR -------------------------------- # -------------------------------- #
     with aba2_3:
         col1, col2, col3, col4 = st.columns([1.1, 1, 1, 1.60])
         du = diasUteis().values[0][0]

@@ -8,9 +8,24 @@ WITH DN_TOTAL as (   --TOTAL
             AND PROD.CODFORNEC = {fornec}
             AND PED.CODUSUR = {rca}
             AND PED.DTCANCEL IS NULL
-            AND PED.POSICAO IN ('F')
             AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
         GROUP BY PED.CODUSUR),
+
+       ---------------------------------------------------------------   
+
+QTD_CLI AS (
+        /* SQL UTILIZADO PELA ROTINA PCSIS322 RELATORIO(S) - 22 */ 
+        SELECT COUNT(DISTINCT(PCCLIENT.CODCLI)) QTCLIATIVOS, PCUSUARI.CODUSUR AS RCA FROM PONTUAL.PCCLIENT, PONTUAL.PCUSUARI
+        WHERE ((PCCLIENT.CODUSUR1 = PCUSUARI.CODUSUR) OR (PCCLIENT.CODUSUR2 = PCUSUARI.CODUSUR) OR 
+                 EXISTS (SELECT PCUSURCLI.CODUSUR
+                           FROM PONTUAL.PCUSURCLI
+                          WHERE PCUSURCLI.CODUSUR = PCUSUARI.CODUSUR
+                            AND PCUSURCLI.CODCLI  = PCCLIENT.CODCLI))
+        AND ( PCCLIENT.DTULTCOMP >= trunc(sysdate - 90) )
+        AND (PCUSUARI.CODFILIAL IN ('3') OR (NVL(PCUSUARI.CODFILIAL,'99') = '99' ))
+        AND PCCLIENT.DTEXCLUSAO IS NULL
+               and (PCUSUARI.CODSUPERVISOR in (2,8)) 
+           GROUP BY PCUSUARI.CODUSUR),
 
        ---------------------------------------------------------------   
 
@@ -35,3 +50,4 @@ SELECT NVL(META.META, 0) AS OBJETIVO,
     (NVL(DN_TOTAL.DN, 1) / NVL(META.META, 1)) AS "% ATINGIDO"
 FROM   DN_TOTAL
 JOIN   META ON DN_TOTAL.RCA = META.RCA
+JOIN   QTD_CLI ON DN_TOTAL.RCA = QTD_CLI.RCA
