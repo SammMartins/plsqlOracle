@@ -8,6 +8,8 @@
         (SUM(NVL(VENDAS.VLVENDA,0) - NVL(DEVOLUCAO.VLDEVOLUCAO,0))) * 0.0175 END) AS VERBA,
         (CASE WHEN VENDAS.CODUSUR = 160 THEN 470 -- Troca de Luciana 21/05/24 & 22/05/24 | Pediu mais 100 reais 23/05/24 | 70 solicitado dia 24/05 antes do fechamento da carga
               WHEN VENDAS.CODUSUR = 2 THEN  1500 -- Solicitações do supervisor
+              WHEN VENDAS.CODUSUR = 170 THEN  200 -- Solicitações do vendedor
+              WHEN VENDAS.CODUSUR = 172 THEN  400 -- Solicitações do vendedor           
          ELSE 0 END) AS ABATIMENTOS, 
          0 AS TOTAL
       
