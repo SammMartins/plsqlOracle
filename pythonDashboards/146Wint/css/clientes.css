@@ -29,7 +29,7 @@
     text-align: center;
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 30px;    
-    margin: 10px;
+    margin: 10px 0px 10px 0px;
     padding: 10px;
     border: 3px ridge #ffffff;
     background-color: #070720;
@@ -66,4 +66,29 @@
     color: #ffffff;
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 22px;  
+}
+
+.positivo {
+    color: #00FF00;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 21px;    
+}
+.negativo {
+    color: #FF0000;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 21px;    
+}
+
+.positivo:hover {
+    background-color: #015719;
+    transition: background-color 0.3s ease-in-out;
+    color: whitesmoke;
+    transition: color 0.3s ease-in-out;
+}
+
+.negativo:hover {
+    background-color: #e2332c;
+    transition: background-color 0.3s ease-in-out;
+    color: black;
+    transition: color 0.3s ease-in-out;
 }

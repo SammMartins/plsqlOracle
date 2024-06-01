@@ -32,6 +32,7 @@
     background-color: #070717;
     color: rgb(237, 239, 255);
 }
+
 .positivo {
     color: #00FF00;
     font-family: "Arial Black", Arial, sans-serif;
@@ -80,7 +81,7 @@
     text-align: center;
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 30px;    
-    margin: 10px;
+    margin: 10px 0px 10px 0px;
     padding: 10px;
     border: 3px ridge #ffffff;
     background-color: #070720;
