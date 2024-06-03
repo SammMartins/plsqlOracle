@@ -3,10 +3,25 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
-import datetime
+from datetime import datetime
+
+meses = {
+    1: "JANEIRO",
+    2: "FEVEREIRO",
+    3: "MARÇO",
+    4: "ABRIL",
+    5: "MAIO",
+    6: "JUNHO",
+    7: "JULHO",
+    8: "AGOSTO",
+    9: "SETEMBRO",
+    10: "OUTUBRO",
+    11: "NOVEMBRO",
+    12: "DEZEMBRO"
+}
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
 
@@ -333,9 +348,9 @@ with aba2:
         with col3:
             supName = st.selectbox("SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup', help="Selecione o Supervisor", placeholder="Escolha o Supervisor", label_visibility="visible")
             if supName == "ADAILTON":
-                supCod = st.selectbox("CÓDIGO ERP", (2,),index=0, key='adailton', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                supCod = st.selectbox("CÓDIGO WINTHOR", (2,),index=0, key='adailton', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif supName == "VILMAR JR":
-                supCod = st.selectbox("CÓDIGO ERP", (8,),index=0, key='vilmar', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                supCod = st.selectbox("CÓDIGO WINTHOR", (8,),index=0, key='vilmar', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             else:
                 supCod = st.selectbox("ERRO", (0,),index=0, key='erro', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
         with col4:
@@ -801,53 +816,53 @@ with aba2:
         with col3:
             vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
             if vendedorName == "LEONARDO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (140,),index=0, key='140', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "EDNALDO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (141,),index=0, key='141', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (141,),index=0, key='141', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "VAGNER":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (142,),index=0, key='142', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (142,),index=0, key='142', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "DEIVID":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (143,),index=0, key='143', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (143,),index=0, key='143', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "BISMARCK":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (145,),index=0, key='145', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (145,),index=0, key='145', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "LUCIANA":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (147,),index=0, key='147', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (147,),index=0, key='147', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "MATHEUS":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (148,),index=0, key='148', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (148,),index=0, key='148', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "MARCIO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (150,),index=0, key='150', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (150,),index=0, key='150', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "LEANDRO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (151,),index=0, key='151', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (151,),index=0, key='151', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "REGINALDO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (152,),index=0, key='152', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (152,),index=0, key='152', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "ROBSON":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (153,),index=0, key='153', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (153,),index=0, key='153', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "JOAO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (154,),index=0, key='154', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (154,),index=0, key='154', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "TAYANE":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (155,),index=0, key='155', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (155,),index=0, key='155', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "MURILO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (156,),index=0, key='156', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (156,),index=0, key='156', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "LUCAS":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (157,),index=0, key='157', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (157,),index=0, key='157', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "DEYVISON":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (158,),index=0, key='158', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (158,),index=0, key='158', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "ZEFERINO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (161,),index=0, key='161', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (161,),index=0, key='161', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "EPAMINONDAS":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (164,),index=0, key='164', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (164,),index=0, key='164', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "GLAUBER":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (167,),index=0, key='167', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (167,),index=0, key='167', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "TARCISIO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (168,),index=0, key='168', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (168,),index=0, key='168', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "THIAGO":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (169,),index=0, key='169', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (169,),index=0, key='169', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "FILIPE":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (170,),index=0, key='170', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (170,),index=0, key='170', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "ROMILSON":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (172,),index=0, key='172', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (172,),index=0, key='172', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "VALDEME":
-                vendedorCod = st.selectbox("CÓDIGO ERP", (174,),index=0, key='174', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                vendedorCod = st.selectbox("CÓDIGO WINTHOR", (174,),index=0, key='174', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             else:
                 vendedorCod = st.selectbox("ERRO", (0,),index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
         with col4:
@@ -1509,7 +1524,247 @@ with aba2:
 
 # ------------------------------- META --------------------------------------- #
 with aba3:
-    st.title(":building_construction: :red[Painel em construção]")
+    st.title("RELATÓRIO META")
+    st.markdown("Painel destinado a :blue[análise] das metas")
+    st.markdown("<br>", unsafe_allow_html=True)
+    aba3_1, aba3_2 = st.tabs(["VENDEDOR", "SUPERVISOR"])
+    # ------------------------------- VENDEDOR --------------------------------------- #
+    with aba3_1:
+        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
+        with col1:
+                st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
+                st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+        with col2:
+                vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_2', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+                if vendedorName == "LEONARDO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "EDNALDO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (141,),index=0, key='141_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "VAGNER":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (142,),index=0, key='142_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "DEIVID":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (143,),index=0, key='143_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "BISMARCK":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (145,),index=0, key='145_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "LUCIANA":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (147,),index=0, key='147_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "MATHEUS":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (148,),index=0, key='148_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "MARCIO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (150,),index=0, key='150_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "LEANDRO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (151,),index=0, key='151_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "REGINALDO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (152,),index=0, key='152_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "ROBSON":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (153,),index=0, key='153_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "JOAO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (154,),index=0, key='154_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "TAYANE":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (155,),index=0, key='155_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "MURILO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (156,),index=0, key='156_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "LUCAS":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (157,),index=0, key='157_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "DEYVISON":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (158,),index=0, key='158_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "ZEFERINO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (161,),index=0, key='161_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "EPAMINONDAS":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (164,),index=0, key='164_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "GLAUBER":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (167,),index=0, key='167_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "TARCISIO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (168,),index=0, key='168_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "THIAGO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (169,),index=0, key='169_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "FILIPE":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (170,),index=0, key='170_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "ROMILSON":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (172,),index=0, key='172_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "VALDEME":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (174,),index=0, key='174_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                else:
+                    vendedorCod = st.selectbox("ERRO", (0,),index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible") 
+        with col4:
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.expander("Como é calculada a meta?", expanded=False):
+                st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
+        if st.button("CARREGAR", key=2):
+            with st.spinner('Caregando dados...'):
+                # --------------------------- DADOS META --------------------------- #
+                meta_result = metaCalc(vendedorCod)
+                if meta_result.empty:
+                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
+                else:
+                    with st.container(border=False):
+                        # ----------------- Formatação da tabela -----------------
+                        meta_result = meta_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
+                            0: "CODSEC",
+                            1: "SECAO",
+                            2: "CODSUPERVISOR",
+                            3: "RCA",
+                            4: "TOTAL VENDIDO",
+                            5: "META MÊS",
+                            6: "META DIA"
+                        })
+
+                        # -------- Formatação para Metric
+                        meta_mes_total = "R$ {:,.2f}".format(meta_result["META MÊS"].sum())
+                        meta_dia_total = "R$ {:,.2f}".format(meta_result["META DIA"].sum())
+
+                        formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
+                        for coluna in formatarMoeda:
+                            meta_result[coluna] = meta_result[coluna].apply(format_number)
+
+                        meta_result = meta_result.drop(columns=["CODSUPERVISOR","RCA"]) # Removendo colunas desnecessárias
+
+                        # ------ DataFrame para HTML 
+                        table_html = meta_result.to_html(classes='table-style', index=False)
+                        table_html = table_html.replace('<td>', '<td class="linha-table">')
+
+                        # ------ Estilos CSS personalizados
+                        with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                            cli_css = file.read()
+                        css = f"""
+                        <style>
+                            {cli_css}
+                        </style>
+                        """       
+                        # ----------------- Exibição da tabela -----------------
+                        mes_atual = datetime.now().month # Obtém o mês atual
+                        mes = meses[mes_atual] # Obtém o nome do mês atual
+                        st.markdown(f"<h3 class='dnH3'>META {mes} VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
+
+                        st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+
+                        st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+                        
+                        # Cria a tabela HTML
+                        html_table = f"""
+                        <table class='table-style'>
+                            <tr>
+                                <th>META TOTAL</th>
+                                <th>META DIA TOTAL</th>
+                            </tr>
+                            <tr>
+                                <td class="linha-table">{meta_mes_total}</td>
+                                <td class="linha-table">{meta_dia_total}</td>
+                            </tr>
+                        </table>
+                        """
+                        # Exibe a tabela HTML
+                        st.markdown(html_table, unsafe_allow_html=True)
+
+    with aba3_2:
+        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
+        with col1:
+            st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
+            st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+        with col2:
+            supName = st.selectbox("SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder="Escolha o Supervisor", label_visibility="visible")
+            if supName == "ADAILTON":
+                with col3:
+                    supCod = st.selectbox("CÓDIGO WINTHOR", (2,), index=0, key='adailton_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+            elif supName == "VILMAR JR":
+                with col3:
+                    supCod = st.selectbox("CÓDIGO WINTHOR", (8,), index=0, key='vilmar_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+            else:
+                with col3:
+                    supCod = st.selectbox("ERRO", (0,), index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
+        with col4:
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.expander("Como é calculada a meta?", expanded=False):
+                st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
+        if st.button("CARREGAR", key=3):
+            with st.spinner('Caregando dados...'):
+                # --------------------------- DADOS META --------------------------- #
+                meta_result = metaSupCalc(supCod)
+                if meta_result.empty:
+                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
+                else:
+                    with st.container(border=False):
+                        # ----------------- Formatação da tabela -----------------
+                        meta_result = meta_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
+                            0: "CODSEC",
+                            1: "SECAO",
+                            2: "CODSUPERVISOR",
+                            3: "TOTAL VENDIDO",
+                            4: "META MÊS",
+                            5: "META DIA"
+                        })
+
+                        # -------- Formatação para Metric
+                        meta_mes_total = format_number(meta_result["META MÊS"].sum())
+                        meta_dia_total = format_number(meta_result["META DIA"].sum())
+
+                        formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
+                        for coluna in formatarMoeda:
+                            meta_result[coluna] = meta_result[coluna].apply(format_number)
+
+                        meta_result = meta_result.drop(columns=["CODSUPERVISOR"]) # Removendo colunas desnecessárias
+
+                        # ------ DataFrame para HTML 
+                        table_html = meta_result.to_html(classes='table-style', index=False)
+                        table_html = table_html.replace('<td>', '<td class="linha-table">')
+
+                        # ------ Estilos CSS personalizados
+                        with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                            cli_css = file.read()
+                        css = f"""
+                        <style>
+                            {cli_css}
+                        </style>
+                        """       
+                        # ----------------- Exibição da tabela -----------------
+                        mes_atual = datetime.now().month # Obtém o mês atual
+                        mes = meses[mes_atual] # Obtém o nome do mês atual
+                        st.markdown(f"<h3 class='dnH3'>META {mes} SUPERVISOR {supName}</h3>", unsafe_allow_html=True) # Título da seção
+
+                        st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+
+                        st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+                        
+                        # Cria a tabela HTML
+                        html_table = f"""
+                        <table class='table-style'>
+                            <tr>
+                                <th>META TOTAL</th>
+                                <th>META DIA TOTAL</th>
+                            </tr>
+                            <tr>
+                                <td class="linha-table">{meta_mes_total}</td>
+                                <td class="linha-table">{meta_dia_total}</td>
+                            </tr>
+                        </table>
+                        """
+                        # Exibe a tabela HTML
+                        st.markdown(html_table, unsafe_allow_html=True)
+
 
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
