@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from datetime import datetime
@@ -42,7 +42,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(" Selecione uma a aba abaixo :arrow_double_down:")
 
-aba1, aba2, aba3, aba4 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES"])
+aba1, aba2, aba3, aba4, aba5 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS"])
 
 with aba1:
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1524,8 +1524,8 @@ with aba2:
 
 # ------------------------------- META --------------------------------------- #
 with aba3:
-    st.title("RELATÓRIO META")
-    st.markdown("Painel destinado a :blue[análise] das metas")
+    st.title("CONSULTAR META")
+    st.markdown("Painel destinado a :blue[CONSULTA] das metas")
     st.markdown("<br>", unsafe_allow_html=True)
     aba3_1, aba3_2 = st.tabs(["VENDEDOR", "SUPERVISOR"])
     # ------------------------------- VENDEDOR --------------------------------------- #
@@ -1634,8 +1634,8 @@ with aba3:
                         })
 
                         # -------- Formatação para Metric
-                        meta_mes_total = "R$ {:,.2f}".format(meta_result["META MÊS"].sum())
-                        meta_dia_total = "R$ {:,.2f}".format(meta_result["META DIA"].sum())
+                        meta_mes_total = format_number(meta_result["META MÊS"].sum())
+                        meta_dia_total = format_number(meta_result["META DIA"].sum())
 
                         formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
                         for coluna in formatarMoeda:
@@ -1888,3 +1888,27 @@ with aba4:
                 st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
 
             tm.sleep(1)
+
+with aba5:
+    st.title(":construction: :red[EM CONSTRUÇÃO] :construction:")
+    st.title("CONSULTAR VERBA")
+    st.markdown("Painel destinado a :green[CONSULTAR VERBAS]")
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([0.5, 1, 3.75])
+    with col1:
+        btn1 = st.button("CARREGAR", key=4, type="primary")
+    with col2:
+        senha = st.text_input("Senha", "", max_chars = 6, type = "password", label_visibility="collapsed", help="Digite a senha numérica para acessar as informações")
+    with col3:
+        if senha == "" or len(senha) < 6:
+            st.caption("Sem dados para exibir. Verifique a senha inserida.", help="Não há dados para exibir, verifique a senha inserida ou contate o suporte.")
+        else:
+            pass
+    if btn1:
+        with st.spinner('Caregando dados...'):
+            verbas_result = verbas(senha)
+            if verbas_result.empty:
+                with col3:
+                    st.caption("Sem dados para exibir. Verifique a senha inserida.", help="Não há dados para exibir, verifique a senha inserida ou contate o suporte.")
+            else:
+                st.table(verbas_result)
