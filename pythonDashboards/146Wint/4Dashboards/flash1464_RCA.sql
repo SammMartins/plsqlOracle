@@ -1417,7 +1417,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 -------------------------------------------TAKE HOME-------------------------------------------------
 UNION
-SELECT 1.7 AS "ORDER",
+SELECT 1.95 AS "ORDER",
        'TAKE HOME' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1475,7 +1475,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 -------------------------------------------IMPULSO-------------------------------------------------
 UNION
-SELECT 1.75 AS "ORDER",
+SELECT 1.94 AS "ORDER",
        'IMPULSO' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1533,7 +1533,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ----------------------------------------SULMINAS-------------------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.1 AS "ORDER",
        'SULMINAS' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1591,7 +1591,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ----------------------------------------FINI--------------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.8 AS "ORDER",
        'FINI' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1649,7 +1649,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ----------------------------------------GULOZITOS--------------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.91 AS "ORDER",
        'GULOZITOS' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1707,7 +1707,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ---------------------------------------ECOFRESH-----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.93 AS "ORDER",
        'ECOFRESH' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1765,7 +1765,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ---------------------------------------DAFRUTA-----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.2 AS "ORDER",
        'DAFRUTA' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1823,7 +1823,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ---------------------------------------DANILLA-----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.9 AS "ORDER",
        'DANILLA' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1879,9 +1879,9 @@ WHERE A.CODUSUR = {rca}
 AND A.CODSEC IN (120424)
 GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
----------------------------------------SEARA-----------------------------------------
+---------------------------------------MASSA LEVE-----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.3 AS "ORDER",
        'MASSA LEVE' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1939,7 +1939,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ---------------------------------------HYTS-----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.5 AS "ORDER",
        'HYTS' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -1997,7 +1997,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 --------------------------------------SANTA MASSA---------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.7 AS "ORDER",
        'SANTA MASSA' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -2055,7 +2055,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 ------------------------------------------FRUTAP----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.92 AS "ORDER",
        'FRUTAP' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)
@@ -2113,7 +2113,7 @@ GROUP BY A.CODUSUR, D.DIASDECORR, D.DIASUTEIS, A.CODSEC
 
 -----------------------------------------MARGARINA----------------------------------------
 UNION
-SELECT 2 AS "ORDER",
+SELECT 2.4 AS "ORDER",
        'MARGARINA' as CATEGORIA, 
     -------------------------------------------------------------------
     NVL((SELECT SUM(m.cliposprev)

@@ -24,29 +24,41 @@ meses = {
 }
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
-
 # ----------------------- Configuração do dashboard
-st.set_page_config(page_title="Performax B.I.", page_icon=":bar_chart:", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="DataAdvisor BI", page_icon=":flag-bi:", layout="wide", initial_sidebar_state="expanded")
+                        
+# Cria o Cabeçalho
+header = f"""
+<body>
+    <header>
+        <div class="header-container">
+            <img src="http://192.168.38.24:8501/media/bd7d44209d9b8c26ef0f8ad4786a9a1d990bca208e5b37320396b856.png" class="logoDataAdvisor" alt="logo DataAdvisor">
+            <img src="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png" class="logoPremium" alt="Logo Premium">
+            <p class="p" >Plataforma de Inteligência de Negócios </p>
+        </div>
+    </header>
+</body>
+"""
+# ------ Estilos CSS personalizados
+with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/header.css', "r") as file:
+    cssHeader = file.read()
+cssHeader = f"""
+    <style>
+        {cssHeader}
+    </style>
+"""
 
-# ----------------------- Dashboard Layout
-columP1, columP2, columP3, columP4 = st.columns([1, 1.8, 1, 1])
-with columP2:
-    st.title(":green[PERFORMAX]", help="Plataforma de Excelência para Resultados e Fornecimento de Melhorias e Análises")
-    #st.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/performax_.png', width=180)
-with columP3:
-    st.markdown("  ")
-    st.image(path + 'Imagens/premium_transp.png', width=180)
-#st.header("  ", divider="gray")
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown(" Selecione uma a aba abaixo :arrow_double_down:")
+# Exibe o Cabeçalho
+st.markdown(header, unsafe_allow_html=True)
+st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
+
+# ----------------------- Dashboard Layout ----------------------- #
 aba1, aba2, aba3, aba4, aba5 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS"])
 
 with aba1:
     st.markdown("<br>", unsafe_allow_html=True)
-    st.header("PAINEL DE VENDAS")
+    st.title("PAINEL DE VENDAS")
     st.markdown("Legenda:")
     st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
     st.markdown(":iphone:   Apenas pedidos digitados pelo vendedor são exibidos")
@@ -278,7 +290,7 @@ with aba1:
             st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
-    st.header("RELATÓRIO FLASH")
+    st.title("RELATÓRIO FLASH")
     #st.subheader("Legenda:")
     st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
     st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
@@ -1041,13 +1053,13 @@ with aba2:
                                 # ----------------- Exibição da tabela -----------------
                                 st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
 
-                                st.markdown("<h3 class='dnH3'>TABELA FLASH VENDEDOR</h3>", unsafe_allow_html=True) # Título da seção
+                                st.markdown(f"<h3 class='dnH3'>TABELA FLASH VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
 
                                 st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit  
 
                                 # ------------- Tabela Distribuição Numérica ----------
                                 st.markdown("<br>", unsafe_allow_html=True)
-                                st.markdown("<h3 class='dnH3'>DISTRIBUIÇÃO NUMÉRICA VENDEDOR</h3>", unsafe_allow_html=True)
+                                st.markdown(f"<h3 class='dnH3'>DISTRIBUIÇÃO NUMÉRICA VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
 
                                 col1, col2, col3 = st.columns(3)
                                 with col1:
@@ -1088,6 +1100,11 @@ with aba2:
 
                                     st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                     st.markdown(dnFlashFrutap, unsafe_allow_html=True)
+
+                                # ------------- Tabela Distribuição Numérica ----------
+                                st.markdown("<br>", unsafe_allow_html=True)
+                                st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
+
 
 
 
@@ -1768,7 +1785,7 @@ with aba3:
 
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
-    st.header("RELATÓRIO CLIENTES")
+    st.title("RELATÓRIO CLIENTES")
     #st.subheader("Legenda:")
     st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1890,7 +1907,6 @@ with aba4:
             tm.sleep(1)
 
 with aba5:
-    st.title(":construction: :red[EM CONSTRUÇÃO] :construction:")
     st.title("CONSULTAR VERBA")
     st.markdown("Painel destinado a :green[CONSULTAR VERBAS]")
     st.markdown("<br>", unsafe_allow_html=True)
@@ -1906,9 +1922,33 @@ with aba5:
             pass
     if btn1:
         with st.spinner('Caregando dados...'):
+            # ------------ Execução da Consulta -----------------
             verbas_result = verbas(senha)
+
+            # ------------ Formatação da tabela -----------------
+            verbas_result = verbas_result.iloc[:, [0, 1, 2,]].rename(columns={
+                0: "COD",
+                1: "VENDEDOR",
+                2: "VERBA"
+            }).reset_index(drop=True)
+            
+            formatarMoeda = ["VERBA"]
+            for coluna in formatarMoeda:
+                verbas_result[coluna] = verbas_result[coluna].apply(format_number)
+
+            verbas_result = pd.DataFrame(verbas_result.to_dict())
+
             if verbas_result.empty:
                 with col3:
                     st.caption("Sem dados para exibir. Verifique a senha inserida.", help="Não há dados para exibir, verifique a senha inserida ou contate o suporte.")
             else:
-                st.table(verbas_result)
+                col1, col2, col3 = st.columns([0.35, 1.5, 2.05])
+                with col2:
+                    st.table(verbas_result)
+            tm.sleep(1)
+
+
+
+col1, col2, col3 = st.columns([1,1,1])
+with col2:
+    st.image(path + 'Imagens/DataAdvisor.png', width=200)

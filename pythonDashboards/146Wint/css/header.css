@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://link-para-a-fonte-mohave.com/mohave.css');
+
+body {
+    margin: 0;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+header {
+    background: url('https://th.bing.com/th/id/OIG2.n.u51vA35gqQHzYErtYt?pid=ImgGn') no-repeat center center/cover;
+    height: 30vh; /* Full screen height */
+    position: relative;
+    color: #d9312a;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    padding: 20px;
+    position: relative;
+}
+
+.logoPremium {
+    height: 85px;
+    transition: transform 0.5s ease;
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.logoPremium:hover {
+    transform: scale(1.3);
+}
+
+.logoDataAdvisor {
+    height: 120px;
+    transition: transform 0.5s ease;
+    position: absolute;
+    top: 10%;
+    left: 0%;
+    right: 30%;
+    bottom: 0;
+    margin: auto;
+}
+
+.logoDataAdvisor:hover {
+    transform: scale(1.9);
+}
+
+.p {
+    font-size: 13px; 
+    top: 10%;
+    left: 0%;
+    right: 0%;
+    bottom: -80%;
+    color: #e0e0e0; 
+    text-align: justify; 
+    line-height: 1.5; 
+    font-family: 'Mohave Negrito', Arial, sans-serif;
+}
+
+.p:hover {
+    color: #ffffff; 
+    transition: color 0.5s ease;
+}
