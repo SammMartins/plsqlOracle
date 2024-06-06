@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from datetime import datetime
@@ -25,16 +25,15 @@ meses = {
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
 # ----------------------- Configuração do dashboard
-st.set_page_config(page_title="DataAdvisor BI", page_icon=":flag-bi:", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="PREMIUM BI", page_icon="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png", layout="wide", initial_sidebar_state="expanded")
                         
 # Cria o Cabeçalho
 header = f"""
 <body>
     <header>
         <div class="header-container">
-            <img src="http://192.168.38.24:8501/media/bd7d44209d9b8c26ef0f8ad4786a9a1d990bca208e5b37320396b856.png" class="logoDataAdvisor" alt="logo DataAdvisor">
             <img src="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png" class="logoPremium" alt="Logo Premium">
-            <p class="p" >Plataforma de Inteligência de Negócios </p>
+            <p class="p" >PLATAFORMA DE BI</p>
         </div>
     </header>
 </body>
@@ -59,7 +58,6 @@ aba1, aba2, aba3, aba4, aba5 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", "
 with aba1:
     st.markdown("<br>", unsafe_allow_html=True)
     st.title("PAINEL DE VENDAS")
-    st.markdown("Legenda:")
     st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
     st.markdown(":iphone:   Apenas pedidos digitados pelo vendedor são exibidos")
     st.markdown("<br>", unsafe_allow_html=True)
@@ -291,7 +289,6 @@ with aba1:
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
     st.title("RELATÓRIO FLASH")
-    #st.subheader("Legenda:")
     st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
     st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
     #st.markdown(":building_construction: :red[Painel em construção]")
@@ -897,6 +894,8 @@ with aba2:
                     with st.spinner('Caregando dados...'):
                         # --------------- FAT -----------------------
                         flash_result = flash1464RCA(vendedorCod)
+                        # --------------- Troca ---------------------
+                        troca_result = trocaRCA(vendedorCod)
                         # --------------- DN  -----------------------
                         formatarPorcent = ['ATINGIDO']
                         # --- DANONE
@@ -1021,6 +1020,12 @@ with aba2:
                                 formatarPorcent = ["ATINGIDO", "TENDÊNCIA"]
                                 for coluna in formatarPorcent:
                                     flash_result[coluna] = flash_result[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+
+                                # ------ Troca
+                                troca_result = troca_result.iloc[:, [1, 2,]].rename(columns={
+                                    1: " ",
+                                    2: "↓"
+                                })
 
                                 # ------ DataFrame para HTML 
                                 table_html = flash_result.to_html(classes='table-style', index=False)
@@ -1786,7 +1791,6 @@ with aba3:
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
     st.title("RELATÓRIO CLIENTES")
-    #st.subheader("Legenda:")
     st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -1945,10 +1949,10 @@ with aba5:
                 col1, col2, col3 = st.columns([0.35, 1.5, 2.05])
                 with col2:
                     st.table(verbas_result)
-            tm.sleep(1)
+            tm.sleep(1.75)
 
 
 
 col1, col2, col3 = st.columns([1,1,1])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200)
+    st.image(path + 'Imagens/DataAdvisor.png', width=250)

@@ -350,7 +350,7 @@ FROM (SELECT CODSUPERVISOR,
                 WHERE E1.NUMTRANSENT = ESTC.NUMTRANSENT           
                     AND P1.NUMTRANSVENDA = E1.NUMTRANSVENDA         
                     AND P1.NUMPEDENTFUT = PED.NUMPED                
-                    AND P1.CONDVENDA = 8)                           
+                    AND P1.CONDVENDA = {sup})                           
                 WHEN PED.CONDVENDA = 8 THEN                          
                 (SELECT DISTINCT P2.NUMPED                          
                     FROM PONTUAL.PCPEDC P2, PONTUAL.PCESTCOM E2                      
@@ -1133,7 +1133,7 @@ AND E.CODSEC IN (10040, -- ACTIVIA DANONE
 
                 -----------------------------------------PLF-----------------------------------------------------
                 SELECT 0 AS "ORDER", -- PSEUDOCOLUNA CRIADA PARA FAZER A ORDENãO DAS LINHAS
-                       'PLF' AS CATEGORIA,
+                       'PLF TOTAL' AS CATEGORIA,
                     -------------------------------------------------------------------
                        TO_NUMBER((SELECT SUM(M.CLIPOSPREV)
                             FROM META M 
@@ -2320,14 +2320,14 @@ SELECT 3 AS "ORDER",
             from META m 
             WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1) AS OBJETIVO,
     -------------------------------------------------------------------
-       SUM(A.VLVENDA) AS Realizado,
+       SUM(COALESCE(A.VLVENDA, 0)) + SUM(COALESCE(C.PVENDA, 0)) AS Realizado,
     -------------------------------------------------------------------
-       TRUNC((SUM(A.VLVENDA) / NVL((SELECT SUM(m.cliposprev)
+       TRUNC(((SUM(A.VLVENDA)+SUM(C.PVENDA)) / NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1)),5) as "ATING.",
     -------------------------------------------------------------------
        TRUNC((
-       ((SUM(A.VLVENDA) / d.DIASDECORR)   *   (d.DIASuteis))    
+       (((SUM(A.VLVENDA)+SUM(C.PVENDA)) / d.DIASDECORR)   *   (d.DIASuteis))    
                     /    NVL((SELECT SUM(m.cliposprev)
                                 from META m 
                                 WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1)
@@ -2336,19 +2336,19 @@ SELECT 3 AS "ORDER",
         GREATEST(TRUNC((
         (NVL((SELECT SUM(m.cliposprev)
             from META m 
-            WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - SUM(A.VLVENDA) 
+            WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1)) - (SUM(A.VLVENDA)+SUM(C.PVENDA))
          ),2),0)   as "R.A.F.",
     -------------------------------------------------------------------  
          GREATEST(( 
          (nvl((SELECT SUM(m.cliposprev)
             from META m 
-            WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1) - SUM(A.VLVENDA)) 
+            WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1) - (SUM(A.VLVENDA)+SUM(C.PVENDA))) 
             / (D.DIASUTEIS - D.diasdecorr) 
          ),0) as "NECECIDADE DIA",
     -------------------------------------------------------------------    
-        to_number(TRUNC((SUM(A.VLVENDA) / D.DIASDECORR),2)) AS "MEDIA DIA",
+        to_number(TRUNC(((SUM(A.VLVENDA)+SUM(C.PVENDA))/ D.DIASDECORR),2)) AS "MEDIA DIA",
     ------------------------------------------------------------------- 
-        (CASE WHEN (TRUNC(((SUM(A.VLVENDA) / D.DIASDECORR) * D.DIASUTEIS) /
+        (CASE WHEN (TRUNC((((SUM(A.VLVENDA)+SUM(C.PVENDA)) / D.DIASDECORR) * D.DIASUTEIS) /
           NVL((SELECT SUM(m.cliposprev)
             from META m 
             WHERE m.CODSUPERVISOR = a.CODSUPERVISOR),1) * 100,1)) >= 100
@@ -2356,6 +2356,7 @@ SELECT 3 AS "ORDER",
             ELSE (SELECT UNISTR('\2193')||UNISTR('\2193')||UNISTR('\2193') FROM dual) 
             END) AS STATUS
     -------------------------------------------------------------------    
-FROM WINT A, DIAS D
+FROM WINT A, DIAS D, WINT_NOTFAT C
 WHERE A.CODSUPERVISOR = {sup}
+AND A.CODSEC = C.CODSEC (+)
 GROUP BY A.CODSUPERVISOR, D.DIASDECORR, D.DIASUTEIS

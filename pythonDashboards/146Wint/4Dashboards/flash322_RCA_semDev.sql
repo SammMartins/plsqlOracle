@@ -1158,7 +1158,7 @@ AND E.CODSEC IN (10040, -- ACTIVIA DANONE
 
                 -----------------------------------------PLF-----------------------------------------------------
                 SELECT 0 AS "ORDER", -- PSEUDOCOLUNA CRIADA PARA FAZER A ORDENãO DAS LINHAS
-                       'PLF' AS CATEGORIA,
+                       'PLF TOTAL' AS CATEGORIA,
                     -------------------------------------------------------------------
                        TO_NUMBER((SELECT SUM(M.CLIPOSPREV)
                             FROM META M 

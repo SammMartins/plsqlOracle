@@ -454,7 +454,7 @@ FROM DUAL) -- A 'DUAL' é uma tabela especial de uma linha e uma coluna presente
 
 -----------------------------------------PLF-----------------------------------------------------
 SELECT 0 AS "ORDER", -- Pseudocoluna criada para fazer a ordenão das linhas
-       'PLF' as CATEGORIA,
+       'PLF TOTAL' AS CATEGORIA,
     -------------------------------------------------------------------
        to_number((SELECT SUM(m.cliposprev)
             from META m 
