@@ -25,7 +25,7 @@ meses = {
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
 # ----------------------- Configuração do dashboard
-st.set_page_config(page_title="PREMIUM BI", page_icon="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="PREMIUM DASHBOARDS", page_icon="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png", layout="wide", initial_sidebar_state="expanded")
                         
 # Cria o Cabeçalho
 header = f"""
@@ -33,7 +33,6 @@ header = f"""
     <header>
         <div class="header-container">
             <img src="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png" class="logoPremium" alt="Logo Premium">
-            <p class="p" >PLATAFORMA DE BI</p>
         </div>
     </header>
 </body>
@@ -482,7 +481,7 @@ with aba2:
                             for coluna in formatarPorcent:
                                 dnFlashEcofresh[coluna] = dnFlashEcofresh[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
                         
-                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh]
+                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh, troca_result]
                         if any(df.empty for df in dataframes):
                             st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
                         else:
@@ -995,7 +994,7 @@ with aba2:
                             for coluna in formatarPorcent:
                                 dnFlashEcofresh[coluna] = dnFlashEcofresh[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
                         
-                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh]
+                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh, troca_result]
                         if any(df.empty for df in dataframes):
                             st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
                         else:
@@ -1032,6 +1031,8 @@ with aba2:
                                 table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>') # Difinindo a classe positivo para aplicar estilos
                                 table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>') # Difinindo a classe negativo para aplicar estilos
                                 table_html = table_html.replace('<td>', '<td class="linha-table">') # Difinindo a classe linha-table para aplicar estilos
+                                # --- TROCA
+                                troca_result = troca_result.to_html(classes='table-dn', index=False)
                                 # --- DN
                                 dnFlashDanone = dnFlashDanone.to_html(classes='table-dn', index=False)
                                 dnFlashNestle = dnFlashNestle.to_html(classes='table-dn', index=False)
@@ -1106,9 +1107,13 @@ with aba2:
                                     st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                     st.markdown(dnFlashFrutap, unsafe_allow_html=True)
 
-                                # ------------- Tabela Distribuição Numérica ----------
+                                # ------------- ITENS DE PERFORMANCE ----------
                                 st.markdown("<br>", unsafe_allow_html=True)
                                 st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
+                                col4, col5, col6 = st.columns(3)
+                                with col5:
+                                    st.markdown(f"<p class='dn'>TROCA {vendedorName}</p>", unsafe_allow_html=True)
+                                    st.markdown(troca_result, unsafe_allow_html=True)
 
 
 
@@ -1118,12 +1123,14 @@ with aba2:
         elif notFatOn == True and devOn == True:
             col1, col2 = st.columns([1, 0.12])
             with col2:
-                st.caption("Todos", help="Todos os pedidos digitados abatendo devolução. Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
+                st.caption("Todos", help="Todos os pedidos digitados abatendo devolução (se houver). Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
             with col1:
                 if st.button("CARREGAR"):
                     with st.spinner('Caregando dados...'):
                         # --------------- NOTFAT -----------------------
                         flash_result = flash322RCA_semDev(vendedorCod)
+                        # --------------- Troca ---------------------
+                        troca_result = trocaRCA(vendedorCod)
                         # --------------- DN ---------------------------
                         formatarPorcent = ['ATINGIDO']
                         # --- DANONE
@@ -1223,7 +1230,7 @@ with aba2:
                             for coluna in formatarPorcent:
                                 dnFlashEcofresh[coluna] = dnFlashEcofresh[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
                         
-                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh]
+                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh, troca_result]
                         if any(df.empty for df in dataframes):
                             st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
                         else:
@@ -1249,11 +1256,20 @@ with aba2:
                                 for coluna in formatarPorcent:
                                     flash_result[coluna] = flash_result[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
 
+                                # ------ Troca
+                                troca_result = troca_result.iloc[:, [1, 2,]].rename(columns={
+                                    1: " ",
+                                    2: "↓"
+                                })
+
+
                                 # ------ DataFrame para HTML 
                                 table_html = flash_result.to_html(classes='table-style', index=False)
                                 table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>') # Difinindo a classe positivo para aplicar estilos
                                 table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>') # Difinindo a classe negativo para aplicar estilos
                                 table_html = table_html.replace('<td>', '<td class="linha-table">') # Difinindo a classe linha-table para aplicar estilos
+                                # --- TROCA
+                                troca_result = troca_result.to_html(classes='table-dn', index=False)
                                 # --- DN
                                 dnFlashDanone = dnFlashDanone.to_html(classes='table-dn', index=False)
                                 dnFlashNestle = dnFlashNestle.to_html(classes='table-dn', index=False)
@@ -1280,13 +1296,13 @@ with aba2:
                                 # ----------------- Exibição da tabela -----------------
                                 st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
 
-                                st.markdown("<h3 class='dnH3'>TABELA FLASH</h3>", unsafe_allow_html=True) # Título da seção
+                                st.markdown(f"<h3 class='dnH3'>TABELA FLASH VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
 
                                 st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit  
 
                                 # ------------- Tabela Distribuição Numérica ----------
                                 st.markdown("<br>", unsafe_allow_html=True)
-                                st.markdown("<h3 class='dnH3'>DISTRIBUIÇÃO NUMÉRICA</h3>", unsafe_allow_html=True)
+                                st.markdown(f"<h3 class='dnH3'>DISTRIBUIÇÃO NUMÉRICA VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
 
                                 col1, col2, col3 = st.columns(3)
                                 with col1:
@@ -1327,6 +1343,14 @@ with aba2:
 
                                     st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                     st.markdown(dnFlashFrutap, unsafe_allow_html=True)
+
+                                # ------------- ITENS DE PERFORMANCE ----------
+                                st.markdown("<br>", unsafe_allow_html=True)
+                                st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
+                                col4, col5, col6 = st.columns(3)
+                                with col5:
+                                    st.markdown(f"<p class='dn'>TROCA {vendedorName}</p>", unsafe_allow_html=True)
+                                    st.markdown(troca_result, unsafe_allow_html=True)                                    
 
 
         # -------------------------------- Não Faturado incluso COM DEVOLUÇÃO ----------------------------------
