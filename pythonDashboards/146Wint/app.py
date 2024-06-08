@@ -25,7 +25,7 @@ meses = {
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
 # ----------------------- Configuração do dashboard
-st.set_page_config(page_title="PREMIUM DASHBOARDS", page_icon="https://sammmartins.github.io/premiumdistribuidoravca/premium_pqna.png", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="PREMIUM DASH", page_icon= path + 'Imagens/DataAdvisor.png', layout="wide", initial_sidebar_state="expanded")
                         
 # Cria o Cabeçalho
 header = f"""
@@ -50,15 +50,18 @@ cssHeader = f"""
 st.markdown(header, unsafe_allow_html=True)
 st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
-
 # ----------------------- Dashboard Layout ----------------------- #
 aba1, aba2, aba3, aba4, aba5 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS"])
 
 with aba1:
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.title("PAINEL DE VENDAS")
-    st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
-    st.markdown(":iphone:   Apenas pedidos digitados pelo vendedor são exibidos")
+    c1, c2 = st.columns([0.2, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
+    with c2:
+        st.title("PAINEL DE VENDAS")
+        st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
+        st.markdown(":iphone:   Apenas pedidos digitados pelo vendedor são exibidos")
+    st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
@@ -287,10 +290,14 @@ with aba1:
             st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
-    st.title("RELATÓRIO FLASH")
-    st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
-    st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
-    #st.markdown(":building_construction: :red[Painel em construção]")
+    c1, c2 = st.columns([0.2, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
+    with c2:
+        st.title("RELATÓRIO FLASH")
+        st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
+        st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
+    st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
     col_1, col_2 = st.columns([0.70, 1])
     with col_1:
@@ -1570,8 +1577,14 @@ with aba2:
 
 # ------------------------------- META --------------------------------------- #
 with aba3:
-    st.title("CONSULTAR META")
-    st.markdown("Painel destinado a :blue[CONSULTA] das metas")
+    c1, c2 = st.columns([0.2, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
+    with c2:
+        st.title("CONSULTAR META")
+        st.markdown("Painel destinado a :blue[CONSULTA] das metas")
+        st.markdown("<br>", unsafe_allow_html=True)
+    st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
     aba3_1, aba3_2 = st.tabs(["VENDEDOR", "SUPERVISOR"])
     # ------------------------------- VENDEDOR --------------------------------------- #
@@ -1814,8 +1827,14 @@ with aba3:
 
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
-    st.title("RELATÓRIO CLIENTES")
-    st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
+    c1, c2 = st.columns([0.2, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/5434/5434400.png', width=180)
+    with c2:
+        st.title("RELATÓRIO CLIENTES")
+        st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
+        st.markdown("<br>", unsafe_allow_html=True)
+    st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("CARREGAR DADOS", key=1):
@@ -1935,8 +1954,14 @@ with aba4:
             tm.sleep(1)
 
 with aba5:
-    st.title("CONSULTAR VERBA")
-    st.markdown("Painel destinado a :green[CONSULTAR VERBAS]")
+    c1, c2 = st.columns([0.2, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/1649/1649628.png', width=180)
+    with c2:
+        st.title("CONSULTAR VERBA")
+        st.markdown("Painel destinado a :green[CONSULTAR VERBAS]")
+        st.markdown("<br>", unsafe_allow_html=True)
+    st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([0.5, 1, 3.75])
     with col1:
@@ -1977,6 +2002,7 @@ with aba5:
 
 
 
-col1, col2, col3 = st.columns([1,1,1])
+st.divider()
+col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=250)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma de BI - Versão 1.3.2.5") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator | ".X" Versão Layout
