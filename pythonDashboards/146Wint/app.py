@@ -2005,4 +2005,4 @@ with aba5:
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma de BI - Versão 1.3.2.5") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator | ".X" Versão Layout
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma de BI - Versão 1.3.2.5") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator | ".X" Versão Layout (HTML e CSS)
