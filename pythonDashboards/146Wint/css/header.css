@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://link-para-a-fonte-mohave.com/mohave.css');
 @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-html {
-    background-color: #0e1117;
-    }
     
 body {
     margin: 0;
@@ -47,38 +43,4 @@ header {
 
 .logoPremium:hover {
     transform: scale(1.15);
-}
-
-p.titulo {
-    font-size: 45px;
-    top: 0%;
-    left: 0%;
-    right: 0%;
-    bottom: 40%;
-    font-family: "Roboto", sans-serif;
-    display: flex;
-    justify-self: center;
-    align-items: center;
-    border-radius: 10px 10px 10px 10px;
-    backdrop-filter: blur(2.5px);
-}
-
-.p {
-    font-size: 12px; 
-    top: 10%;
-    left: 0%;
-    right: 0%;
-    bottom: -80%;
-    color: #ffffff; 
-    background-color: rgba(0, 0, 0, 0.253);
-    text-align: justify; 
-    line-height: 1.5; 
-    font-family: 'Mohave Negrito', Arial, sans-serif;
-}
-
-.p:hover {
-    color: #d9312a; 
-    transition: color 0.5s ease;
-    background-color: rgba(0, 0, 0, 0.253);
-    transition: background-color 0.5s ease;
 }

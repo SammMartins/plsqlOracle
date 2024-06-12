@@ -68,6 +68,7 @@ with aba1:
     with aba1_1:
         container = st.container(border=True)
         coluna1, coluna2, coluna3 = st.columns([0.6,0.5,1])
+        col1, col2, col3 = st.columns([0.1, 1.1, 2])
         with container:
             with coluna1:
                 subcoluna1, subcoluna2 = st.columns(2)
@@ -100,19 +101,64 @@ with aba1:
                                 df1_result = df1(dataIni, dataFim)
                                 df2_result = df2(dataIni, dataFim)
 
-                            if sup_filtro:
-                                df1_result = df1_result[df1_result[3].isin(sup_filtro)]
+                            if sup_filtro and len(sup_filtro) < 2:
+                                formatarMoeda = ["VENDIDO"]
 
-                            if len(sup_filtro) > 1:
-                                with coluna1: 
-                                    st.metric("Total", 'TOTAL')
-                                with coluna2: 
-                                    subcol1, subcol2 = st.columns([2,1])
-                                    with subcol1:
-                                        st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
-                                    with subcol2:
-                                        st.metric("TOTAL DN", df1_result[2].sum())
-                            
+                                df1_result = df1_result[df1_result[3].isin(sup_filtro)]
+                                df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
+                                    0: "SUPERVISOR",
+                                    1: "VENDIDO",
+                                    2: "DN"
+                                })
+                                
+                                
+                                df2_result = df2_result[df2_result[0].isin(sup_filtro)]
+                                df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
+                                    0: "SUP",
+                                    1: "VENDEDOR",
+                                    2: "VENDIDO",
+                                    3: "DN",
+                                    4: "BASE"
+                                })
+                                df2_result = df2_result.drop(columns=["SUP", "BASE"])
+
+                                for coluna in formatarMoeda:
+                                    df1_result[coluna] = df1_result[coluna].apply(format_number)
+                                    df2_result[coluna] = df2_result[coluna].apply(format_number)
+                                
+                                with col2:
+                                    st.table(df1_result)
+                                    st.table(df2_result)
+                            else:
+                                formatarMoeda = ["VENDIDO"]
+
+                                df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
+                                    0: "SUPERVISOR",
+                                    1: "VENDIDO",
+                                    2: "DN"
+                                })
+                                subtotal = df1_result[["VENDIDO", "DN"]].sum()
+                                subtotal_df = pd.DataFrame(subtotal).transpose()
+                                subtotal_df.index = ["total"]
+                                subtotal_df["SUPERVISOR"] = "Total"
+                                df1_result = pd.concat([df1_result, subtotal_df])
+                                
+                                df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
+                                    0: "SUP",
+                                    1: "VENDEDOR",
+                                    2: "VENDIDO",
+                                    3: "DN",
+                                    4: "BASE"
+                                })
+                                df2_result = df2_result.drop(columns=["SUP", "BASE"])
+
+                                for coluna in formatarMoeda:
+                                    df1_result[coluna] = df1_result[coluna].apply(format_number)
+                                    df2_result[coluna] = df2_result[coluna].apply(format_number)
+
+                                with col2:
+                                    st.table(df1_result)
+                                    st.table(df2_result)
 
 
                         # --------------- Modo Metric --------------- #
