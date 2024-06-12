@@ -1,22 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://link-para-a-fonte-mohave.com/mohave.css');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 html {
     background-color: #0e1117;
-}
+    }
     
 body {
     margin: 0;
     font-family: "Roboto", Arial, sans-serif;
     background-color: #0e1117;
+    cursor: url('https://cdn-icons-png.flaticon.com/512/7469/7469320.png'), auto;
 }
 
 header {
     background: url('https://th.bing.com/th/id/OIG4.dwQTa0YA9jnOPui2Tg0o?pid=ImgGn') no-repeat center center/cover;
-    background-size: 100%; 
+    background-size: 115%; 
     height: 40vh;
     position: relative;
     border-radius: 5%;
+    object-fit: cover;
 }
 
 .header-container {
@@ -30,34 +33,34 @@ header {
 
 .logoPremium {
     height: 100px;
-    transition: transform 1.5s ease;
+    transition: transform 1s ease-in;
     position: absolute;
-    top: 0;
+    top: 0%;
     left: 0%;
     right: 0;
     bottom: 0;
     margin: auto;
-    background-color: #e3e8eb80;
-    border-radius: 15px 2.5px 15px 2.5px;
+    box-shadow: 10px 15px 20px #00000049;
+    border-radius: 50px 2px 50px 2px;
+    backdrop-filter: blur(2px);
 }
 
 .logoPremium:hover {
-    transform: scale(1.5);
+    transform: scale(1.15);
 }
 
-.logoDataAdvisor {
-    height: 120px;
-    transition: transform 0.5s ease;
-    position: absolute;
-    top: 10%;
+p.titulo {
+    font-size: 45px;
+    top: 0%;
     left: 0%;
-    right: 30%;
-    bottom: 0;
-    margin: auto;
-}
-
-.logoDataAdvisor:hover {
-    transform: scale(2);
+    right: 0%;
+    bottom: 40%;
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    border-radius: 10px 10px 10px 10px;
+    backdrop-filter: blur(2.5px);
 }
 
 .p {

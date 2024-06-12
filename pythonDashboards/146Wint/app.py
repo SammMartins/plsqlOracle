@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from datetime import datetime
@@ -59,7 +59,7 @@ with aba1:
         st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
     with c2:
         st.title("PAINEL DE VENDAS")
-        st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor")
+        st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
         st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
     st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
@@ -90,10 +90,10 @@ with aba1:
                 with c1:
                     st.markdown("<br>", unsafe_allow_html=True)
 
-                    dfStyle = st.toggle(":blue[Modo Tabela]", help="Selecione para exibir valores em formato de tabela")
+                    dfStyle = st.toggle(":red[Modo Tabela]", help="Selecione para exibir valores em formato de tabela")
                 with c2:
                     st.markdown("<br>", unsafe_allow_html=True)
-
+                    # --------------- Modo Tabela --------------- #
                     if st.button("Carregar Dados", key='tabela_vend'):
                         if dfStyle:
                             with st.spinner('Carregando dados...'):
@@ -103,21 +103,25 @@ with aba1:
                             if sup_filtro:
                                 df1_result = df1_result[df1_result[3].isin(sup_filtro)]
 
-                                if len(sup_filtro) > 1:
-                                    with coluna1: 
-                                        st.metric("Total", 'TOTAL')
-                                    with coluna2: 
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
-                                        with subcol2:
-                                            st.metric("TOTAL DN", df1_result[2].sum())
+                            if len(sup_filtro) > 1:
+                                with coluna1: 
+                                    st.metric("Total", 'TOTAL')
+                                with coluna2: 
+                                    subcol1, subcol2 = st.columns([2,1])
+                                    with subcol1:
+                                        st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
+                                    with subcol2:
+                                        st.metric("TOTAL DN", df1_result[2].sum())
+                            
+
+
+                        # --------------- Modo Metric --------------- #
                         else:
                             with st.spinner('Carregando dados...'):
                                 df1_result = df1(dataIni, dataFim)
                                 df2_result = df2(dataIni, dataFim)
 
-                            # ----------------- Tabela de Vendas por Supervisor -----------------
+                            # -------- Tabela de Vendas por Supervisor --------
                             if sup_filtro:
                                 df1_result = df1_result[df1_result[3].isin(sup_filtro)]
                                 with coluna1: 
@@ -1860,6 +1864,7 @@ with aba4:
     aba4_1, aba4_2 = st.tabs([':convenience_store: GERAL', ':man: POR VENDEDOR'])
     # --------------------------- GERAL ----------------------------------- #
     with aba4_1:
+        st.markdown("   ")
 
         if st.button("CARREGAR", key=1):
             with st.spinner('Carregando dados...'):
@@ -1977,7 +1982,7 @@ with aba4:
 
     with aba4_2:
         # --------------------------- RANK TOP 10 RCA --------------------------- #
-        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
+        col1, col2, col3, col4 = st.columns([1.90, 0.75, 0.75, 2.10])
         with col2:
                 vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_3', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
                 if vendedorName == "LEONARDO":
@@ -2063,6 +2068,39 @@ with aba4:
         if st.session_state['btn1']:
             with st.expander(f"RANK TOP 10 - {vendedorName}"):
                 with st.spinner('Carregando dados...'):
+                    # ------------- RANK TOP 10 ------------ #
+                    topCli2_result = top10CliRCA(vendedorCod)
+
+                    # ------------- Formatação da tabela --- #
+                    topCli2_result = topCli2_result.iloc[:, [0, 1, 2, 3, 4, 5, ]].rename(columns={
+                        0: "RANK",
+                        1: "CODCLI",
+                        2: "CLIENTE",
+                        3: "FATURADO 60 DIAS",
+                        4: "BONIFICADO",
+                        5: "% BONIFICADO"
+                    })
+
+                    # ------ Formatar REAL e %
+                    formatarMoeda = ["FATURADO 60 DIAS", "BONIFICADO"]
+                    for coluna in formatarMoeda:
+                        topCli2_result[coluna] = topCli2_result[coluna].apply(format_number)
+
+                    formatarPorcent = ["% BONIFICADO"]
+                    for coluna in formatarPorcent:
+                        topCli2_result[coluna] = topCli2_result[coluna].apply(lambda x: '{:.1f}%'.format(x))
+
+                    # ------ DataFrame para HTML 
+                    table_html = topCli2_result.to_html(classes='table-style', index=False)
+
+                    for i in range(1, 4): # Definindo a classe rank para aplicar estilos
+                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
+                    for i in range(4, 11):
+                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
+
+                    table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>')
+                    table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>')
+
                     # ------ Estilos CSS personalizados
                     with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
                         cli_css = file.read()
@@ -2074,6 +2112,9 @@ with aba4:
 
                     # ----------------- Exibição da tabela -----------------
                     st.markdown(f"<h3 class='dnH3'>RANK TOP 10 CLIENTES - VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
+                    
+                    st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+                    
                     st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
                     
 
@@ -2129,7 +2170,7 @@ with aba5:
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.3.3.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.4.3.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")
