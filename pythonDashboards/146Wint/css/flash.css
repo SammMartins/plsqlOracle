@@ -17,6 +17,7 @@
 
 .linha-table:hover {
     background-color: #073c55;
+    color: #fff3f6;
     transition: background-color 0.3s ease-in-out;
     transition: font-family 0.3s ease-in-out;
     font-size: 15px;
@@ -46,17 +47,17 @@
 
 .positivo:hover {
     background-color: #015719;
-    transition: background-color 0.3s ease-in-out;
+    transition: background-color 0.5s ease;
     color: whitesmoke;
-    transition: color 0.3s ease-in-out;
+    transition: color 0.5s ease;
     font-size: 16px;
 }
 
 .negativo:hover {
     background-color: #e2332c;
-    transition: background-color 0.3s ease-in-out;
+    transition: background-color 0.5s ease;
     color: black;
-    transition: color 0.3s ease-in-out;
+    transition: color 0.5s ease;
     font-size: 16px; 
 }
 

@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-.table-style {
+.table-styleCli {
     font-family: "Roboto", Arial, sans-serif;
     font-size: 20px;
     border-collapse: collapse;
     width: 100%;
     text-align: center;
 }
-.table-style td, .table-style th {
+.table-styleCli td, .table-style th {
     border: 1px dashed #073c55;
     padding: 8px;
 }
-.table-style tr:nth-child(even) {
+.table-styleCli tr:nth-child(even) {
     background-color: #070717;
 }
 
-.table-style th {
+.table-styleCli th {
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 20px;
     padding-top: 12px;
@@ -68,25 +68,25 @@
     font-size: 22px;  
 }
 
-.positivo {
+.positivoCli {
     color: #00FF00;
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 21px;    
 }
-.negativo {
+.negativoCli {
     color: #FF0000;
     font-family: "Arial Black", Arial, sans-serif;
     font-size: 21px;    
 }
 
-.positivo:hover {
+.positivoCli:hover {
     background-color: #015719;
     transition: background-color 0.3s ease-in-out;
     color: whitesmoke;
     transition: color 0.3s ease-in-out;
 }
 
-.negativo:hover {
+.negativoCli:hover {
     background-color: #e2332c;
     transition: background-color 0.3s ease-in-out;
     color: black;

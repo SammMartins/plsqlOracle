@@ -51,7 +51,7 @@ st.markdown(header, unsafe_allow_html=True)
 st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
 # ----------------------- Dashboard Layout ----------------------- #
-aba1, aba2, aba3, aba4, aba5 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS"])
+aba1, aba2, aba3, aba4, aba5, aba6 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: :red[DEDO DURO]"])
 
 with aba1:
     c1, c2 = st.columns([0.2, 1])
@@ -1192,7 +1192,7 @@ with aba2:
                                 st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
                                 col4, col5, col6 = st.columns(3)
                                 with col5:
-                                    st.markdown(f"<p class='dn'>TROCA {vendedorName}</p>", unsafe_allow_html=True)
+                                    st.markdown(f"<p class='dn'>ÍNDICE TROCA {vendedorName}</p>", unsafe_allow_html=True)
                                     st.markdown(troca_result, unsafe_allow_html=True)
 
 
@@ -1429,7 +1429,7 @@ with aba2:
                                 st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
                                 col4, col5, col6 = st.columns(3)
                                 with col5:
-                                    st.markdown(f"<p class='dn'>TROCA {vendedorName}</p>", unsafe_allow_html=True)
+                                    st.markdown(f"<p class='dn'>ÍNDICE TROCA {vendedorName}</p>", unsafe_allow_html=True)
                                     st.markdown(troca_result, unsafe_allow_html=True)                                    
 
 
@@ -1910,7 +1910,7 @@ with aba4:
     aba4_1, aba4_2 = st.tabs([':convenience_store: GERAL', ':man: POR VENDEDOR'])
     # --------------------------- GERAL ----------------------------------- #
     with aba4_1:
-        st.markdown("   ")
+        st.markdown("    ")
 
         if st.button("CARREGAR", key=1):
             with st.spinner('Carregando dados...'):
@@ -1939,7 +1939,7 @@ with aba4:
                         topCli_result[coluna] = topCli_result[coluna].apply(lambda x: '{:.1f}%'.format(x))
                     
                     # ------ DataFrame para HTML 
-                    table_html = topCli_result.to_html(classes='table-style', index=False)
+                    table_html = topCli_result.to_html(classes='table-styleCli', index=False)
 
                     for i in range(1, 4): # Definindo a classe rank para aplicar estilos
                         table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
@@ -2006,8 +2006,8 @@ with aba4:
                     for i in range(4, 11):
                         table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
 
-                    table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>')
-                    table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>')
+                    table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivoCli">↑↑↑</td>')
+                    table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativoCli">↓↓↓</td>')
                     
 
                     # ------ Estilos CSS personalizados
@@ -2163,7 +2163,7 @@ with aba4:
                     
                     st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
                     
-
+# --------------------------- VERBAS ----------------------------------- #
 with aba5:
     c1, c2 = st.columns([0.2, 1])
     with c1:
@@ -2210,6 +2210,17 @@ with aba5:
                 with col2:
                     st.table(verbas_result)
             tm.sleep(1.5)
+
+# --------------------------- DEDO DURO ----------------------------------- #
+with aba6: 
+    c1, c2 = st.columns([0.2, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/4380/4380709.png', width=180)
+    with c2:    
+        st.title(":point_up: DEDO DURO")
+        st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
+        st.markdown("<br>", unsafe_allow_html=True)
+    aba6_1, aba6_2 = st.tabs(["Pedidos", "Devoluções"])
 
 
 

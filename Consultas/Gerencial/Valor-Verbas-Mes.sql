@@ -9,7 +9,8 @@
         (CASE WHEN VENDAS.CODUSUR = 160 THEN 0 -- 
               WHEN VENDAS.CODUSUR = 2 THEN  1100 -- SOLICITADO NO DIA 07-06-24
               WHEN VENDAS.CODUSUR = 170 THEN  0 -- 
-              WHEN VENDAS.CODUSUR = 172 THEN  0 --            
+              WHEN VENDAS.CODUSUR = 172 THEN  0 --      
+              WHEN VENDAS.CODUSUR = 140 THEN  300 -- Solicitado na Matinal dia 13/06/24
          ELSE 0 END) AS ABATIMENTOS, 
          0 AS TOTAL
       
