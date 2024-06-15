@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, pedErro, devolucao
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from datetime import datetime
@@ -97,7 +97,7 @@ with aba1:
                     # --------------- Modo Tabela --------------- #
                     if st.button("Carregar Dados", key='tabela_vend'):
                         if dfStyle:
-                            with st.spinner('Carregando dados...'):
+                            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                                 df1_result = df1(dataIni, dataFim)
                                 df2_result = df2(dataIni, dataFim)
 
@@ -127,8 +127,8 @@ with aba1:
                                     df2_result[coluna] = df2_result[coluna].apply(format_number)
                                 
                                 with col2:
-                                    st.table(df1_result)
-                                    st.table(df2_result)
+                                    st.dataframe(df1_result)
+                                    st.dataframe(df2_result)
                             else:
                                 formatarMoeda = ["VENDIDO"]
 
@@ -157,13 +157,13 @@ with aba1:
                                     df2_result[coluna] = df2_result[coluna].apply(format_number)
 
                                 with col2:
-                                    st.table(df1_result)
-                                    st.table(df2_result)
+                                    st.dataframe(df1_result)
+                                    st.dataframe(df2_result)
 
 
                         # --------------- Modo Metric --------------- #
                         else:
-                            with st.spinner('Carregando dados...'):
+                            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                                 df1_result = df1(dataIni, dataFim)
                                 df2_result = df2(dataIni, dataFim)
 
@@ -243,7 +243,7 @@ with aba1:
         st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
         st.markdown("  2. A linha branca tracejada representa o valor da média de vendas na semana atual.")
         if st.button("Carregar Dados", key='grafico_vend_sup'):
-            with st.spinner('Carregando dados...'):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                 start_of_week = data_semana_ini()
                 end_of_week = data_semana_fim()
                 df2_result = df2(start_of_week, end_of_week)
@@ -294,7 +294,7 @@ with aba1:
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 if st.button("Carregar Dados", key='tabela_cli'):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         df3_result = df3(dataIni_cli, dataFim_cli)
                     if rca_filtro:
                         df3_result = df3_result[df3_result[2].isin(rca_filtro)]
@@ -342,7 +342,7 @@ with aba1:
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 st.write(" ") # Espaço em branco para centralizar os widgets
                 if st.button("Carregar", key='tabela_fornec'):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         if fornec_filtro:
                             df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
         if df4_resultF.empty:
@@ -381,7 +381,7 @@ with aba2:
             
     st.markdown("<br>", unsafe_allow_html=True)
 
-    with st.spinner('Carregando dados...'):
+    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
         tm.sleep(2)
         aba2_1, aba2_2, aba2_3 = st.tabs([":bar_chart: :red[Gerencial - Inativo]", ":male-office-worker: :blue[Supervisor]", ":man: :green[Vendedor]"])
         dias_uteis_result = str(diasUteis()).split()[-1]
@@ -459,7 +459,7 @@ with aba2:
                 st.caption("Faturado", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
             with col1:
                 if st.button("CARREGAR", key="flash1464SUP"):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         # --------------- FAT -----------------------
                         flash_result = flash1464SUP(supCod)
                         # --------------- DN  -----------------------
@@ -664,7 +664,7 @@ with aba2:
                 st.caption("Não Faturado", help="Pedidos digitados que não foram faturados. Abatendo devoluções.")
             with col1:
                 if st.button("CARREGAR", key="flash1464SUPnotFat"):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         # --------------- FAT -----------------------
                         flash_result = flash322SUP(supCod)
                         # --------------- DN  -----------------------
@@ -970,7 +970,7 @@ with aba2:
                 st.caption("Faturado", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
             with col1:
                 if st.button("CARREGAR"):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         # --------------- FAT -----------------------
                         flash_result = flash1464RCA(vendedorCod)
                         # --------------- Troca ---------------------
@@ -1206,7 +1206,7 @@ with aba2:
                 st.caption("Todos", help="Todos os pedidos digitados abatendo devolução (se houver). Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
             with col1:
                 if st.button("CARREGAR"):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         # --------------- NOTFAT -----------------------
                         flash_result = flash322RCA_semDev(vendedorCod)
                         # --------------- Troca ---------------------
@@ -1440,7 +1440,7 @@ with aba2:
                 st.caption("Irreal", help="Todos os pedidos digitados sem abater devolução. Essa opção apresenta um resultados mais completo das vendas, mas com sofrerá alterações caso algum pedido não seja faturado, cancelado, ou sofra algum corte.")
             with col1:
                 if st.button("CARREGAR"):
-                    with st.spinner('Carregando dados...'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                         # --------------- NOTFAT -----------------------
                         flash_result = flash322RCA(vendedorCod)
                         # --------------- DN ---------------------------
@@ -1747,7 +1747,7 @@ with aba3:
             with st.expander("Como é calculada a meta?", expanded=False):
                 st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
         if st.button("CARREGAR", key=2):
-            with st.spinner('Carregando dados...'):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                 # --------------------------- DADOS META --------------------------- #
                 meta_result = metaCalc(vendedorCod)
                 if meta_result.empty:
@@ -1833,7 +1833,7 @@ with aba3:
             with st.expander("Como é calculada a meta?", expanded=False):
                 st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
         if st.button("CARREGAR", key=3):
-            with st.spinner('Carregando dados...'):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                 # --------------------------- DADOS META --------------------------- #
                 meta_result = metaSupCalc(supCod)
                 if meta_result.empty:
@@ -1913,7 +1913,7 @@ with aba4:
         st.markdown("    ")
 
         if st.button("CARREGAR", key=1):
-            with st.spinner('Carregando dados...'):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                 # --------------------------- RANK TOP 100 --------------------------- #
                 with st.expander("RANK TOP 100"):
                     # --------------- Dados Top CLI -----------------------
@@ -2113,7 +2113,7 @@ with aba4:
         # --------------- Dados Top CLI -----------------------
         if st.session_state['btn1']:
             with st.expander(f"RANK TOP 10 - {vendedorName}"):
-                with st.spinner('Carregando dados...'):
+                with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                     # ------------- RANK TOP 10 ------------ #
                     topCli2_result = top10CliRCA(vendedorCod)
 
@@ -2185,7 +2185,7 @@ with aba5:
         else:
             pass
     if btn1:
-        with st.spinner('Carregando dados...'):
+        with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
             # ------------ Execução da Consulta -----------------
             verbas_result = verbas(senha)
 
@@ -2206,9 +2206,9 @@ with aba5:
                 with col3:
                     st.caption("Sem dados para exibir. Verifique a senha inserida.", help="Não há dados para exibir, verifique a senha inserida ou contate o suporte.")
             else:
-                col1, col2, col3 = st.columns([0.35, 1.5, 2.05])
+                col1, col2, col3 = st.columns([0.5, 2, 2])
                 with col2:
-                    st.table(verbas_result)
+                    st.dataframe(verbas_result)
             tm.sleep(1.5)
 
 # --------------------------- DEDO DURO ----------------------------------- #
@@ -2220,14 +2220,117 @@ with aba6:
         st.title(":point_up: DEDO DURO")
         st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
         st.markdown("<br>", unsafe_allow_html=True)
-    aba6_1, aba6_2 = st.tabs(["Pedidos", "Devoluções"])
+    aba6_1, aba6_2, aba6_3, aba6_4 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":lock: Inadimplência" ])
+    # ---------- ERROS ---------- #
+    with aba6_1:
+        st.header(":warning: Erros Diversos")
+        st.markdown("    ")
+        with st.expander("RELATÓRIO DO DEDO DURO :point_down:"):
+            st.divider()
+            c1,c2,c3 = st.columns([0.7,1.3,1])
+            with c3:
+                pedErro_result = pedErro()
+                pedErro_result = pedErro_result.iloc[:, [0, 1, 2, 3]].rename(columns={
+                    0: "CODCLI",
+                    1: "RCA",
+                    2: "TIPO ERRO",
+                    3: "POSIÇÃO"
+                })
+                st.markdown("    ")
+                selected_errors = st.multiselect(label="Filtro de Erros", options = pedErro_result['TIPO ERRO'].unique().tolist(), default = pedErro_result['TIPO ERRO'].unique().tolist(), placeholder="Filtro de erros", help="Selecione o tipo de erro para filtrar na tabela")
+            
+            filtered_pedErro_result = pedErro_result[pedErro_result['TIPO ERRO'].isin(selected_errors)]
 
+            with c1:
+                st.write("Legenda:")
+                container1 = st.container(border=True)
+                container1.caption(":red[Possível Duplicidade] significa que existe 1 ou mais pedidos do cliente com 1 ou mais itens repetidos.")
+                container2 = st.container(border=True)
+                container2.caption(":red[BNF SEM PEDIDO] se refere a bonificações enviadas, mas sem pedidos de venda no sistema.")
+                container3 = st.container(border=True)
+                container3.caption(":red[PEDIDO ABAIXO DO MÍNIMO] são pedidos que sofreram corte e ficaram com seu valor abaixo de R$100 e por isso não serão enviados ao cliente.")
+                container4 = st.container(border=True)
+                container4.caption(":red[CODCOB != CODPLPAG] significa que a cobrança do cliente está Boleto a Vista.")
+                container5 = st.container(border=True)
+                container5.caption(":red[X Liberado(s), Y BLOQUEADO(s)] se refere a pedidos bloqueados e liberados do mesmo cliente. Onde X é a quantidade de pedidos liberados e Y a quantidade de pedidos bloqueados.")
+
+            with c2:
+                st.write("Tabela de Erros:")
+                if filtered_pedErro_result.empty:
+                    st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                else:
+                    st.dataframe(filtered_pedErro_result)
+
+
+    # ---------- Pedidos -------- #
+    with aba6_2:
+        pass
+
+    # ---------- Devoluções ----- #
+    with aba6_3:
+        st.header(":small_red_triangle_down: :red[Devoluções] por período")
+        st.markdown("    ")
+        with st.expander("RELATÓRIO DO DEDO DURO :point_down:"):
+            subcoluna1, subcoluna2 = st.columns(2)
+            with subcoluna1:
+                dataIni = st.date_input("Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD/MM/YYYY', key='DEV1')
+            with subcoluna2:
+                dataFim = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='DEV2')
+            st.divider()
+            c1,c2,c3 = st.columns([0.7,2,0.7])
+            with c3:
+                devolucao_result = devolucao(dataIni, dataFim)
+                devolucao_result = devolucao_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
+                    0: "NUMNOTA",
+                    1: "NUMCAR",
+                    2: "SUP",
+                    3: "RCA",
+                    4: "CLIENTE",
+                    5: "MOTORISTA",
+                    6: "VALOR",
+                    7: "DEBITO RCA",
+                    8: "BNF?",
+                    9: "MOTIVO",
+                    10: "TIPO",
+                    11: "OBSERVAÇÃO"
+                })
+                st.markdown("    ")
+                selected_errors = st.multiselect(label="Filtro de Tipo", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
+            
+            filtered_devolucao_result = devolucao_result[devolucao_result['TIPO'].isin(selected_errors)]
+
+            with c1:
+                st.write("Legenda:")
+                container1 = st.container(border=True)
+                container1.caption(".")
+                container2 = st.container(border=True)
+                container2.caption(":red[Tipo C] significa devoluções por desacordos ou erros :red[Comerciais].")
+                container3 = st.container(border=True)
+                container3.caption(":blue[Tipo L] são devoluções por :blue[Logística].")
+                container4 = st.container(border=True)
+                container4.caption(":green[Tipo F] são devoluções por erros :green[Financeiros].")
+                container5 = st.container(border=True)
+                container5.caption(":orange[Tipo A] se refere a erros :orange[Administrativos].")
+                container6 = st.container(border=True)
+                container6.caption("Tipo O :grey[são devoluções por] Outros Motivos.")
+            
+            with c2:
+                st.write("Tabela de Erros:")
+                if filtered_devolucao_result.empty:
+                    st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                else:
+                    st.dataframe(filtered_devolucao_result)
+
+
+    # ---------- Inadimplência -- #
+    with aba6_4:
+        pass
 
 
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.4.3.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.5.4.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")
