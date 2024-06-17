@@ -131,8 +131,8 @@ WITH RELWINT AS (
 )
 ---------------------------------------------------------------------------------------------------------------------------
 SELECT
-    A.NUMNOTA,
-    W.NUMCARREGAMENTO AS NUMCAR,
+    ''|| A.NUMNOTA,
+    ''|| W.NUMCARREGAMENTO AS NUMCAR,
     W.CODSUPERVISOR,
     C.CODUSUR1  || ' - ' ||    
     SUBSTR(

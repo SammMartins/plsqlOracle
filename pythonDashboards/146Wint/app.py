@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import time as tm
 import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, pedErro, devolucao
+from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, pedErro, devolucao, campanhaDanone, inad, pedCont
 from utils import format_number, data_semana_ini, data_semana_fim
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from datetime import datetime
@@ -51,7 +51,7 @@ st.markdown(header, unsafe_allow_html=True)
 st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
 # ----------------------- Dashboard Layout ----------------------- #
-aba1, aba2, aba3, aba4, aba5, aba6 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: :red[DEDO DURO]"])
+aba1, aba2, aba3, aba4, aba5, aba6, aba7 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
 with aba1:
     c1, c2 = st.columns([0.2, 1])
@@ -73,9 +73,9 @@ with aba1:
             with coluna1:
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    dataIni = st.date_input("Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
+                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
                 with subcoluna2:
-                    dataFim = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
+                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
             with coluna2:
                 df2_result = df2(dataIni, dataFim)
                 if df2_result.empty:
@@ -279,9 +279,9 @@ with aba1:
             with coluna1:
                 subcoluna1, subcoluna2 = st.columns(2)
                 with subcoluna1:
-                    dataIni_cli = st.date_input("Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
+                    dataIni_cli = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
                 with subcoluna2:
-                    dataFim_cli = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
+                    dataFim_cli = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
             with coluna2:
                 df3_result = df3(dataIni, dataFim)
                 rca_filtro = st.multiselect(
@@ -314,12 +314,12 @@ with aba1:
         with coluna1:
             subcol1, subcol2 = st.columns(2)
             with subcol1:
-                dataIni_fornec = st.date_input("Data inicial", 
+                dataIni_fornec = st.date_input(":date: Data inicial", 
                                             value=pd.to_datetime('today'), 
                                             format='DD/MM/YYYY', 
                                             key='tabela_fornec1')
             with subcol2:
-                dataFim_fornec = st.date_input("Data final", 
+                dataFim_fornec = st.date_input(":date: Data final", 
                                             value=pd.to_datetime('today'), 
                                             format='DD/MM/YYYY', 
                                             key='tabela_fornec2')
@@ -561,7 +561,7 @@ with aba2:
                             for coluna in formatarPorcent:
                                 dnFlashEcofresh[coluna] = dnFlashEcofresh[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
                         
-                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh, troca_result]
+                        dataframes = [flash_result, dnFlashDanone, dnFlashDanilla, dnFlashSantaMassa, dnFlashFini, dnFlashSulMinas, dnFlashGulozitos, dnFlashHyts, dnFlashFrutap, dnFlashDaFruta, dnFlashSeara, dnFlashEcofresh]
                         if any(df.empty for df in dataframes):
                             st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
                         else:
@@ -1912,119 +1912,118 @@ with aba4:
     with aba4_1:
         st.markdown("    ")
 
-        if st.button("CARREGAR", key=1):
-            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                # --------------------------- RANK TOP 100 --------------------------- #
-                with st.expander("RANK TOP 100"):
-                    # --------------- Dados Top CLI -----------------------
-                    topCli_result = top100Cli()
+        with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+            # --------------------------- RANK TOP 100 --------------------------- #
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR RANK TOP 100"):
+                # --------------- Dados Top CLI -----------------------
+                topCli_result = top100Cli()
 
-                    # ----------------- Formatação da tabela -----------------
-                    topCli_result = topCli_result.iloc[:, [0, 1, 2, 3, 4, 5, 6,]].rename(columns={
-                        0: "RANK",
-                        1: "CODCLI",
-                        2: "CLIENTE",
-                        3: "VENDEDOR",
-                        4: "FATURADO",
-                        5: "INVESTIDO",
-                        6: "% INVESTIDA"
-                    })
+                # ----------------- Formatação da tabela -----------------
+                topCli_result = topCli_result.iloc[:, [0, 1, 2, 3, 4, 5, 6,]].rename(columns={
+                    0: "RANK",
+                    1: "CODCLI",
+                    2: "CLIENTE",
+                    3: "VENDEDOR",
+                    4: "FATURADO",
+                    5: "INVESTIDO",
+                    6: "% INVESTIDA"
+                })
 
-                    formatarMoeda = ["FATURADO", "INVESTIDO"]
-                    for coluna in formatarMoeda:
-                        topCli_result[coluna] = topCli_result[coluna].apply(format_number)
+                formatarMoeda = ["FATURADO", "INVESTIDO"]
+                for coluna in formatarMoeda:
+                    topCli_result[coluna] = topCli_result[coluna].apply(format_number)
 
-                    formatarPorcent = ["% INVESTIDA"]
-                    for coluna in formatarPorcent:
-                        topCli_result[coluna] = topCli_result[coluna].apply(lambda x: '{:.1f}%'.format(x))
-                    
-                    # ------ DataFrame para HTML 
-                    table_html = topCli_result.to_html(classes='table-styleCli', index=False)
+                formatarPorcent = ["% INVESTIDA"]
+                for coluna in formatarPorcent:
+                    topCli_result[coluna] = topCli_result[coluna].apply(lambda x: '{:.1f}%'.format(x))
+                
+                # ------ DataFrame para HTML 
+                table_html = topCli_result.to_html(classes='table-styleCli', index=False)
 
-                    for i in range(1, 4): # Definindo a classe rank para aplicar estilos
-                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
-                    for i in range(4, 11):
-                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
-                    
+                for i in range(1, 4): # Definindo a classe rank para aplicar estilos
+                    table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
+                for i in range(4, 11):
+                    table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
+                
 
-                    # ------ Estilos CSS personalizados
-                    with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
-                        cli_css = file.read()
-                    css = f"""
-                    <style>
-                        {cli_css}
-                    </style>
-                    """
+                # ------ Estilos CSS personalizados
+                with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                    cli_css = file.read()
+                css = f"""
+                <style>
+                    {cli_css}
+                </style>
+                """
 
-                    # ----------------- Exibição da tabela -----------------
-                    st.markdown("<h3 class='dnH3'>RANK TOP 100 CLIENTES</h3>", unsafe_allow_html=True) # Título da seção
+                # ----------------- Exibição da tabela -----------------
+                st.markdown("<h3 class='dnH3'>RANK TOP 100 CLIENTES</h3>", unsafe_allow_html=True) # Título da seção
 
-                    st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+                st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 
-                    st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
-
+                st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
 
 
-                # --------------------------- COMPARATIVO --------------------------- #
-                with st.expander("RANK TOP 100 - COMPARATIVO"):
-                    topCli_result = top100Cli()
-                    topCliOld_result = top100Cli_comparativo()
 
-                    # ----------------- Formatação da tabela -----------------
-                    topCli_result = topCli_result.iloc[:, [0, 1, 2, 3, 4, 5, 6,]].rename(columns={
-                        0: "RANK",
-                        1: "CODCLI",
-                        2: "CLIENTE",
-                        3: "VENDEDOR",
-                        4: "ANO ATUAL",
-                        5: "INVESTIDO",
-                        6: "% INVESTIDA"
-                    })
+            # --------------------------- COMPARATIVO --------------------------- #
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR RANK TOP 100 - COMPARATIVO"):
+                topCli_result = top100Cli()
+                topCliOld_result = top100Cli_comparativo()
 
-                    topCliOld_result = topCliOld_result.rename(columns={1: "CODCLI", 4: "ANO ANTERIOR"})
+                # ----------------- Formatação da tabela -----------------
+                topCli_result = topCli_result.iloc[:, [0, 1, 2, 3, 4, 5, 6,]].rename(columns={
+                    0: "RANK",
+                    1: "CODCLI",
+                    2: "CLIENTE",
+                    3: "VENDEDOR",
+                    4: "ANO ATUAL",
+                    5: "INVESTIDO",
+                    6: "% INVESTIDA"
+                })
 
-                    # Seleção das colunas desejadas de cada dataframe para unir
-                    topCli_result_selected = topCli_result.iloc[:, [0, 1, 2, 3, 4]]
-                    topCliOld_result_selected = topCliOld_result.iloc[:, [1, 4]]
+                topCliOld_result = topCliOld_result.rename(columns={1: "CODCLI", 4: "ANO ANTERIOR"})
 
-                    # Une os dois dataframes
-                    merge_result = pd.merge(topCli_result_selected, topCliOld_result_selected, on="CODCLI")
+                # Seleção das colunas desejadas de cada dataframe para unir
+                topCli_result_selected = topCli_result.iloc[:, [0, 1, 2, 3, 4]]
+                topCliOld_result_selected = topCliOld_result.iloc[:, [1, 4]]
 
-                    # Adiciona uma nova coluna 'TENDENCIA' que compara as colunas 'ANO ATUAL' e 'ANO ANTERIOR'
-                    merge_result['TENDENCIA'] = np.where(merge_result['ANO ATUAL'] > merge_result['ANO ANTERIOR'], '↑↑↑', '↓↓↓')
+                # Une os dois dataframes
+                merge_result = pd.merge(topCli_result_selected, topCliOld_result_selected, on="CODCLI")
 
-                    # ------ Formatar Linha
-                    formatarMoeda = ["ANO ATUAL", "ANO ANTERIOR"]
-                    for coluna in formatarMoeda:
-                        merge_result[coluna] = merge_result[coluna].apply(format_number)
-                    
-                    # ------ DataFrame para HTML 
-                    table_html = merge_result.to_html(classes='table-style', index=False)
+                # Adiciona uma nova coluna 'TENDENCIA' que compara as colunas 'ANO ATUAL' e 'ANO ANTERIOR'
+                merge_result['TENDENCIA'] = np.where(merge_result['ANO ATUAL'] > merge_result['ANO ANTERIOR'], '↑↑↑', '↓↓↓')
 
-                    for i in range(1, 4): # Definindo a classe rank para aplicar estilos
-                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
-                    for i in range(4, 11):
-                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
+                # ------ Formatar Linha
+                formatarMoeda = ["ANO ATUAL", "ANO ANTERIOR"]
+                for coluna in formatarMoeda:
+                    merge_result[coluna] = merge_result[coluna].apply(format_number)
+                
+                # ------ DataFrame para HTML 
+                table_html = merge_result.to_html(classes='table-style', index=False)
 
-                    table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivoCli">↑↑↑</td>')
-                    table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativoCli">↓↓↓</td>')
-                    
+                for i in range(1, 4): # Definindo a classe rank para aplicar estilos
+                    table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
+                for i in range(4, 11):
+                    table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
 
-                    # ------ Estilos CSS personalizados
-                    with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
-                        cli_css = file.read()
-                    css = f"""
-                    <style>
-                        {cli_css}
-                    </style>
-                    """
+                table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivoCli">↑↑↑</td>')
+                table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativoCli">↓↓↓</td>')
+                
 
-                    # ----------------- Exibição da tabela -----------------
-                    st.markdown("<h3 class='dnH3'>RANK TOP 100 CLIENTES - COMPARATIVO</h3>", unsafe_allow_html=True) # Título da seção
+                # ------ Estilos CSS personalizados
+                with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                    cli_css = file.read()
+                css = f"""
+                <style>
+                    {cli_css}
+                </style>
+                """
 
-                    st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+                # ----------------- Exibição da tabela -----------------
+                st.markdown("<h3 class='dnH3'>RANK TOP 100 CLIENTES - COMPARATIVO</h3>", unsafe_allow_html=True) # Título da seção
 
-                    st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+                st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+
+                st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
 
     with aba4_2:
         # --------------------------- RANK TOP 10 RCA --------------------------- #
@@ -2107,61 +2106,57 @@ with aba4:
                     vendedorCod = st.selectbox("ERRO", (0,),index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible") 
         with col1:
             st.markdown("<br>", unsafe_allow_html=True)
-            if 'btn1' not in st.session_state:
-                st.session_state['btn1'] = False
-            btn1 = st.button("CARREGAR", key=5, type='secondary', on_click=st.session_state.update({'btn1': True}))
         # --------------- Dados Top CLI -----------------------
-        if st.session_state['btn1']:
-            with st.expander(f"RANK TOP 10 - {vendedorName}"):
-                with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                    # ------------- RANK TOP 10 ------------ #
-                    topCli2_result = top10CliRCA(vendedorCod)
+        with st.expander(f"RANK TOP 10 - {vendedorName}"):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                # ------------- RANK TOP 10 ------------ #
+                topCli2_result = top10CliRCA(vendedorCod)
 
-                    # ------------- Formatação da tabela --- #
-                    topCli2_result = topCli2_result.iloc[:, [0, 1, 2, 3, 4, 5, ]].rename(columns={
-                        0: "RANK",
-                        1: "CODCLI",
-                        2: "CLIENTE",
-                        3: "FATURADO 60 DIAS",
-                        4: "BONIFICADO",
-                        5: "% BONIFICADO"
-                    })
+                # ------------- Formatação da tabela --- #
+                topCli2_result = topCli2_result.iloc[:, [0, 1, 2, 3, 4, 5, ]].rename(columns={
+                    0: "RANK",
+                    1: "CODCLI",
+                    2: "CLIENTE",
+                    3: "FATURADO 60 DIAS",
+                    4: "BONIFICADO",
+                    5: "% BONIFICADO"
+                })
 
-                    # ------ Formatar REAL e %
-                    formatarMoeda = ["FATURADO 60 DIAS", "BONIFICADO"]
-                    for coluna in formatarMoeda:
-                        topCli2_result[coluna] = topCli2_result[coluna].apply(format_number)
+                # ------ Formatar REAL e %
+                formatarMoeda = ["FATURADO 60 DIAS", "BONIFICADO"]
+                for coluna in formatarMoeda:
+                    topCli2_result[coluna] = topCli2_result[coluna].apply(format_number)
 
-                    formatarPorcent = ["% BONIFICADO"]
-                    for coluna in formatarPorcent:
-                        topCli2_result[coluna] = topCli2_result[coluna].apply(lambda x: '{:.1f}%'.format(x))
+                formatarPorcent = ["% BONIFICADO"]
+                for coluna in formatarPorcent:
+                    topCli2_result[coluna] = topCli2_result[coluna].apply(lambda x: '{:.1f}%'.format(x))
 
-                    # ------ DataFrame para HTML 
-                    table_html = topCli2_result.to_html(classes='table-style', index=False)
+                # ------ DataFrame para HTML 
+                table_html = topCli2_result.to_html(classes='table-style', index=False)
 
-                    for i in range(1, 4): # Definindo a classe rank para aplicar estilos
-                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
-                    for i in range(4, 11):
-                        table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
+                for i in range(1, 4): # Definindo a classe rank para aplicar estilos
+                    table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank{i}">{i}</td>')
+                for i in range(4, 11):
+                    table_html = table_html.replace(f'<td>{i}</td>', f'<td class="rank">{i}</td>')
 
-                    table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>')
-                    table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>')
+                table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>')
+                table_html = table_html.replace('<td>↓↓↓</td>', '<td class="negativo">↓↓↓</td>')
 
-                    # ------ Estilos CSS personalizados
-                    with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
-                        cli_css = file.read()
-                    css = f"""
-                    <style>
-                        {cli_css}
-                    </style>
-                    """
+                # ------ Estilos CSS personalizados
+                with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                    cli_css = file.read()
+                css = f"""
+                <style>
+                    {cli_css}
+                </style>
+                """
 
-                    # ----------------- Exibição da tabela -----------------
-                    st.markdown(f"<h3 class='dnH3'>RANK TOP 10 CLIENTES - VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
-                    
-                    st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
-                    
-                    st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+                # ----------------- Exibição da tabela -----------------
+                st.markdown(f"<h3 class='dnH3'>RANK TOP 10 CLIENTES - VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
+                
+                st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+                
+                st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
                     
 # --------------------------- VERBAS ----------------------------------- #
 with aba5:
@@ -2220,12 +2215,12 @@ with aba6:
         st.title(":point_up: DEDO DURO")
         st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
         st.markdown("<br>", unsafe_allow_html=True)
-    aba6_1, aba6_2, aba6_3, aba6_4 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":lock: Inadimplência" ])
+    aba6_1, aba6_2, aba6_3, aba6_4, aba6_5 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":rotating_light: Inadimplência", ":package: Estoque"])
     # ---------- ERROS ---------- #
     with aba6_1:
         st.header(":warning: Erros Diversos")
         st.markdown("    ")
-        with st.expander("RELATÓRIO DO DEDO DURO :point_down:"):
+        with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
             st.divider()
             c1,c2,c3 = st.columns([0.7,1.3,1])
             with c3:
@@ -2264,18 +2259,37 @@ with aba6:
 
     # ---------- Pedidos -------- #
     with aba6_2:
-        pass
+        st.header(":pencil: Pedidos com Erros")
+        st.markdown("    ")
+        with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            pedCont_result = pedCont()
+            st.markdown(f"<h3 class='dnH3'>QUANTIDADE DE PEDIDOS BLOQUEADOS</h3>", unsafe_allow_html=True)
+            subcoluna1, subcoluna2, subcoluna3= st.columns([1, 1.5, 1])
+            with subcoluna2:
+                # ----------------- Formatação da tabela -----------------
+                pedCont_result = pedCont_result.iloc[:, [0, 1, 2,]].rename(columns={
+                    0: "BLOQUEADOS",
+                    1: "PENDENTES",
+                    2: "BLOQ. + PEND."
+                })    
+
+                # ------ Exibindo DataFrame para HTML 
+                table_html = pedCont_result.to_html(classes='table-style-bloq', index=False)
+                table_html = table_html.replace('<td>', '<td class="linha-table-bloq">')
+                st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+            c1,c2,c3 = st.columns([0.7,2,0.7])
+            
 
     # ---------- Devoluções ----- #
     with aba6_3:
-        st.header(":small_red_triangle_down: :red[Devoluções] por período")
+        st.header(":small_red_triangle_down: Devoluções por período")
         st.markdown("    ")
-        with st.expander("RELATÓRIO DO DEDO DURO :point_down:"):
-            subcoluna1, subcoluna2 = st.columns(2)
+        with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            subcoluna1, subcoluna2, subcoluna3, subcoluna4 = st.columns([0.5, 0.5, 1, 1])
             with subcoluna1:
-                dataIni = st.date_input("Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD/MM/YYYY', key='DEV1')
+                dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD/MM/YYYY', key='DEV1')
             with subcoluna2:
-                dataFim = st.date_input("Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='DEV2')
+                dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='DEV2')
             st.divider()
             c1,c2,c3 = st.columns([0.7,2,0.7])
             with c3:
@@ -2294,6 +2308,9 @@ with aba6:
                     10: "TIPO",
                     11: "OBSERVAÇÃO"
                 })
+                formatarMoeda = ["VALOR", "DEBITO RCA"]
+                for coluna in formatarMoeda:
+                    devolucao_result[coluna] = devolucao_result[coluna].apply(format_number)
                 st.markdown("    ")
                 selected_errors = st.multiselect(label="Filtro de Tipo", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
             
@@ -2302,7 +2319,7 @@ with aba6:
             with c1:
                 st.write("Legenda:")
                 container1 = st.container(border=True)
-                container1.caption(".")
+                container1.caption("Selecione uma data acima para visualizar as devoluções desse período.")
                 container2 = st.container(border=True)
                 container2.caption(":red[Tipo C] significa devoluções por desacordos ou erros :red[Comerciais].")
                 container3 = st.container(border=True)
@@ -2324,13 +2341,146 @@ with aba6:
 
     # ---------- Inadimplência -- #
     with aba6_4:
-        pass
+        st.header(":rotating_light: Inadimplência por Clientes")
+        st.markdown("    ")
+        with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            col1, col2, col3, col4 = st.columns([1, 1, 0.55, 2])
+            with col1:
+                    vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_4', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+                    if vendedorName == "LEONARDO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "EDNALDO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (141,),index=0, key='141_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "VAGNER":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (142,),index=0, key='142_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "DEIVID":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (143,),index=0, key='143_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "BISMARCK":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (145,),index=0, key='145_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "LUCIANA":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (147,),index=0, key='147_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "MATHEUS":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (148,),index=0, key='148_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "MARCIO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (150,),index=0, key='150_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "LEANDRO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (151,),index=0, key='151_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "REGINALDO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (152,),index=0, key='152_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "ROBSON":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (153,),index=0, key='153_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "JOAO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (154,),index=0, key='154_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "TAYANE":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (155,),index=0, key='155_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "MURILO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (156,),index=0, key='156_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "LUCAS":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (157,),index=0, key='157_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "DEYVISON":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (158,),index=0, key='158_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "ZEFERINO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (161,),index=0, key='161_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "EPAMINONDAS":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (164,),index=0, key='164_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "GLAUBER":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (167,),index=0, key='167_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "TARCISIO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (168,),index=0, key='168_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "THIAGO":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (169,),index=0, key='169_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "FILIPE":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (170,),index=0, key='170_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "ROMILSON":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (172,),index=0, key='172_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "VALDEME":
+                        with col2:
+                            vendedorCod = st.selectbox("CÓDIGO WINTHOR", (174,),index=0, key='174_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    else:
+                        vendedorCod = st.selectbox("ERRO", (0,),index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible") 
+
+            st.divider()
+            c1,c2 = st.columns([0.5,2])
+            inad_result = inad(vendedorCod)
+            inad_result = inad_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]].rename(columns={
+                0: "SUP",
+                1: "RCA",
+                2: "CLIENTE",
+                3: "PED. NO SISTEMA?",
+                4: "TÍTULO R$",
+                5: "JUROS APROX.",
+                6: "TOTAL R$",
+                7: "COBRANÇA",
+                8: "DIAS EM VENCI.",
+                9: "EMISSAO",
+                10: "DT VENCI."
+            })
+            formatarMoeda = ["TÍTULO R$", "JUROS APROX.", "TOTAL R$"]
+            for coluna in formatarMoeda:
+                inad_result[coluna] = inad_result[coluna].apply(format_number)
+
+            formatarData = ["EMISSAO", "DT VENCI."]
+            for coluna in formatarData:
+                inad_result[coluna] = pd.to_datetime(inad_result[coluna]).dt.strftime('%d/%m/%Y')
+
+            inad_result = inad_result.drop(columns=["RCA"])
+
+            with c1:
+                st.write("Legenda:")
+                container1 = st.container(border=True)
+                container1.caption("Selecione o vendedor acima para visualizar os clientes com débitos na empresa.")
+
+            with c2:
+                st.write("Tabela de Inadimplentes:")
+                if inad_result.empty:
+                    st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                else:
+                    st.dataframe(inad_result)
+
+    # ---------- Estoque ---------- #
+    with aba6_5:
+        st.header(":package: Estoque")
+        st.markdown("    ")
+        with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            c1,c2,c3 = st.columns([0.7, 2, 0.7])
+
+                    
+# --------------------------- Outros ----------------------------------- #
+with aba7:
+    with st.spinner('Carregando dados...'): 
+        btn1 = st.button("CARREGAR OUTROS", key=6, type="primary")
+        if btn1:
+            result = campanhaDanone()
+            st.dataframe(result)
 
 
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.5.4.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.6.5.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")

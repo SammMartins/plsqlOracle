@@ -1,5 +1,5 @@
 SELECT
-    ped.codcli AS Cliente,
+    ped.codcli || '' AS Cliente,
     pedc.codusur AS RCA,
     'Possível Duplicidade' AS Tipo,
     (CASE
@@ -45,7 +45,7 @@ GROUP BY
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
 SELECT DISTINCT
-    a.codcli AS Cliente,
+    a.codcli || '' AS Cliente,
     pedc.codusur AS RCA,
     'BNF SEM PEDIDO' AS Tipo,
     (CASE
@@ -71,7 +71,7 @@ AND a.codcli != 11185 --Premium
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
 SELECT DISTINCT
-    a.codcli AS Cliente,
+    a.codcli || '' AS Cliente,
     a.codusur1 AS RCA,
     'Erro Cadastro UF' AS Tipo,
     NULL AS Status
@@ -80,7 +80,7 @@ WHERE a.ESTENT LIKE '' OR a.ESTENT IS NULL
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
 SELECT DISTINCT
-    a.codcli AS Cliente,
+    a.codcli || '' AS Cliente,
     a.codusur AS RCA,
     'PEDIDO ABAIXO DO MÍNIMO' AS Tipo,
     (CASE
@@ -98,7 +98,7 @@ AND a.vlatend < 100
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
 SELECT DISTINCT
-    c.codcli AS Cliente,
+    c.codcli || '' AS Cliente,
     c.codusur AS RCA,
     'CODCOB != CODPLPAG' AS Tipo,
     (CASE
@@ -116,7 +116,7 @@ AND c.data > SYSDATE-6
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
 SELECT DISTINCT
-    c.codcli AS Cliente,
+    c.codcli || '' AS Cliente,
     c.codusur AS RCA,
     'CODCOB BNF != CODPLPAG BNF' AS Tipo,
     (CASE
@@ -133,7 +133,7 @@ AND c.posicao NOT IN ('F', 'C')
 ------------------------------------------------------------------------------------------------------------------
 UNION ALL
 SELECT 
-    liberados.Cliente,
+    liberados.Cliente || '',
     liberados.RCA,
     liberados.Contagem || ' Liberado(s), ' || NVL(bloqueados.Contagem, 0) || ' BLOQUEADO(s)' AS Tipo,
     '' AS Status

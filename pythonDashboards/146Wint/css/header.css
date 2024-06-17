@@ -44,3 +44,31 @@ header {
 .logoPremium:hover {
     transform: scale(1.15);
 }
+
+.table-style-bloq {
+    font-family: "Roboto", Arial, sans-serif;
+    font-size: 22px;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+}
+.table-style-bloq td, .table-style-bloq th {
+    border: 1px dashed #073c55;
+    padding: 8px;
+}
+.table-style-bloq tr:nth-child(even) {
+    background-color: #070717;
+}
+
+.linha-table-bloq:hover {
+    background-color: #073c55;
+    color: #fff3f6;
+    transition: background-color 0.3s ease-in-out;
+    transition: font-family 0.3s ease-in-out;
+    font-size: 22px;
+    font-weight: 600;   
+}
+
+th {
+    text-align: center;
+}
