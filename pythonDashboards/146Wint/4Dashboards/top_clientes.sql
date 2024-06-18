@@ -90,7 +90,6 @@ FROM  (SELECT CODCLI,
                  0,
                  6,
                  0,
-                 11,
                  0,
                  12,
                  0,
@@ -102,7 +101,6 @@ FROM  (SELECT CODCLI,
                  0,
                  6,
                  0,
-                 11,
                  0,
                  12,
                  0,
@@ -170,7 +168,6 @@ FROM  (SELECT CODCLI,
                  0,
                  6,
                  0,
-                 11,
                  0,
                  12,
                  0,
@@ -181,7 +178,6 @@ FROM  (SELECT CODCLI,
                  0,
                  6,
                  0,
-                 11,
                  0,
                  12,
                  0,
@@ -274,9 +270,7 @@ FROM  (SELECT CODCLI,
        DECODE(PCNFSAID.CONDVENDA,
                5,
                DECODE(PCMOV.PBONIFIC, NULL, PCMOV.PTABELA, PCMOV.PBONIFIC)
-               ,6,
-               DECODE(PCMOV.PBONIFIC, NULL, PCMOV.PTABELA, PCMOV.PBONIFIC),
-               11,
+               ,6, --- aqui
                DECODE(PCMOV.PBONIFIC, NULL, PCMOV.PTABELA, PCMOV.PBONIFIC),
                1,
                NVL(PCMOV.PBONIFIC,0),                                      
@@ -324,7 +318,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
  PCPRACA.ROTA,
  PCROTAEXP.DESCRICAO DESCROTA,
                (NVL(PCMOV.VLREPASSE,0) * DECODE(PCNFSAID.CONDVENDA,
-              5,0,6,0,11,0,12,0,DECODE(PCMOV.CODOPER,'SB',0,NVL(PCMOV.QT, 0)) ))  AS VLREPASSE
+              5,0,6,0,0,12,0,DECODE(PCMOV.CODOPER,'SB',0,NVL(PCMOV.QT, 0)) ))  AS VLREPASSE
   FROM PONTUAL.PCNFSAID,
        PONTUAL.PCPRODUT,
        PONTUAL.PCMOV,
@@ -345,7 +339,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
        PONTUAL.PCMOVCOMPLE
  WHERE PCMOV.NUMTRANSVENDA = PCNFSAID.NUMTRANSVENDA
    AND PCMOV.CODFILIAL = PCNFSAID.CODFILIAL 
-   AND PCMOV.DTMOV BETWEEN  SYSDATE - 61 AND SYSDATE
+   AND PCMOV.DTMOV BETWEEN  SYSDATE - 60 AND SYSDATE
    AND PCMOV.CODPROD = PCPRODUT.CODPROD
    AND PCNFSAID.CODPRACA = PCPRACA.CODPRACA(+)
    AND PCATIVI.CODATIV(+) = PCCLIENT.CODATV1
@@ -366,9 +360,11 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
    AND PCPRODUT.CODSEC = PCSECAO.CODSEC(+)
    AND DECODE(PCNFSAID.CODGERENTE,NULL,PCSUPERV.CODGERENTE,PCNFSAID.CODGERENTE) = PCGERENTE.CODGERENTE 
    AND PCNFSAID.CODFISCAL NOT IN (522, 622, 722, 532, 632, 732)
-   AND PCNFSAID.CONDVENDA NOT IN (4, 8, 10, 13, 20, 98, 99)
+   AND PCNFSAID.CONDVENDA NOT IN (4, 8, 10, 13, 20, 98, 99, 11)
    AND (PCNFSAID.DTCANCEL IS NULL)
-   AND PCNFSAID.DTSAIDA BETWEEN  SYSDATE - 61 AND SYSDATE
+       AND PCPRODUT.CODSEC IN ('1005','120387','10040','10042','120239','120424','10047','10046','10048','11007','10041','10044','1003','10001','1023','10050','{impulso}','{takehome}','{acai}') --seção
+ AND  NVL(PCNFSAID.CODSUPERVISOR,PCSUPERV.CODSUPERVISOR) {supOffOn} ('{sup}')
+   AND PCNFSAID.DTSAIDA BETWEEN  SYSDATE - 60 AND SYSDATE
            AND PCMOV.CODFILIAL IN('3')
            AND PCNFSAID.CODFILIAL IN('3')
 )
@@ -494,7 +490,6 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
                  0,
                  6,
                  0,
-                 11,
                  0,
                  12,
                  0,
@@ -505,7 +500,6 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
                  0,
                  6,
                  0,
-                 11,
                  0,
                  12,
                  0,
@@ -516,8 +510,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
           5,                                                                    
           0,                                                                    
           6,                                                                    
-          0,                                                                    
-          11,                                                                   
+          0,                                                                                                                                    
           0,                                                                    
           (DECODE(PCMOV.PUNIT,                                                  
                   0,                                                            
@@ -533,8 +526,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
           5,                                                                    
           0,                                                                    
           6,                                                                    
-          0,                                                                    
-          11,                                                                   
+          0,                                                            
           0,                                                                    
           (nvl(PCMOV.ST,0) + NVL(PCMOVCOMPLE.VLSTTRANSFCD,0)) )) VALORST,                                          
           0 VALORSTX,                                                          
@@ -543,8 +535,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
           5,                                                                    
           0,                                                                    
           6,                                                                    
-          0,                                                                    
-          11,                                                                   
+          0,                                                                                                                                   
           0,                                                                    
           nvl(PCMOV.VLIPI,0) )) VALORIPI,                                          
           0 VALORIPIX,                                                          
@@ -553,8 +544,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
           5,                                                                    
           0,                                                                    
           6,                                                                    
-          0,                                                                    
-          11,                                                                   
+          0,                                                                                                                                     
           0,                                                                    
           (DECODE(PCMOV.PUNIT,                                                  
                   0,                                                            
@@ -573,27 +563,21 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
   (DECODE(PCNFSAID.CONDVENDA,                                                   
            5,                                                                   
            NVL(PCMOV.PUNITCONT, 0),                                             
-           6,                                                                   
-           NVL(PCMOV.PUNITCONT, 0),                                             
-           11,                                                                  
+           6, --aqui                                                                                                        
            NVL(PCMOV.PUNITCONT, 0),                                             
            12,                                                                  
            NVL(PCMOV.PUNITCONT, 0),                                             
            0) + DECODE(PCNFSAID.CONDVENDA,                                      
                          5,                                                     
                          NVL(PCMOV.VLOUTROS, 0),                                
-                         6,                                                     
-                         NVL(PCMOV.VLOUTROS, 0),                                
-                         11,                                                    
+                         6,                                                                                                      
                          NVL(PCMOV.VLOUTROS, 0),                                
                          12,                                                    
                          NVL(PCMOV.VLOUTROS, 0)) +                              
   DECODE(PCNFSAID.CONDVENDA,                                                    
            5,                                                                   
            NVL(PCMOV.VLFRETE, 0),                                               
-           6,                                                                   
-           NVL(PCMOV.VLFRETE, 0),                                               
-           11,                                                                  
+           6,                                                                                                                                    
            NVL(PCMOV.VLFRETE, 0),                                               
            12,                                                                  
            NVL(PCMOV.VLFRETE, 0)))) VLDEVOLUCAOBONI,                            
@@ -624,9 +608,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
                        PCMOV.PBONIFIC),                                         
                 1,                                                              
                 NVL(PCMOV.PBONIFIC,0),                                           
-                14,                                                             
-                NVL(PCMOV.PBONIFIC,0),                                           
-                11,                                                             
+                14,                                                                                                                      
                 DECODE(PCMOV.PBONIFIC,                                          
                        NULL,                                                    
                        PCMOV.PTABELA,                                           
@@ -675,7 +657,7 @@ WHERE P.CODFORNEC = PCFORNEC.CODFORNEC AND NVL(P.REVENDA,'S')  = 'S' ) QTMIXCADN
           ESTC.NUMTRANSENT                                       
      FROM PONTUAL.PCPEDC PED, PONTUAL.PCESTCOM ESTC                              
     WHERE PED.NUMTRANSVENDA(+) = ESTC.NUMTRANSVENDA
-   AND PED.DATA BETWEEN  SYSDATE - 61 AND SYSDATE
+   AND PED.DATA BETWEEN  SYSDATE - 60 AND SYSDATE
       ) TEMVENDATV8 
  WHERE PCNFENT.NUMTRANSENT = PCESTCOM.NUMTRANSENT
    AND PCCLIENT.CODPRACA = PCPRACA.CODPRACA
@@ -708,14 +690,16 @@ AND NVL(PCNFSAID.CODSUPERVISOR,PCUSUARI.CODSUPERVISOR) = PCSUPERV.CODSUPERVISOR
    AND NVL(PCNFENT.TIPOMOVGARANTIA, -1) = -1
    AND NVL(PCNFENT.OBS, 'X') <> 'NF CANCELADA'
     AND TEMVENDATV8.NUMTRANSENT(+) = PCNFENT.NUMTRANSENT       
-          AND NVL(PCNFSAID.CONDVENDA, 0) NOT IN (4, 8, 10, 13, 20, 98, 99)
-   AND PCNFENT.DTENT BETWEEN  SYSDATE - 61 AND SYSDATE
+          AND NVL(PCNFSAID.CONDVENDA, 0) NOT IN (4, 8, 10, 13, 20, 98, 99, 11)
+   AND PCNFENT.DTENT BETWEEN  SYSDATE - 60 AND SYSDATE
 
 
+       AND PCPRODUT.CODSEC IN ('1005','120387','10040','10042','120239','120424','10047','10046','10048','11007','10041','10044','1003','10001','1023','10050','{impulso}','{takehome}','{acai}') --seção
            AND PCMOV.CODFILIAL IN('3')
            AND PCNFENT.CODFILIAL IN('3')
-   AND PCNFENT.DTENT BETWEEN  SYSDATE - 61 AND SYSDATE
-AND PCMOV.DTMOV BETWEEN  SYSDATE - 61 AND SYSDATE
+   AND PCNFENT.DTENT BETWEEN  SYSDATE - 60 AND SYSDATE
+   AND PCMOV.DTMOV BETWEEN  SYSDATE - 60 AND SYSDATE
+AND  NVL(PCNFSAID.CODSUPERVISOR,PCSUPERV.CODSUPERVISOR) {supOffOn} ('{sup}')
 )
 
         GROUP BY CODCLI, CLIENTE, RAMO) DEVOLUCAO,
@@ -731,8 +715,9 @@ GROUP BY VENDAS.CODCLI,
        DEVOLUCAO.RAMO,
        VENDAS.CODATIV,
        VENDAS.RAMO 
-ORDER BY VLVENDA DESC),
-
+ORDER BY VLVENDA DESC
+),
+                ------------------------------------------------------------------------------------------------------
 USUR_CLI AS (
     SELECT 
     usur.codsupervisor,
@@ -756,6 +741,7 @@ FROM (
         SUBSTR(W.CLIENTE,0,28) AS CLIENTE, 
         UC.RCA VENDEDOR,
         W.VLVENDA AS FATURADO,
+        W.VLVENDA / 2 AS MEDIA,
         W.VLBONIFIC AS "BONIFICADO",
         TRUNC((W.VLBONIFIC / NULLIF(W.VLVENDA, 0)) * 100,1) AS "% BONIFICADO"
     FROM
@@ -763,4 +749,4 @@ FROM (
     LEFT JOIN  
         USUR_CLI UC ON UC.CODCLI = W.CODCLI
 )
-WHERE ROWNUM <= 100 --TOP 100
+WHERE ROWNUM <= 100 --TOP 100  {impulso} {takehome} {acai} {sup} {supOffOn}

@@ -576,7 +576,7 @@ def flash322SUP(sup):
         con.close()
     return df
 
-def top100Cli():
+def top100Cli(sup, impulso, takehome, acai, supOffOn):
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
 
@@ -596,6 +596,8 @@ def top100Cli():
 
     with open(path + 'top_clientes.sql', 'r') as arquivo: 
         consulta = arquivo.read()
+
+    consulta = consulta.format(supOffOn=supOffOn, sup=sup, impulso=impulso, takehome=takehome, acai=acai)
 
     try:
         cursor.execute(consulta)
@@ -847,7 +849,7 @@ def devolucao(dataIni, dataFim):
         con.close()
     return df
 
-def top100Cli_comparativo():
+def top100Cli_comparativo(sup, impulso, takehome, acai, supOffOn):
     if None in [username, password, host, port, sid]:
         raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
 
@@ -868,6 +870,7 @@ def top100Cli_comparativo():
     with open(path + 'top_clientes_comparativo.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
+    consulta = consulta.format(supOffOn=supOffOn, sup=sup, impulso=impulso, takehome=takehome, acai=acai)
     try:
         cursor.execute(consulta)
 
