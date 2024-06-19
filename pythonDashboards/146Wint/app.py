@@ -1,12 +1,22 @@
+# Módulos da biblioteca padrão
+from datetime import datetime, timedelta
+import math
+import time as tm
+
+# Módulos Dashboards
 import numpy as np
 import pandas as pd
 import streamlit as st
-import time as tm
-import math
-from dataset import df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, pedErro, devolucao, campanhaDanone, inad, pedCont
-from utils import format_number, data_semana_ini, data_semana_fim
+
+# Módulos da aplicação/locais 
+from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
+                     flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
+                     top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
+                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266)
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
-from datetime import datetime, timedelta
+from utils import format_number, data_semana_ini, data_semana_fim, getTableXls
+
+
 
 meses = {
     1: "JANEIRO",
@@ -54,7 +64,7 @@ st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 aba1, aba2, aba3, aba4, aba5, aba6, aba7 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
 with aba1:
-    c1, c2 = st.columns([0.2, 1])
+    c1, c2 = st.columns([0.35, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
     with c2:
@@ -82,7 +92,7 @@ with aba1:
                     st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
                 else:
                     sup_filtro = st.multiselect(
-                        "Escolha o Supervisor", 
+                        ":male-office-worker: Escolha o Supervisor", 
                         df2_result[0].unique(), 
                         key='tabela_vend3'
                     )
@@ -236,7 +246,7 @@ with aba1:
                                             st.metric("VENDIDO", format_number(i))
                                     with subcol2:
                                         for i in df2_result[3]:
-                                            st.metric("DN", i)    
+                                            st.metric("DN", i)                                                
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
     with aba1_2:
         st.markdown("Legenda:")
@@ -363,7 +373,7 @@ with aba1:
             st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
-    c1, c2 = st.columns([0.2, 1])
+    c1, c2 = st.columns([0.35, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
     with c2:
@@ -434,7 +444,7 @@ with aba2:
                 st.image(path + 'Imagens/100porcent.png', width=200, caption='VELOCIDADE')
 
         with col3:
-            supName = st.selectbox("SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup', help="Selecione o Supervisor", placeholder="Escolha o Supervisor", label_visibility="visible")
+            supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
             if supName == "ADAILTON":
                 supCod = st.selectbox("CÓDIGO WINTHOR", (2,),index=0, key='adailton', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif supName == "VILMAR JR":
@@ -902,7 +912,7 @@ with aba2:
                 st.image(path + 'Imagens/100porcent.png', width=200, caption='VELOCIDADE')
 
         with col3:
-            vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+            vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
             if vendedorName == "LEONARDO":
                 vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140', help="Código RCA preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
             elif vendedorName == "EDNALDO":
@@ -1650,7 +1660,7 @@ with aba2:
 
 # ------------------------------- META --------------------------------------- #
 with aba3:
-    c1, c2 = st.columns([0.2, 1])
+    c1, c2 = st.columns([0.35, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
     with c2:
@@ -1667,7 +1677,7 @@ with aba3:
                 st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
                 st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
         with col2:
-                vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_2', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+                vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_2', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
                 if vendedorName == "LEONARDO":
                     with col3:
                         vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -1818,7 +1828,7 @@ with aba3:
             st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
             st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
         with col2:
-            supName = st.selectbox("SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder="Escolha o Supervisor", label_visibility="visible")
+            supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
             if supName == "ADAILTON":
                 with col3:
                     supCod = st.selectbox("CÓDIGO WINTHOR", (2,), index=0, key='adailton_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -1900,7 +1910,7 @@ with aba3:
 
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
-    c1, c2 = st.columns([0.2, 1])
+    c1, c2 = st.columns([0.35, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/5434/5434400.png', width=180)
     with c2:
@@ -1921,7 +1931,7 @@ with aba4:
             # --------------------- Cabeçalho de itens ---------------------
             col1, col2, col3, col4 = st.columns([1, 1, 2, 0.55])
             with col1:
-                supName = st.selectbox("SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_3', help="Selecione o Supervisor", placeholder="Escolha o Supervisor", label_visibility="visible")
+                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_3', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
                 if supName == "ADAILTON":
                     with col2:
                         supCod = st.selectbox("CÓDIGO WINTHOR", (2,), index=0, key='adailton_3', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -2003,7 +2013,7 @@ with aba4:
             # --------------------- Cabeçalho de itens ---------------------
             col1, col2, col3, col4 = st.columns([1, 1, 2, 0.55])
             with col1:
-                supName = st.selectbox("SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_4', help="Selecione o Supervisor", placeholder="Escolha o Supervisor", label_visibility="visible")
+                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_4', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
                 if supName == "ADAILTON":
                     with col2:
                         supCod = st.selectbox("CÓDIGO WINTHOR", (2,), index=0, key='adailton_4', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -2101,7 +2111,7 @@ with aba4:
         # --------------------------- RANK TOP 10 RCA --------------------------- #
         col1, col2, col3, col4 = st.columns([1.90, 0.75, 0.75, 2.10])
         with col2:
-                vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_3', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+                vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_3', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
                 if vendedorName == "LEONARDO":
                     with col3:
                         vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_3', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -2235,7 +2245,7 @@ with aba4:
 
 # -------------------------------------- VERBAS -------------------------------------- #
 with aba5:
-    c1, c2 = st.columns([0.2, 1])
+    c1, c2 = st.columns([0.35, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/1649/1649628.png', width=180)
     with c2:
@@ -2283,7 +2293,7 @@ with aba5:
 
 # --------------------------- DEDO DURO ----------------------------------- #
 with aba6: 
-    c1, c2 = st.columns([0.2, 1])
+    c1, c2 = st.columns([0.35, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/4380/4380709.png', width=180)
     with c2:    
@@ -2308,8 +2318,14 @@ with aba6:
                 })
                 st.markdown("    ")
                 selected_errors = st.multiselect(label="Filtro de Erros", options = pedErro_result['TIPO ERRO'].unique().tolist(), default = pedErro_result['TIPO ERRO'].unique().tolist(), placeholder="Filtro de erros", help="Selecione o tipo de erro para filtrar na tabela")
-            
+            # ------ Fora da Coluna
             filtered_pedErro_result = pedErro_result[pedErro_result['TIPO ERRO'].isin(selected_errors)]
+            with c3:
+            # ------ Retorna para Coluna
+                st.divider()
+                if st.button('GERAR EXCEL', key="excel_pedErro"): # ---- Convertendo para Excel
+                    st.markdown(getTableXls(filtered_pedErro_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+
 
             with c1:
                 st.write("Legenda:")
@@ -2387,9 +2403,14 @@ with aba6:
                 for coluna in formatarMoeda:
                     devolucao_result[coluna] = devolucao_result[coluna].apply(format_number)
                 st.markdown("    ")
-                selected_errors = st.multiselect(label="Filtro de Tipo", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
-            
+                selected_errors = st.multiselect(label="Filtro de Tipo", key="selected_errors", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
+            # ------ Fora da Coluna
             filtered_devolucao_result = devolucao_result[devolucao_result['TIPO'].isin(selected_errors)]
+            with c3:
+            # ------ Retorna para Coluna
+                st.divider()
+                if st.button('GERAR EXCEL', key="excel_devolucao"): # ---- Convertendo para Excel
+                    st.markdown(getTableXls(filtered_devolucao_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
 
             with c1:
                 st.write("Legenda:")
@@ -2416,12 +2437,12 @@ with aba6:
 
     # ---------- Inadimplência -- #
     with aba6_4:
-        st.header(":rotating_light: Inadimplência por Clientes")
+        st.header(":rotating_light: Inadimplência por Cliente")
         st.markdown("    ")
         with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
             col1, col2, col3, col4 = st.columns([1, 1, 0.55, 2])
             with col1:
-                    vendedorName = st.selectbox("VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_4', help="Selecione o vendedor", placeholder="Escolha um Vendedor", label_visibility="visible")
+                    vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_4', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
                     if vendedorName == "LEONARDO":
                         with col2:
                             vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -2537,25 +2558,72 @@ with aba6:
 
     # ---------- Estoque ---------- #
     with aba6_5:
-        st.header(":package: Estoque")
+        st.header(":package: Estoque Gerencial")
         st.markdown("    ")
         with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
-            c1,c2,c3 = st.columns([0.7, 2, 0.7])
+            st.divider()
+            c1,c2,c3 = st.columns([0.6,1.5,1])
+            with c3:
+                estoque266_result = estoque266()
+                estoque266_result = estoque266_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]].rename(columns={
+                    0: "CODPROD",
+                    1: "DESCRICAO",
+                    2: "CODFORNEC",
+                    3: "FORNECEDOR",
+                    4: "EMBALAGEM",
+                    5: "QTUNITCX",
+                    6: "QTEST",
+                    7: "QTDISP",
+                    8: "QTBLOQMENOSAVARIA",
+                    9: "QTMASTER", # QTDISP / QTUNITCX = QTMASTER
+                    10: "QTBLOQUEADA",
+                    11: "QTVENDMES0",
+                    12: "QTVENDMES1",
+                    13: "QTVENDMES2",
+                    14: "QTVENDMES3",
+                    15: "DTULTENT",
+                })
+                formatarData = ["DTULTENT"]
+                for coluna in formatarData:
+                    inad_result[coluna] = pd.to_datetime(inad_result[coluna]).dt.strftime('%d/%m/%Y')
+                    
+                st.markdown("    ")
+                selected_fornec = st.multiselect(label="Filtro de Fornecedor", options = estoque266_result['FORNECEDOR'].unique().tolist(), default = None, placeholder="Filtro de Tipo", help="Selecione filtrar na tabela")
+            # ------ Fora da Coluna
+            filtered_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin(selected_fornec)]
+            with c3:
+            # ------ Retorna para Coluna
+                st.divider()
+                if st.button('GERAR EXCEL', key="excel_estoque"): # ---- Convertendo para Excel
+                    st.markdown(getTableXls(filtered_estoque266_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+            
+            with c1:
+                st.write("Legenda:")
+                container1 = st.container(border=True)
+                container1.caption("Selecione o Fornecedor para visualizar os dados.")
 
+            with c2:
+                st.write("Tabela de Inadimplentes:")
+                if filtered_estoque266_result.empty:
+                    st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                else:
+                    st.dataframe(filtered_estoque266_result)
                     
 # --------------------------- Outros ----------------------------------- #
 with aba7:
     with st.spinner('Carregando dados...'): 
-        btn1 = st.button("CARREGAR OUTROS", key=6, type="primary")
-        if btn1:
-            result = campanhaDanone()
-            st.dataframe(result)
+        result = campanhaDanone()
+        st.table(result)
+        c1, c2, c3 = st.columns([2,0.75,2])
+        with c2:
+            if st.button('GERAR EXCEL'): # ---- Convertendo para Excel
+                st.markdown(getTableXls(result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
 
 
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.7.6.6") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.7.7.6") # "X." Versão Total | ".8." Versão do SQL | ".8." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")
