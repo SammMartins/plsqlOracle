@@ -1,5 +1,6 @@
 # Módulos da biblioteca padrão
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import math
 import time as tm
 
@@ -12,7 +13,7 @@ import streamlit as st
 from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
-                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266)
+                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd)
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from utils import format_number, data_semana_ini, data_semana_fim, getTableXls
 
@@ -60,11 +61,18 @@ cssHeader = f"""
 st.markdown(header, unsafe_allow_html=True)
 st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
+# Função de formatação personalizada
+def custom_format(x):
+    return '{:,.2f}'.format(x).replace(",", "@").replace(".", ",").replace("@", ".")
+
+# Alterar a formatação de exibição para usar ponto como separador de milhares e vírgula como separador decimal
+pd.options.display.float_format = custom_format
+
 # ----------------------- Dashboard Layout ----------------------- #
 aba1, aba2, aba3, aba4, aba5, aba6, aba7 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
 with aba1:
-    c1, c2 = st.columns([0.35, 1])
+    c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
     with c2:
@@ -373,7 +381,7 @@ with aba1:
             st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
-    c1, c2 = st.columns([0.35, 1])
+    c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
     with c2:
@@ -1660,7 +1668,7 @@ with aba2:
 
 # ------------------------------- META --------------------------------------- #
 with aba3:
-    c1, c2 = st.columns([0.35, 1])
+    c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
     with c2:
@@ -1910,7 +1918,7 @@ with aba3:
 
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
-    c1, c2 = st.columns([0.35, 1])
+    c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/5434/5434400.png', width=180)
     with c2:
@@ -2245,7 +2253,7 @@ with aba4:
 
 # -------------------------------------- VERBAS -------------------------------------- #
 with aba5:
-    c1, c2 = st.columns([0.35, 1])
+    c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/1649/1649628.png', width=180)
     with c2:
@@ -2261,7 +2269,7 @@ with aba5:
         senha = st.text_input("Senha", "", max_chars = 6, type = "password", label_visibility="collapsed", help="Digite a senha numérica para acessar as informações")
     with col3:
         if senha == "" or len(senha) < 6:
-            st.caption("Sem dados para exibir. Verifique a senha inserida.", help="Não há dados para exibir, verifique a senha inserida ou contate o suporte.")
+            st.warning("Sem dados para exibir. Verifique a senha inserida.")
         else:
             pass
     if btn1:
@@ -2284,7 +2292,7 @@ with aba5:
 
             if verbas_result.empty:
                 with col3:
-                    st.caption("Sem dados para exibir. Verifique a senha inserida.", help="Não há dados para exibir, verifique a senha inserida ou contate o suporte.")
+                    st.warning("Sem dados para exibir. Verifique a senha inserida.")
             else:
                 col1, col2, col3 = st.columns([0.5, 2, 2])
                 with col2:
@@ -2293,7 +2301,7 @@ with aba5:
 
 # --------------------------- DEDO DURO ----------------------------------- #
 with aba6: 
-    c1, c2 = st.columns([0.35, 1])
+    c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/4380/4380709.png', width=180)
     with c2:    
@@ -2561,36 +2569,89 @@ with aba6:
         st.header(":package: Estoque Gerencial")
         st.markdown("    ")
         with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            # Data atual
+            now = datetime.now()
+            # Mês 0 - Mês Atual
+            dtIniMesAtual = now.replace(day=1)
+            dtFimMesAtual = now
+            # Mês 1 - 1 Mês Antes
+            dtIniMes1 = dtIniMesAtual - relativedelta(months=1)
+            dtFimMes1 = dtIniMesAtual - relativedelta(days=1)
+            # Mês 2 - 2 Meses Antes
+            dtIniMes2 = dtIniMes1 - relativedelta(months=1)
+            dtFimMes2 = dtIniMes1 - relativedelta(days=1)
+            # Mês 3 - 3 Meses Antes
+            dtIniMes3 = dtIniMes2 - relativedelta(months=1)
+            dtFimMes3 = dtIniMes2 - relativedelta(days=1)
+
             st.divider()
             c1,c2,c3 = st.columns([0.6,1.5,1])
             with c3:
-                estoque266_result = estoque266()
-                estoque266_result = estoque266_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]].rename(columns={
+                qtdVendaMes0_result = qtdVendaProd(dtIniMesAtual, dtFimMesAtual)
+                qtdVendaMes0_result = qtdVendaMes0_result.iloc[:, [0, 1,]].rename(columns={
                     0: "CODPROD",
-                    1: "DESCRICAO",
-                    2: "CODFORNEC",
-                    3: "FORNECEDOR",
-                    4: "EMBALAGEM",
-                    5: "QTUNITCX",
-                    6: "QTEST",
-                    7: "QTDISP",
-                    8: "QTBLOQMENOSAVARIA",
-                    9: "QTMASTER", # QTDISP / QTUNITCX = QTMASTER
-                    10: "QTBLOQUEADA",
-                    11: "QTVENDMES0",
-                    12: "QTVENDMES1",
-                    13: "QTVENDMES2",
-                    14: "QTVENDMES3",
-                    15: "DTULTENT",
+                    1: "QTD MÊS ATUAL",
                 })
+
+                qtdVendaMes1_result = qtdVendaProd(dtIniMes1, dtFimMes1)
+                qtdVendaMes1_result = qtdVendaMes1_result.iloc[:, [0, 1,]].rename(columns={
+                    0: "CODPROD",
+                    1: "QTD MÊS 1",
+                })
+
+                qtdVendaMes2_result = qtdVendaProd(dtIniMes2, dtFimMes2)
+                qtdVendaMes2_result = qtdVendaMes2_result.iloc[:, [0, 1,]].rename(columns={
+                    0: "CODPROD",
+                    1: "QTD MÊS 2",
+                })
+
+                qtdVendaMes3_result = qtdVendaProd(dtIniMes3, dtFimMes3)
+                qtdVendaMes3_result = qtdVendaMes3_result.iloc[:, [0, 1,]].rename(columns={
+                    0: "CODPROD",
+                    1: "QTD MÊS 3",
+                })
+
+                estoque266_result = estoque266()
+                estoque266_result = estoque266_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
+                    0: "CODPROD",
+                    1: "DTULTENT",
+                    2: "QTDULTENT",
+                    3: "DESCRICAO",
+                    4: "CODFORNEC",
+                    5: "FORNECEDOR",
+                    6: "EMBALAGEM",
+                    7: "UN MASTER",
+                    8: "QTEST",
+                    9: "QTD ESTOQUE",
+                    10: "QTBLOQMENOSAVARIA",
+                    11: "QTD EST CX", # QTD ESTOQUE / UN. MASTER = QTD CAIXA
+                })
+
                 formatarData = ["DTULTENT"]
                 for coluna in formatarData:
-                    inad_result[coluna] = pd.to_datetime(inad_result[coluna]).dt.strftime('%d/%m/%Y')
-                    
+                    estoque266_result[coluna] = pd.to_datetime(estoque266_result[coluna]).dt.strftime('%d/%m/%Y')
+                
+                estoque266_result = estoque266_result.drop(columns=["QTBLOQMENOSAVARIA", "QTEST", "UN MASTER"])
+
+                estoque266_result = estoque266_result.merge(qtdVendaMes3_result, on='CODPROD', how='left').fillna('0')
+                estoque266_result = estoque266_result.merge(qtdVendaMes2_result, on='CODPROD', how='left').fillna('0')
+                estoque266_result = estoque266_result.merge(qtdVendaMes1_result, on='CODPROD', how='left').fillna('0')
+                estoque266_result = estoque266_result.merge(qtdVendaMes0_result, on='CODPROD', how='left').fillna('0')
+
+                estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / 30)))
+                                                             
+                estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: ((x['QTD MÊS ATUAL'].astype(float) / 30) + 
+                                                                                    (x['QTD MÊS 1'].astype(float) / 30) + 
+                                                                                    (x['QTD MÊS 2'].astype(float) / 30) + 
+                                                                                    (x['QTD MÊS 3'].astype(float) / 30)) / 4)
+
                 st.markdown("    ")
-                selected_fornec = st.multiselect(label="Filtro de Fornecedor", options = estoque266_result['FORNECEDOR'].unique().tolist(), default = None, placeholder="Filtro de Tipo", help="Selecione filtrar na tabela")
+                selected_fornec = st.multiselect(label="Filtro de :blue[Fornecedor]", options = estoque266_result['FORNECEDOR'].unique().tolist(), default = None, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
             # ------ Fora da Coluna
             filtered_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin(selected_fornec)]
+            filtered_estoque266_result = filtered_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
+            filtered_estoque266_result = filtered_estoque266_result.sort_values('QTDVENDDIA', ascending=False)
+            filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']] = filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']].astype(float).round(0).astype(int).astype(str)
             with c3:
             # ------ Retorna para Coluna
                 st.divider()
@@ -2600,12 +2661,24 @@ with aba6:
             with c1:
                 st.write("Legenda:")
                 container1 = st.container(border=True)
-                container1.caption("Selecione o Fornecedor para visualizar os dados.")
+                container1.caption("Selecione o :blue[Fornecedor] para visualizar os dados.")
+                container2 = st.container(border=True)
+                container2.caption(':orange["DTULTENT"] É a data da última entrada do produto. :orange["QTDULTENT"] É a quantidade da última entrada do produto.')
+                container3 = st.container(border=True)
+                container3.caption(':red["QTD EST CX"] É a quantidade disponível de produtos em Caixas Master.')
+                container4 = st.container(border=True)
+                container4.caption(':green["QTD MÊS 1"] Se refere ao :green[mês anterior] ao mês atual.')
+                container5 = st.container(border=True)
+                container5.caption(':green["QTD MÊS 2"] Se refere a :green[2 meses antes] ao mês atual.')
+                container6 = st.container(border=True)
+                container6.caption(':green["QTD MÊS 3"] Se refere a :green[3 meses antes] ao mês atual.')
+                container7 = st.container(border=True)
+                container7.caption(':red["QTESTDIA"] É quantidade de estoque para 30 dias. :green["QTVENDDIA"] É quantidade vendida em 30 dias.')
 
             with c2:
-                st.write("Tabela de Inadimplentes:")
+                st.write("Tabela de Estoque Gerencial:")
                 if filtered_estoque266_result.empty:
-                    st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                    st.warning("Sem dados para exibir. Verifique os filtros selecionados ao lado :point_right:")
                 else:
                     st.dataframe(filtered_estoque266_result)
                     
@@ -2623,7 +2696,7 @@ with aba7:
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.7.7.6") # "X." Versão Total | ".8." Versão do SQL | ".8." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.8.7.7") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")

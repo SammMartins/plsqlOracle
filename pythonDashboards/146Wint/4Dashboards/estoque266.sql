@@ -44,25 +44,26 @@ AND PCFILIAL.CODIGO IN('3')
              BY PCLOGDESBLOQUEIO.CODPROD                                                                                               
               , PCLOGDESBLOQUEIO.CODFILIAL)                                                                                            
                                                                                                                                        
-SELECT PCEST.CODPROD                                                                                                                                                                                                                               
+SELECT PCEST.CODPROD || ''
+     , PCEST.DTULTENT
+     , PCEST.qtultent
      , PCPRODUT.DESCRICAO
      , SUBSTR(PCPRODUT.CODFORNEC,0,20) Fornecedor
      , (SELECT F.FORNECEDOR FROM PONTUAL.PCFORNEC F WHERE F.CODFORNEC = PCPRODUT.CODFORNEC) AS FORNECEDOR                                                                                                      
-     , PCPRODUT.EMBALAGEM
+     , PCPRODUT.EMBALAGEM 
      , NVL (PCPRODUT.QTUNITCX, 0) QTUNITCX
      , NVL(PCEST.QTESTGER, 0) + NVL(PCEST.QTRESERV, 0) qtdest                                                                                                                                                                                                 
-     , PONTUAL.PKG_ESTOQUE.ESTOQUE_DISPONIVEL(PCEST.CODPROD, PCEST.CODFILIAL, 'V') QTDISP                                                                    
+     , PONTUAL.PKG_ESTOQUE.ESTOQUE_DISPONIVEL(TRUNC(PCEST.CODPROD,2), TRUNC(PCEST.CODFILIAL,2), 'V') || '' QTDISP
    , (NVL(PCEST.QTBLOQUEADA, 0) - NVL(PCEST.QTINDENIZ, 0)) QTBLOQMENOSAVARIA                                                         
-   , (NVL(PCEST.QTESTGER, 0) / DECODE(NVL(PCPRODUT.QTUNITCX, 1), 0, 1, NVL(PCPRODUT.QTUNITCX, 1))) QTESTMASTER                       
-   , NVL(PCEST.QTBLOQUEADA, 0) QTBLOQUEADA                                                                                                                                                                                                                                                                                                                                                                                      
-     , PCEST.QTVENDMES                                                                                                                 
-     , PCEST.QTVENDMES1                                                                                                                
-     , PCEST.QTVENDMES2                                                                                                                
-     , PCEST.QTVENDMES3                                                                                                                                                                                                           
-     , PCEST.DTULTENT
+   , TRUNC((NVL(PCEST.QTESTGER, 0) / DECODE(NVL(PCPRODUT.QTUNITCX, 1), 0, 1, NVL(PCPRODUT.QTUNITCX, 1))),0) || 'CX.' QTESTMASTER                       
+   --, NVL(PCEST.QTBLOQUEADA, 0) QTBLOQUEADA                                                                                                                                                                                                                                                                                                                                                                                      
+     --, PCEST.QTVENDMES || ''
+     --, PCEST.QTVENDMES1 || ''
+     --, PCEST.QTVENDMES2 || ''
+     --, PCEST.QTVENDMES3 || ''
      
 FROM PONTUAL.PCEST                                                                                                                           
-     , PONTUAL.PCPRODUT                                                                                                                        
+     , PONTUAL.PCPRODUT
      , PONTUAL.PCPRODFILIAL                                                                                                                    
      , PONTUAL.PARAMETROS                                                                                                                      
      , PONTUAL.LOGDESBLOQUEIO                                                                                                                  
