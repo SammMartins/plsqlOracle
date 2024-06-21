@@ -20,7 +20,7 @@ else:
         title = "VENDAS POR RCA NA SEMANA ATUAL",
         range_y = (0, df[2].max()),
         color = df.columns[2],
-        color_continuous_scale = ["red", "yellow", "green"]
+        color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
     )
 
     grafico_vend_sup.update_traces(
@@ -51,7 +51,7 @@ else:
         title = "VENDAS POR RCA NA SEMANA ATUAL - SUL",
         range_y = (0, df[2].max()),
         color = df.columns[2],
-        color_continuous_scale = ["red", "yellow", "green"]
+        color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
     )
 
     grafico_top_rca2.update_traces(
@@ -80,7 +80,7 @@ else:
         title = "VENDAS POR RCA NA SEMANA ATUAL - SERTÃO",
         range_y = (0, df[2].max()),
         color = df.columns[2],
-        color_continuous_scale = ["red", "yellow", "green"]
+        color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
     )
 
     grafico_top_rca8.update_traces(

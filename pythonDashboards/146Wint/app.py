@@ -3,17 +3,19 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import math
 import time as tm
+import numpy as np
 
-# Módulos Dashboards
+# Módulos Dashboards e outros
 import numpy as np
 import pandas as pd
 import streamlit as st
+import bleach 
 
 # Módulos da aplicação/locais 
 from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
-                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd)
+                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda)
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
 from utils import format_number, data_semana_ini, data_semana_fim, getTableXls
 
@@ -2266,7 +2268,10 @@ with aba5:
     with col1:
         btn1 = st.button("CARREGAR", key=4, type="primary")
     with col2:
-        senha = st.text_input("Senha", "", max_chars = 6, type = "password", label_visibility="collapsed", help="Digite a senha numérica para acessar as informações")
+        senhaSemTratamento = st.text_input("Senha", "", max_chars = 6, type = "password", label_visibility="collapsed", help="Digite a senha numérica para acessar as informações")
+    
+    senha = bleach.clean(senhaSemTratamento) # Limpa a senha para evitar injeção de código
+    
     with col3:
         if senha == "" or len(senha) < 6:
             st.warning("Sem dados para exibir. Verifique a senha inserida.")
@@ -2308,6 +2313,16 @@ with aba6:
         st.title(":point_up: DEDO DURO")
         st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
         st.markdown("<br>", unsafe_allow_html=True)
+
+    # ----------------- Botão de Recarregar -----------------
+        recarregarDados = st.button("RECARREGAR DADOS", key=5, type="primary")
+
+    if recarregarDados:
+        pedErro_result = pedErro()
+        pedCont_result = pedCont()
+        inad_result = inad(vendedorCod)
+        devolucao_result = devolucao(dataIni, dataFim)
+
     aba6_1, aba6_2, aba6_3, aba6_4, aba6_5 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":rotating_light: Inadimplência", ":package: Estoque"])
     # ---------- ERROS ---------- #
     with aba6_1:
@@ -2569,6 +2584,8 @@ with aba6:
         st.header(":package: Estoque Gerencial")
         st.markdown("    ")
         with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            st.divider()
+            diasUteis = diasUteis().values[0][0]
             # Data atual
             now = datetime.now()
             # Mês 0 - Mês Atual
@@ -2583,8 +2600,6 @@ with aba6:
             # Mês 3 - 3 Meses Antes
             dtIniMes3 = dtIniMes2 - relativedelta(months=1)
             dtFimMes3 = dtIniMes2 - relativedelta(days=1)
-
-            st.divider()
             c1,c2,c3 = st.columns([0.6,1.5,1])
             with c3:
                 qtdVendaMes0_result = qtdVendaProd(dtIniMesAtual, dtFimMesAtual)
@@ -2615,17 +2630,18 @@ with aba6:
                 estoque266_result = estoque266_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
                     0: "CODPROD",
                     1: "DTULTENT",
-                    2: "QTDULTENT",
-                    3: "DESCRICAO",
-                    4: "CODFORNEC",
-                    5: "FORNECEDOR",
-                    6: "EMBALAGEM",
+                    2: "DESCRICAO",
+                    3: "CODFORNEC",
+                    4: "FORNECEDOR",
+                    5: "EMBALAGEM",
+                    6: "QTDULTENT",
                     7: "UN MASTER",
                     8: "QTEST",
                     9: "QTD ESTOQUE",
                     10: "QTBLOQMENOSAVARIA",
                     11: "QTD EST CX", # QTD ESTOQUE / UN. MASTER = QTD CAIXA
                 })
+
 
                 formatarData = ["DTULTENT"]
                 for coluna in formatarData:
@@ -2638,19 +2654,22 @@ with aba6:
                 estoque266_result = estoque266_result.merge(qtdVendaMes1_result, on='CODPROD', how='left').fillna('0')
                 estoque266_result = estoque266_result.merge(qtdVendaMes0_result, on='CODPROD', how='left').fillna('0')
 
-                estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / 30)))
-                                                             
-                estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: ((x['QTD MÊS ATUAL'].astype(float) / 30) + 
-                                                                                    (x['QTD MÊS 1'].astype(float) / 30) + 
-                                                                                    (x['QTD MÊS 2'].astype(float) / 30) + 
-                                                                                    (x['QTD MÊS 3'].astype(float) / 30)) / 4)
+                estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: (((x['QTD MÊS ATUAL'].astype(float)) + 
+                                                                                    (x['QTD MÊS 1'].astype(float)) + 
+                                                                                    (x['QTD MÊS 2'].astype(float)) + 
+                                                                                    (x['QTD MÊS 3'].astype(float))) / 4) / diasUteis)
+                
+                estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / x["QTDVENDDIA"].astype(float))))
 
                 st.markdown("    ")
-                selected_fornec = st.multiselect(label="Filtro de :blue[Fornecedor]", options = estoque266_result['FORNECEDOR'].unique().tolist(), default = None, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
+                selected_fornec = st.selectbox(label="Filtro de :red[Fornecedor]", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
             # ------ Fora da Coluna
-            filtered_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin(selected_fornec)]
+            filtered_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
+            codFornec = filtered_estoque266_result["CODFORNEC"].iloc[0]
+            nomeFornec = filtered_estoque266_result["CODFORNEC"].iloc[0]
             filtered_estoque266_result = filtered_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
             filtered_estoque266_result = filtered_estoque266_result.sort_values('QTDVENDDIA', ascending=False)
+            filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']] = filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
             filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']] = filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']].astype(float).round(0).astype(int).astype(str)
             with c3:
             # ------ Retorna para Coluna
@@ -2661,19 +2680,13 @@ with aba6:
             with c1:
                 st.write("Legenda:")
                 container1 = st.container(border=True)
-                container1.caption("Selecione o :blue[Fornecedor] para visualizar os dados.")
+                container1.caption(':orange["DTULTENT"] É a data da última entrada do produto. :orange["QTDULTENT"] É a quantidade da última entrada do produto.')
                 container2 = st.container(border=True)
-                container2.caption(':orange["DTULTENT"] É a data da última entrada do produto. :orange["QTDULTENT"] É a quantidade da última entrada do produto.')
+                container2.caption(':blue["QTD EST CX"] É a quantidade disponível de produtos em Caixas Master.')
                 container3 = st.container(border=True)
-                container3.caption(':red["QTD EST CX"] É a quantidade disponível de produtos em Caixas Master.')
+                container3.caption(':green["QTD MÊS 1"] Se refere ao :green[mês anterior] ao mês atual. Mês 2 e 3 antecedem em sequência.')
                 container4 = st.container(border=True)
-                container4.caption(':green["QTD MÊS 1"] Se refere ao :green[mês anterior] ao mês atual.')
-                container5 = st.container(border=True)
-                container5.caption(':green["QTD MÊS 2"] Se refere a :green[2 meses antes] ao mês atual.')
-                container6 = st.container(border=True)
-                container6.caption(':green["QTD MÊS 3"] Se refere a :green[3 meses antes] ao mês atual.')
-                container7 = st.container(border=True)
-                container7.caption(':red["QTESTDIA"] É quantidade de estoque para 30 dias. :green["QTVENDDIA"] É quantidade vendida em 30 dias.')
+                container4.caption(f':blue["QTESTDIA"] É quantidade de estoque para {diasUteis} dias úteis do mês. :green["QTVENDDIA"] É quantidade vendida em {diasUteis} dias.')
 
             with c2:
                 st.write("Tabela de Estoque Gerencial:")
@@ -2681,7 +2694,36 @@ with aba6:
                     st.warning("Sem dados para exibir. Verifique os filtros selecionados ao lado :point_right:")
                 else:
                     st.dataframe(filtered_estoque266_result)
-                    
+
+            st.divider()
+            c1_2, c2_2, c3_2 = st.columns([0.6,1.5,1])
+            with c3_2:
+                prodSemVenda_result = prodSemVenda(codFornec)
+                prodSemVenda_result = prodSemVenda_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
+                    0: "CODPROD",
+                    1: "DESCRICAO",
+                    2: "DTULTENT",
+                    3: "QTDULTENT",
+                    4: "ESTOQUE",
+                    5: "DIAS SEM VENDA"
+                })
+                st.divider()
+                if st.button('GERAR EXCEL', key="excel_prodSemVenda"): # ---- Convertendo para Excel
+                    st.markdown(getTableXls(prodSemVenda_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+            
+            with c2_2:
+                st.write("Tabela de Produtos Sem Venda:")
+                if prodSemVenda_result.empty:
+                    st.warning("Sem dados para exibir. Verifique os filtros selecionados ao lado :point_right:")
+                else:
+                    st.dataframe(prodSemVenda_result)
+
+            with c1_2:
+                st.write("Legenda:")
+                container1 = st.container(border=True)
+                container1.caption(f'Produtos sem venda a mais de 7 dias do fornecedor {nomeFornec}')
+
+
 # --------------------------- Outros ----------------------------------- #
 with aba7:
     with st.spinner('Carregando dados...'): 
@@ -2696,7 +2738,7 @@ with aba7:
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.8.7.7") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.8.8.8") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")

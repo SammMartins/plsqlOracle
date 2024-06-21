@@ -46,11 +46,11 @@ AND PCFILIAL.CODIGO IN('3')
                                                                                                                                        
 SELECT PCEST.CODPROD || ''
      , PCEST.DTULTENT
-     , PCEST.qtultent
      , PCPRODUT.DESCRICAO
      , SUBSTR(PCPRODUT.CODFORNEC,0,20) Fornecedor
      , (SELECT F.FORNECEDOR FROM PONTUAL.PCFORNEC F WHERE F.CODFORNEC = PCPRODUT.CODFORNEC) AS FORNECEDOR                                                                                                      
      , PCPRODUT.EMBALAGEM 
+     , PCEST.qtultent
      , NVL (PCPRODUT.QTUNITCX, 0) QTUNITCX
      , NVL(PCEST.QTESTGER, 0) + NVL(PCEST.QTRESERV, 0) qtdest                                                                                                                                                                                                 
      , PONTUAL.PKG_ESTOQUE.ESTOQUE_DISPONIVEL(TRUNC(PCEST.CODPROD,2), TRUNC(PCEST.CODFILIAL,2), 'V') || '' QTDISP
