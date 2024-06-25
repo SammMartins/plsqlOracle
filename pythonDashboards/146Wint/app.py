@@ -73,7 +73,10 @@ pd.options.display.float_format = custom_format
 # ----------------------- Dashboard Layout ----------------------- #
 aba1, aba2, aba3, aba4, aba5, aba6, aba7 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
+# ------------------- Vendas ------------------- #
 with aba1:
+    with st.spinner('Carregando dados...'): 
+        tm.sleep(1) # Política de prioridade para diferentes abas
     c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
@@ -84,6 +87,7 @@ with aba1:
     st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
     aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
+
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
     with aba1_1:
         container = st.container(border=True)
@@ -383,6 +387,7 @@ with aba1:
             st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
+
     c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
@@ -2305,7 +2310,7 @@ with aba5:
             tm.sleep(1.5)
 
 # --------------------------- DEDO DURO ----------------------------------- #
-with aba6: 
+with aba6:
     c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/4380/4380709.png', width=180)
@@ -2738,7 +2743,7 @@ with aba7:
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.8.8.8") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image(path + 'Imagens/DataAdvisor.png', width=200, caption="Plataforma BI - Versão 1.8.9.8") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")
