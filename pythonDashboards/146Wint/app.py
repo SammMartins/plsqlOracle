@@ -73,321 +73,8 @@ pd.options.display.float_format = custom_format
 # ----------------------- Dashboard Layout ----------------------- #
 aba1, aba2, aba3, aba4, aba5, aba6, aba7 = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
-# ------------------- Vendas ------------------- #
-with aba1:
-    with st.spinner('Carregando dados...'): 
-        tm.sleep(1) # Política de prioridade para diferentes abas
-    c1, c2 = st.columns([0.300, 1])
-    with c1:
-        st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
-    with c2:
-        st.title("PAINEL DE VENDAS")
-        st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
-        st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
-    st.divider()
-    st.markdown("<br>", unsafe_allow_html=True)
-    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
-
-# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
-    with aba1_1:
-        container = st.container(border=True)
-        coluna1, coluna2, coluna3 = st.columns([0.6,0.5,1])
-        col1, col2, col3 = st.columns([0.1, 1.1, 2])
-        with container:
-            with coluna1:
-                subcoluna1, subcoluna2 = st.columns(2)
-                with subcoluna1:
-                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
-                with subcoluna2:
-                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
-            with coluna2:
-                df2_result = df2(dataIni, dataFim)
-                if df2_result.empty:
-                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
-                else:
-                    sup_filtro = st.multiselect(
-                        ":male-office-worker: Escolha o Supervisor", 
-                        df2_result[0].unique(), 
-                        key='tabela_vend3'
-                    )
-            with coluna3:
-                c1, c2 = st.columns([0.5, 1])
-                with c1:
-                    st.markdown("<br>", unsafe_allow_html=True)
-
-                    dfStyle = st.toggle(":red[Modo Tabela]", help="Selecione para exibir valores em formato de tabela")
-                with c2:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    # --------------- Modo Tabela --------------- #
-                    if st.button("Carregar Dados", key='tabela_vend'):
-                        if dfStyle:
-                            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                                df1_result = df1(dataIni, dataFim)
-                                df2_result = df2(dataIni, dataFim)
-
-                            if sup_filtro and len(sup_filtro) < 2:
-                                formatarMoeda = ["VENDIDO"]
-
-                                df1_result = df1_result[df1_result[3].isin(sup_filtro)]
-                                df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
-                                    0: "SUPERVISOR",
-                                    1: "VENDIDO",
-                                    2: "DN"
-                                })
-                                
-                                
-                                df2_result = df2_result[df2_result[0].isin(sup_filtro)]
-                                df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
-                                    0: "SUP",
-                                    1: "VENDEDOR",
-                                    2: "VENDIDO",
-                                    3: "DN",
-                                    4: "BASE"
-                                })
-                                df2_result = df2_result.drop(columns=["SUP", "BASE"])
-
-                                for coluna in formatarMoeda:
-                                    df1_result[coluna] = df1_result[coluna].apply(format_number)
-                                    df2_result[coluna] = df2_result[coluna].apply(format_number)
-                                
-                                with col2:
-                                    st.dataframe(df1_result)
-                                    st.dataframe(df2_result)
-                            else:
-                                formatarMoeda = ["VENDIDO"]
-
-                                df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
-                                    0: "SUPERVISOR",
-                                    1: "VENDIDO",
-                                    2: "DN"
-                                })
-                                subtotal = df1_result[["VENDIDO", "DN"]].sum()
-                                subtotal_df = pd.DataFrame(subtotal).transpose()
-                                subtotal_df.index = ["total"]
-                                subtotal_df["SUPERVISOR"] = "Total"
-                                df1_result = pd.concat([df1_result, subtotal_df])
-                                
-                                df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
-                                    0: "SUP",
-                                    1: "VENDEDOR",
-                                    2: "VENDIDO",
-                                    3: "DN",
-                                    4: "BASE"
-                                })
-                                df2_result = df2_result.drop(columns=["SUP", "BASE"])
-
-                                for coluna in formatarMoeda:
-                                    df1_result[coluna] = df1_result[coluna].apply(format_number)
-                                    df2_result[coluna] = df2_result[coluna].apply(format_number)
-
-                                with col2:
-                                    st.dataframe(df1_result)
-                                    st.dataframe(df2_result)
-
-
-                        # --------------- Modo Metric --------------- #
-                        else:
-                            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                                df1_result = df1(dataIni, dataFim)
-                                df2_result = df2(dataIni, dataFim)
-
-                            # -------- Tabela de Vendas por Supervisor --------
-                            if sup_filtro:
-                                df1_result = df1_result[df1_result[3].isin(sup_filtro)]
-                                with coluna1: 
-                                    for i in (df1_result[0]):
-                                        st.metric("Supervisor", i)
-                                with coluna2: 
-                                    subcol1, subcol2 = st.columns([2,1])
-                                    with subcol1:
-                                        for i in df1_result[1]:
-                                            st.metric("VENDIDO", format_number(i))
-                                    with subcol2:
-                                        for i in df1_result[2]:
-                                            st.metric("DN", i)
-                                if len(sup_filtro) > 1:
-                                    with coluna1: 
-                                        st.metric("Total", 'TOTAL')
-                                    with coluna2: 
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
-                                        with subcol2:
-                                            st.metric("TOTAL DN", df1_result[2].sum())
-                            else:
-                                with coluna1: 
-                                    for i in (df1_result[0]):
-                                        st.metric("Supervisor", i)
-                                with coluna2: 
-                                    subcol1, subcol2 = st.columns([2,1])
-                                    with subcol1:
-                                        for i in df1_result[1]:
-                                            st.metric("VENDIDO", format_number(i))
-                                    with subcol2:
-                                        for i in df1_result[2]:
-                                            st.metric("DN", i)
-                                with coluna1: 
-                                    st.metric("Total", 'TOTAL')
-                                with coluna2: 
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
-                                        with subcol2:
-                                            st.metric("TOTAL DN", df1_result[2].sum())
-                            
-                            # ----------------- Tabela de Vendas por RCA -----------------
-                            if sup_filtro:
-                                df2_result = df2_result[df2_result[0].isin(sup_filtro)]
-                                with coluna1:
-                                    for i in df2_result[1]:
-                                        st.metric("RCA", i)
-                                with coluna2:
-                                    subcol1, subcol2 = st.columns([2,1])
-                                    with subcol1:
-                                        for i in df2_result[2]:
-                                            st.metric("VENDIDO", format_number(i))
-                                    with subcol2:
-                                        for i in df2_result[3]:
-                                            st.metric("DN", i)
-                            else:
-                                with coluna1:
-                                    for i in df2_result[1]:
-                                        st.metric("RCA", i)
-                                with coluna2:
-                                    subcol1, subcol2 = st.columns([2,1])
-                                    with subcol1:
-                                        for i in df2_result[2]:
-                                            st.metric("VENDIDO", format_number(i))
-                                    with subcol2:
-                                        for i in df2_result[3]:
-                                            st.metric("DN", i)                                                
-# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
-    with aba1_2:
-        st.markdown("Legenda:")
-        st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
-        st.markdown("  2. A linha branca tracejada representa o valor da média de vendas na semana atual.")
-        if st.button("Carregar Dados", key='grafico_vend_sup'):
-            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                start_of_week = data_semana_ini()
-                end_of_week = data_semana_fim()
-                df2_result = df2(start_of_week, end_of_week)
-                df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
-                df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
-            st.plotly_chart(grafico_vend_sup, use_container_width=True)
-            metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
-            with metric_col2: 
-                st.metric(label = "MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
-            with metric_col3:
-                st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0][6:], delta = "-24º")
-            coluna1, coluna2 = st.columns(2)
-            with coluna1:
-                st.plotly_chart(grafico_top_rca8, use_container_width=True)
-                subcoluna1, subcoluna2 = st.columns(2)
-                with subcoluna1:
-                    st.metric(label = "MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
-                with subcoluna2:
-                    st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
-            with coluna2:
-                st.plotly_chart(grafico_top_rca2, use_container_width=True)
-                subcoluna1, subcoluna2 = st.columns(2)
-                with subcoluna1:
-                    st.metric(label = "MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
-                with subcoluna2:
-                    st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-11º")
-# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
-    with aba1_3: # add média de venda por cliente
-        container = st.container(border=True)
-        col = st.columns(1)
-        coluna1, coluna2, coluna3 = st.columns(3)
-        with container:
-            with coluna1:
-                subcoluna1, subcoluna2 = st.columns(2)
-                with subcoluna1:
-                    dataIni_cli = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
-                with subcoluna2:
-                    dataFim_cli = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
-            with coluna2:
-                df3_result = df3(dataIni, dataFim)
-                rca_filtro = st.multiselect(
-                    "Escolha um RCA", 
-                    df3_result[2].unique(), 
-                    default=[],
-                    key='tabela_cli3'
-                )
-            with coluna3:
-                st.write(" ") # Espaço em branco para centralizar os widgets
-                st.write(" ") # Espaço em branco para centralizar os widgets
-                if st.button("Carregar Dados", key='tabela_cli'):
-                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                        df3_result = df3(dataIni_cli, dataFim_cli)
-                    if rca_filtro:
-                        df3_result = df3_result[df3_result[2].isin(rca_filtro)]
-                        with coluna1:
-                            for i in df3_result[0]:
-                                st.metric("Cliente", i[:25])
-                        with coluna2:
-                            for i in df3_result[2]:
-                                st.metric("RCA", i)
-                        with coluna3:
-                            for i in df3_result[3]:
-                                st.metric("VENDIDO", format_number(i))
-# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
-    with aba1_4:
-        container = st.container(border=False)
-        coluna1, coluna2, coluna3 = st.columns(3)
-        with coluna1:
-            subcol1, subcol2 = st.columns(2)
-            with subcol1:
-                dataIni_fornec = st.date_input(":date: Data inicial", 
-                                            value=pd.to_datetime('today'), 
-                                            format='DD/MM/YYYY', 
-                                            key='tabela_fornec1')
-            with subcol2:
-                dataFim_fornec = st.date_input(":date: Data final", 
-                                            value=pd.to_datetime('today'), 
-                                            format='DD/MM/YYYY', 
-                                            key='tabela_fornec2')
-        df4_result = df4(dataIni_fornec, dataFim_fornec)
-        with coluna2:
-            df4_resultF = df4(dataIni_fornec, dataFim_fornec)
-            if df4_resultF.empty:
-                st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
-            else: 
-                fornec_filtro = st.selectbox(
-                    "Filtro Fornecedor", 
-                    df4_resultF[1].unique(), 
-                    index=None, 
-                    key='tabela_fornec3',
-                    placeholder="Selecione o Fornecedor...",
-                )
-        with coluna3:
-            subcol1, subcol2 = st.columns(2)
-            with subcol1:
-                st.write(" ") # Espaço em branco para centralizar os widgets
-                st.write(" ") # Espaço em branco para centralizar os widgets
-                if st.button("Carregar", key='tabela_fornec'):
-                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                        if fornec_filtro:
-                            df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
-        if df4_resultF.empty:
-            st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
-        else: 
-            df4_result = df4_result.iloc[:, [0, 1, 3, 4, 5, 7]]
-            df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
-            # Renomear colunas
-            df4_result = df4_result.rename(columns={
-                0: 'Cód',
-                1: 'Fornecedor',
-                3: 'Supervisor',
-                4: 'Cód',
-                5: 'RCA',
-                7: 'Valor R$'
-            })
-            html_table = df4_result.to_html(index=False) # Convertendo o DataFrame para HTML
-            st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
 with aba2:
-
     c1, c2 = st.columns([0.300, 1])
     with c1:
         st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
@@ -1672,256 +1359,318 @@ with aba2:
                                     st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                     st.markdown(dnFlashFrutap, unsafe_allow_html=True)
 
-
-# ------------------------------- META --------------------------------------- #
-with aba3:
+# ------------------- Vendas ------------------- #
+with aba1:
+    with st.spinner('Carregando dados...'): 
+        tm.sleep(1) # Política de prioridade para diferentes abas
     c1, c2 = st.columns([0.300, 1])
     with c1:
-        st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
+        st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
     with c2:
-        st.title("CONSULTAR META")
-        st.markdown("Painel destinado a :blue[CONSULTA] das metas")
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.title("PAINEL DE VENDAS")
+        st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
+        st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
     st.divider()
     st.markdown("<br>", unsafe_allow_html=True)
-    aba3_1, aba3_2 = st.tabs(["VENDEDOR", "SUPERVISOR"])
-    # ------------------------------- VENDEDOR --------------------------------------- #
-    with aba3_1:
-        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
-        with col1:
-                st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
-                st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
-        with col2:
-                vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_2', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
-                if vendedorName == "LEONARDO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "EDNALDO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (141,),index=0, key='141_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "VAGNER":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (142,),index=0, key='142_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "DEIVID":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (143,),index=0, key='143_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "BISMARCK":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (145,),index=0, key='145_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "LUCIANA":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (147,),index=0, key='147_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "MATHEUS":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (148,),index=0, key='148_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "MARCIO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (150,),index=0, key='150_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "LEANDRO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (151,),index=0, key='151_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "REGINALDO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (152,),index=0, key='152_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "ROBSON":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (153,),index=0, key='153_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "JOAO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (154,),index=0, key='154_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "TAYANE":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (155,),index=0, key='155_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "MURILO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (156,),index=0, key='156_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "LUCAS":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (157,),index=0, key='157_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "DEYVISON":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (158,),index=0, key='158_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "ZEFERINO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (161,),index=0, key='161_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "EPAMINONDAS":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (164,),index=0, key='164_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "GLAUBER":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (167,),index=0, key='167_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "TARCISIO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (168,),index=0, key='168_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "THIAGO":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (169,),index=0, key='169_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "FILIPE":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (170,),index=0, key='170_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "ROMILSON":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (172,),index=0, key='172_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                elif vendedorName == "VALDEME":
-                    with col3:
-                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (174,),index=0, key='174_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+    aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
+
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
+    with aba1_1:
+        container = st.container(border=True)
+        coluna1, coluna2, coluna3 = st.columns([0.6,0.5,1])
+        col1, col2, col3 = st.columns([0.1, 1.1, 2])
+        with container:
+            with coluna1:
+                subcoluna1, subcoluna2 = st.columns(2)
+                with subcoluna1:
+                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
+                with subcoluna2:
+                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
+            with coluna2:
+                df2_result = df2(dataIni, dataFim)
+                if df2_result.empty:
+                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
                 else:
-                    vendedorCod = st.selectbox("ERRO", (0,),index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible") 
-        with col4:
-            st.markdown("<br>", unsafe_allow_html=True)
-            with st.expander("Como é calculada a meta?", expanded=False):
-                st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
-        if st.button("CARREGAR", key=2):
+                    sup_filtro = st.multiselect(
+                        ":male-office-worker: Escolha o Supervisor", 
+                        df2_result[0].unique(), 
+                        key='tabela_vend3'
+                    )
+            with coluna3:
+                c1, c2 = st.columns([0.5, 1])
+                with c1:
+                    st.markdown("<br>", unsafe_allow_html=True)
+
+                    dfStyle = st.toggle(":red[Modo Tabela]", help="Selecione para exibir valores em formato de tabela")
+                with c2:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    # --------------- Modo Tabela --------------- #
+                    if st.button("Carregar Dados", key='tabela_vend'):
+                        if dfStyle:
+                            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                                df1_result = df1(dataIni, dataFim)
+                                df2_result = df2(dataIni, dataFim)
+
+                            if sup_filtro and len(sup_filtro) < 2:
+                                formatarMoeda = ["VENDIDO"]
+
+                                df1_result = df1_result[df1_result[3].isin(sup_filtro)]
+                                df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
+                                    0: "SUPERVISOR",
+                                    1: "VENDIDO",
+                                    2: "DN"
+                                })
+                                
+                                
+                                df2_result = df2_result[df2_result[0].isin(sup_filtro)]
+                                df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
+                                    0: "SUP",
+                                    1: "VENDEDOR",
+                                    2: "VENDIDO",
+                                    3: "DN",
+                                    4: "BASE"
+                                })
+                                df2_result = df2_result.drop(columns=["SUP", "BASE"])
+
+                                for coluna in formatarMoeda:
+                                    df1_result[coluna] = df1_result[coluna].apply(format_number)
+                                    df2_result[coluna] = df2_result[coluna].apply(format_number)
+                                
+                                with col2:
+                                    st.dataframe(df1_result)
+                                    st.dataframe(df2_result)
+                            else:
+                                formatarMoeda = ["VENDIDO"]
+
+                                df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
+                                    0: "SUPERVISOR",
+                                    1: "VENDIDO",
+                                    2: "DN"
+                                })
+                                subtotal = df1_result[["VENDIDO", "DN"]].sum()
+                                subtotal_df = pd.DataFrame(subtotal).transpose()
+                                subtotal_df.index = ["total"]
+                                subtotal_df["SUPERVISOR"] = "Total"
+                                df1_result = pd.concat([df1_result, subtotal_df])
+                                
+                                df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
+                                    0: "SUP",
+                                    1: "VENDEDOR",
+                                    2: "VENDIDO",
+                                    3: "DN",
+                                    4: "BASE"
+                                })
+                                df2_result = df2_result.drop(columns=["SUP", "BASE"])
+
+                                for coluna in formatarMoeda:
+                                    df1_result[coluna] = df1_result[coluna].apply(format_number)
+                                    df2_result[coluna] = df2_result[coluna].apply(format_number)
+
+                                with col2:
+                                    st.dataframe(df1_result)
+                                    st.dataframe(df2_result)
+
+
+                        # --------------- Modo Metric --------------- #
+                        else:
+                            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                                df1_result = df1(dataIni, dataFim)
+                                df2_result = df2(dataIni, dataFim)
+
+                            # -------- Tabela de Vendas por Supervisor --------
+                            if sup_filtro:
+                                df1_result = df1_result[df1_result[3].isin(sup_filtro)]
+                                with coluna1: 
+                                    for i in (df1_result[0]):
+                                        st.metric("Supervisor", i)
+                                with coluna2: 
+                                    subcol1, subcol2 = st.columns([2,1])
+                                    with subcol1:
+                                        for i in df1_result[1]:
+                                            st.metric("VENDIDO", format_number(i))
+                                    with subcol2:
+                                        for i in df1_result[2]:
+                                            st.metric("DN", i)
+                                if len(sup_filtro) > 1:
+                                    with coluna1: 
+                                        st.metric("Total", 'TOTAL')
+                                    with coluna2: 
+                                        subcol1, subcol2 = st.columns([2,1])
+                                        with subcol1:
+                                            st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
+                                        with subcol2:
+                                            st.metric("TOTAL DN", df1_result[2].sum())
+                            else:
+                                with coluna1: 
+                                    for i in (df1_result[0]):
+                                        st.metric("Supervisor", i)
+                                with coluna2: 
+                                    subcol1, subcol2 = st.columns([2,1])
+                                    with subcol1:
+                                        for i in df1_result[1]:
+                                            st.metric("VENDIDO", format_number(i))
+                                    with subcol2:
+                                        for i in df1_result[2]:
+                                            st.metric("DN", i)
+                                with coluna1: 
+                                    st.metric("Total", 'TOTAL')
+                                with coluna2: 
+                                        subcol1, subcol2 = st.columns([2,1])
+                                        with subcol1:
+                                            st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
+                                        with subcol2:
+                                            st.metric("TOTAL DN", df1_result[2].sum())
+                            
+                            # ----------------- Tabela de Vendas por RCA -----------------
+                            if sup_filtro:
+                                df2_result = df2_result[df2_result[0].isin(sup_filtro)]
+                                with coluna1:
+                                    for i in df2_result[1]:
+                                        st.metric("RCA", i)
+                                with coluna2:
+                                    subcol1, subcol2 = st.columns([2,1])
+                                    with subcol1:
+                                        for i in df2_result[2]:
+                                            st.metric("VENDIDO", format_number(i))
+                                    with subcol2:
+                                        for i in df2_result[3]:
+                                            st.metric("DN", i)
+                            else:
+                                with coluna1:
+                                    for i in df2_result[1]:
+                                        st.metric("RCA", i)
+                                with coluna2:
+                                    subcol1, subcol2 = st.columns([2,1])
+                                    with subcol1:
+                                        for i in df2_result[2]:
+                                            st.metric("VENDIDO", format_number(i))
+                                    with subcol2:
+                                        for i in df2_result[3]:
+                                            st.metric("DN", i)                                                
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
+    with aba1_2:
+        st.markdown("Legenda:")
+        st.markdown("  1. Os dados abaixo são de vendas na semana atual.")
+        st.markdown("  2. A linha branca tracejada representa o valor da média de vendas na semana atual.")
+        if st.button("Carregar Dados", key='grafico_vend_sup'):
             with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                # --------------------------- DADOS META --------------------------- #
-                meta_result = metaCalc(vendedorCod)
-                if meta_result.empty:
-                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
-                else:
-                    with st.container(border=False):
-                        # ----------------- Formatação da tabela -----------------
-                        meta_result = meta_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
-                            0: "CODSEC",
-                            1: "SECAO",
-                            2: "CODSUPERVISOR",
-                            3: "RCA",
-                            4: "TOTAL VENDIDO",
-                            5: "META MÊS",
-                            6: "META DIA"
-                        })
-
-                        # -------- Formatação para Metric
-                        meta_mes_total = format_number(meta_result["META MÊS"].sum())
-                        meta_dia_total = format_number(meta_result["META DIA"].sum())
-
-                        formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
-                        for coluna in formatarMoeda:
-                            meta_result[coluna] = meta_result[coluna].apply(format_number)
-
-                        meta_result = meta_result.drop(columns=["CODSUPERVISOR","RCA"]) # Removendo colunas desnecessárias
-
-                        # ------ DataFrame para HTML 
-                        table_html = meta_result.to_html(classes='table-style', index=False)
-                        table_html = table_html.replace('<td>', '<td class="linha-table">')
-
-                        # ------ Estilos CSS personalizados
-                        with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
-                            cli_css = file.read()
-                        css = f"""
-                        <style>
-                            {cli_css}
-                        </style>
-                        """       
-                        # ----------------- Exibição da tabela -----------------
-                        mes_atual = datetime.now().month # Obtém o mês atual
-                        mes = meses[mes_atual] # Obtém o nome do mês atual
-                        st.markdown(f"<h3 class='dnH3'>META {mes} VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
-
-                        st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
-
-                        st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
-                        
-                        # Cria a tabela HTML
-                        html_table = f"""
-                        <table class='table-style'>
-                            <tr>
-                                <th>META TOTAL</th>
-                                <th>META DIA TOTAL</th>
-                            </tr>
-                            <tr>
-                                <td class="linha-table">{meta_mes_total}</td>
-                                <td class="linha-table">{meta_dia_total}</td>
-                            </tr>
-                        </table>
-                        """
-                        # Exibe a tabela HTML
-                        st.markdown(html_table, unsafe_allow_html=True)
-
-    with aba3_2:
-        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
-        with col1:
-            st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
-            st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
-        with col2:
-            supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-            if supName == "ADAILTON":
-                with col3:
-                    supCod = st.selectbox("CÓDIGO WINTHOR", (2,), index=0, key='adailton_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-            elif supName == "VILMAR JR":
-                with col3:
-                    supCod = st.selectbox("CÓDIGO WINTHOR", (8,), index=0, key='vilmar_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-            else:
-                with col3:
-                    supCod = st.selectbox("ERRO", (0,), index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
-        with col4:
-            st.markdown("<br>", unsafe_allow_html=True)
-            with st.expander("Como é calculada a meta?", expanded=False):
-                st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
-        if st.button("CARREGAR", key=3):
-            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                # --------------------------- DADOS META --------------------------- #
-                meta_result = metaSupCalc(supCod)
-                if meta_result.empty:
-                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
-                else:
-                    with st.container(border=False):
-                        # ----------------- Formatação da tabela -----------------
-                        meta_result = meta_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
-                            0: "CODSEC",
-                            1: "SECAO",
-                            2: "CODSUPERVISOR",
-                            3: "TOTAL VENDIDO",
-                            4: "META MÊS",
-                            5: "META DIA"
-                        })
-
-                        # -------- Formatação para Metric
-                        meta_mes_total = format_number(meta_result["META MÊS"].sum())
-                        meta_dia_total = format_number(meta_result["META DIA"].sum())
-
-                        formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
-                        for coluna in formatarMoeda:
-                            meta_result[coluna] = meta_result[coluna].apply(format_number)
-
-                        meta_result = meta_result.drop(columns=["CODSUPERVISOR"]) # Removendo colunas desnecessárias
-
-                        # ------ DataFrame para HTML 
-                        table_html = meta_result.to_html(classes='table-style', index=False)
-                        table_html = table_html.replace('<td>', '<td class="linha-table">')
-
-                        # ------ Estilos CSS personalizados
-                        with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
-                            cli_css = file.read()
-                        css = f"""
-                        <style>
-                            {cli_css}
-                        </style>
-                        """       
-                        # ----------------- Exibição da tabela -----------------
-                        mes_atual = datetime.now().month # Obtém o mês atual
-                        mes = meses[mes_atual] # Obtém o nome do mês atual
-                        st.markdown(f"<h3 class='dnH3'>META {mes} SUPERVISOR {supName}</h3>", unsafe_allow_html=True) # Título da seção
-
-                        st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
-
-                        st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
-                        
-                        # Cria a tabela HTML
-                        html_table = f"""
-                        <table class='table-style'>
-                            <tr>
-                                <th>META TOTAL</th>
-                                <th>META DIA TOTAL</th>
-                            </tr>
-                            <tr>
-                                <td class="linha-table">{meta_mes_total}</td>
-                                <td class="linha-table">{meta_dia_total}</td>
-                            </tr>
-                        </table>
-                        """
-                        # Exibe a tabela HTML
-                        st.markdown(html_table, unsafe_allow_html=True)
-
+                start_of_week = data_semana_ini()
+                end_of_week = data_semana_fim()
+                df2_result = df2(start_of_week, end_of_week)
+                df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
+                df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
+            st.plotly_chart(grafico_vend_sup, use_container_width=True)
+            metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
+            with metric_col2: 
+                st.metric(label = "MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
+            with metric_col3:
+                st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0][6:], delta = "-24º")
+            coluna1, coluna2 = st.columns(2)
+            with coluna1:
+                st.plotly_chart(grafico_top_rca8, use_container_width=True)
+                subcoluna1, subcoluna2 = st.columns(2)
+                with subcoluna1:
+                    st.metric(label = "MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
+                with subcoluna2:
+                    st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
+            with coluna2:
+                st.plotly_chart(grafico_top_rca2, use_container_width=True)
+                subcoluna1, subcoluna2 = st.columns(2)
+                with subcoluna1:
+                    st.metric(label = "MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
+                with subcoluna2:
+                    st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-11º")
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
+    with aba1_3: # add média de venda por cliente
+        container = st.container(border=True)
+        col = st.columns(1)
+        coluna1, coluna2, coluna3 = st.columns(3)
+        with container:
+            with coluna1:
+                subcoluna1, subcoluna2 = st.columns(2)
+                with subcoluna1:
+                    dataIni_cli = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
+                with subcoluna2:
+                    dataFim_cli = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
+            with coluna2:
+                df3_result = df3(dataIni, dataFim)
+                rca_filtro = st.multiselect(
+                    "Escolha um RCA", 
+                    df3_result[2].unique(), 
+                    default=[],
+                    key='tabela_cli3'
+                )
+            with coluna3:
+                st.write(" ") # Espaço em branco para centralizar os widgets
+                st.write(" ") # Espaço em branco para centralizar os widgets
+                if st.button("Carregar Dados", key='tabela_cli'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                        df3_result = df3(dataIni_cli, dataFim_cli)
+                    if rca_filtro:
+                        df3_result = df3_result[df3_result[2].isin(rca_filtro)]
+                        with coluna1:
+                            for i in df3_result[0]:
+                                st.metric("Cliente", i[:25])
+                        with coluna2:
+                            for i in df3_result[2]:
+                                st.metric("RCA", i)
+                        with coluna3:
+                            for i in df3_result[3]:
+                                st.metric("VENDIDO", format_number(i))
+# -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
+    with aba1_4:
+        container = st.container(border=False)
+        coluna1, coluna2, coluna3 = st.columns(3)
+        with coluna1:
+            subcol1, subcol2 = st.columns(2)
+            with subcol1:
+                dataIni_fornec = st.date_input(":date: Data inicial", 
+                                            value=pd.to_datetime('today'), 
+                                            format='DD/MM/YYYY', 
+                                            key='tabela_fornec1')
+            with subcol2:
+                dataFim_fornec = st.date_input(":date: Data final", 
+                                            value=pd.to_datetime('today'), 
+                                            format='DD/MM/YYYY', 
+                                            key='tabela_fornec2')
+        df4_result = df4(dataIni_fornec, dataFim_fornec)
+        with coluna2:
+            df4_resultF = df4(dataIni_fornec, dataFim_fornec)
+            if df4_resultF.empty:
+                st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+            else: 
+                fornec_filtro = st.selectbox(
+                    "Filtro Fornecedor", 
+                    df4_resultF[1].unique(), 
+                    index=None, 
+                    key='tabela_fornec3',
+                    placeholder="Selecione o Fornecedor...",
+                )
+        with coluna3:
+            subcol1, subcol2 = st.columns(2)
+            with subcol1:
+                st.write(" ") # Espaço em branco para centralizar os widgets
+                st.write(" ") # Espaço em branco para centralizar os widgets
+                if st.button("Carregar", key='tabela_fornec'):
+                    with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                        if fornec_filtro:
+                            df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
+        if df4_resultF.empty:
+            st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+        else: 
+            df4_result = df4_result.iloc[:, [0, 1, 3, 4, 5, 7]]
+            df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
+            # Renomear colunas
+            df4_result = df4_result.rename(columns={
+                0: 'Cód',
+                1: 'Fornecedor',
+                3: 'Supervisor',
+                4: 'Cód',
+                5: 'RCA',
+                7: 'Valor R$'
+            })
+            html_table = df4_result.to_html(index=False) # Convertendo o DataFrame para HTML
+            st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 
 # --------------------------- CLIENTES ----------------------------------- #
 with aba4:
@@ -2728,10 +2477,261 @@ with aba6:
                 container1 = st.container(border=True)
                 container1.caption(f'Produtos sem venda a mais de 7 dias do fornecedor {nomeFornec}')
 
+# ------------------------------- META --------------------------------------- #
+with aba3:
+    with st.spinner('Carregando...'):
+        tm.sleep(15)
+    c1, c2 = st.columns([0.300, 1])
+    with c1:
+        st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
+    with c2:
+        st.title("CONSULTAR META")
+        st.markdown("Painel destinado a :blue[CONSULTA] das metas")
+        st.markdown("<br>", unsafe_allow_html=True)
+    st.divider()
+    st.markdown("<br>", unsafe_allow_html=True)
+    aba3_1, aba3_2 = st.tabs(["VENDEDOR", "SUPERVISOR"])
+    # ------------------------------- VENDEDOR --------------------------------------- #
+    with aba3_1:
+        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
+        with col1:
+                st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
+                st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+        with col2:
+                vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_2', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
+                if vendedorName == "LEONARDO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (140,),index=0, key='140_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "EDNALDO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (141,),index=0, key='141_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "VAGNER":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (142,),index=0, key='142_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "DEIVID":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (143,),index=0, key='143_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "BISMARCK":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (145,),index=0, key='145_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "LUCIANA":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (147,),index=0, key='147_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "MATHEUS":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (148,),index=0, key='148_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "MARCIO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (150,),index=0, key='150_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "LEANDRO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (151,),index=0, key='151_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "REGINALDO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (152,),index=0, key='152_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "ROBSON":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (153,),index=0, key='153_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "JOAO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (154,),index=0, key='154_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "TAYANE":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (155,),index=0, key='155_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "MURILO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (156,),index=0, key='156_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "LUCAS":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (157,),index=0, key='157_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "DEYVISON":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (158,),index=0, key='158_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "ZEFERINO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (161,),index=0, key='161_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "EPAMINONDAS":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (164,),index=0, key='164_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "GLAUBER":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (167,),index=0, key='167_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "TARCISIO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (168,),index=0, key='168_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "THIAGO":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (169,),index=0, key='169_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "FILIPE":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (170,),index=0, key='170_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "ROMILSON":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (172,),index=0, key='172_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                elif vendedorName == "VALDEME":
+                    with col3:
+                        vendedorCod = st.selectbox("CÓDIGO WINTHOR", (174,),index=0, key='174_2', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                else:
+                    vendedorCod = st.selectbox("ERRO", (0,),index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible") 
+        with col4:
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.expander("Como é calculada a meta?", expanded=False):
+                st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
+        if st.button("CARREGAR", key=2):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                # --------------------------- DADOS META --------------------------- #
+                meta_result = metaCalc(vendedorCod)
+                if meta_result.empty:
+                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
+                else:
+                    with st.container(border=False):
+                        # ----------------- Formatação da tabela -----------------
+                        meta_result = meta_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
+                            0: "CODSEC",
+                            1: "SECAO",
+                            2: "CODSUPERVISOR",
+                            3: "RCA",
+                            4: "TOTAL VENDIDO",
+                            5: "META MÊS",
+                            6: "META DIA"
+                        })
+
+                        # -------- Formatação para Metric
+                        meta_mes_total = format_number(meta_result["META MÊS"].sum())
+                        meta_dia_total = format_number(meta_result["META DIA"].sum())
+
+                        formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
+                        for coluna in formatarMoeda:
+                            meta_result[coluna] = meta_result[coluna].apply(format_number)
+
+                        meta_result = meta_result.drop(columns=["CODSUPERVISOR","RCA"]) # Removendo colunas desnecessárias
+
+                        # ------ DataFrame para HTML 
+                        table_html = meta_result.to_html(classes='table-style', index=False)
+                        table_html = table_html.replace('<td>', '<td class="linha-table">')
+
+                        # ------ Estilos CSS personalizados
+                        with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                            cli_css = file.read()
+                        css = f"""
+                        <style>
+                            {cli_css}
+                        </style>
+                        """       
+                        # ----------------- Exibição da tabela -----------------
+                        mes_atual = datetime.now().month # Obtém o mês atual
+                        mes = meses[mes_atual] # Obtém o nome do mês atual
+                        st.markdown(f"<h3 class='dnH3'>META {mes} VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True) # Título da seção
+
+                        st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+
+                        st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+                        
+                        # Cria a tabela HTML
+                        html_table = f"""
+                        <table class='table-style'>
+                            <tr>
+                                <th>META TOTAL</th>
+                                <th>META DIA TOTAL</th>
+                            </tr>
+                            <tr>
+                                <td class="linha-table">{meta_mes_total}</td>
+                                <td class="linha-table">{meta_dia_total}</td>
+                            </tr>
+                        </table>
+                        """
+                        # Exibe a tabela HTML
+                        st.markdown(html_table, unsafe_allow_html=True)
+
+    with aba3_2:
+        col1, col2, col3, col4 = st.columns([0.55, 1, 1, 2])
+        with col1:
+            st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
+            st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+        with col2:
+            supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+            if supName == "ADAILTON":
+                with col3:
+                    supCod = st.selectbox("CÓDIGO WINTHOR", (2,), index=0, key='adailton_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+            elif supName == "VILMAR JR":
+                with col3:
+                    supCod = st.selectbox("CÓDIGO WINTHOR", (8,), index=0, key='vilmar_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+            else:
+                with col3:
+                    supCod = st.selectbox("ERRO", (0,), index=0, key='0', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
+        with col4:
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.expander("Como é calculada a meta?", expanded=False):
+                st.markdown("A meta é calculada com base no histórico de vendas do vendedor dos ultimos 2 meses e considerando a quantidade de dias úteis desses meses.")
+        if st.button("CARREGAR", key=3):
+            with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
+                # --------------------------- DADOS META --------------------------- #
+                meta_result = metaSupCalc(supCod)
+                if meta_result.empty:
+                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos ou contate o suporte.")
+                else:
+                    with st.container(border=False):
+                        # ----------------- Formatação da tabela -----------------
+                        meta_result = meta_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
+                            0: "CODSEC",
+                            1: "SECAO",
+                            2: "CODSUPERVISOR",
+                            3: "TOTAL VENDIDO",
+                            4: "META MÊS",
+                            5: "META DIA"
+                        })
+
+                        # -------- Formatação para Metric
+                        meta_mes_total = format_number(meta_result["META MÊS"].sum())
+                        meta_dia_total = format_number(meta_result["META DIA"].sum())
+
+                        formatarMoeda = ["TOTAL VENDIDO", "META MÊS", "META DIA"]
+                        for coluna in formatarMoeda:
+                            meta_result[coluna] = meta_result[coluna].apply(format_number)
+
+                        meta_result = meta_result.drop(columns=["CODSUPERVISOR"]) # Removendo colunas desnecessárias
+
+                        # ------ DataFrame para HTML 
+                        table_html = meta_result.to_html(classes='table-style', index=False)
+                        table_html = table_html.replace('<td>', '<td class="linha-table">')
+
+                        # ------ Estilos CSS personalizados
+                        with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/clientes.css', "r") as file:
+                            cli_css = file.read()
+                        css = f"""
+                        <style>
+                            {cli_css}
+                        </style>
+                        """       
+                        # ----------------- Exibição da tabela -----------------
+                        mes_atual = datetime.now().month # Obtém o mês atual
+                        mes = meses[mes_atual] # Obtém o nome do mês atual
+                        st.markdown(f"<h3 class='dnH3'>META {mes} SUPERVISOR {supName}</h3>", unsafe_allow_html=True) # Título da seção
+
+                        st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
+
+                        st.markdown(css, unsafe_allow_html=True) # Aplicando os estilos CSS
+                        
+                        # Cria a tabela HTML
+                        html_table = f"""
+                        <table class='table-style'>
+                            <tr>
+                                <th>META TOTAL</th>
+                                <th>META DIA TOTAL</th>
+                            </tr>
+                            <tr>
+                                <td class="linha-table">{meta_mes_total}</td>
+                                <td class="linha-table">{meta_dia_total}</td>
+                            </tr>
+                        </table>
+                        """
+                        # Exibe a tabela HTML
+                        st.markdown(html_table, unsafe_allow_html=True)
 
 # --------------------------- Outros ----------------------------------- #
 with aba7:
     with st.spinner('Carregando dados...'): 
+        tm.sleep(20)
         result = campanhaDanone()
         st.table(result)
         c1, c2, c3 = st.columns([2,0.75,2])
