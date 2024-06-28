@@ -17,7 +17,7 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, cliente_semVenda)
 from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
-from utils import format_number, data_semana_ini, data_semana_fim, getTableXls
+from utils import format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf
 
 # Inicializa st.session_state
 if 'active_tab' not in st.session_state:
@@ -2203,7 +2203,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_pedErro"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(filtered_pedErro_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                        st.toast('Gerando arquivo excel...', icon = ":arrow_down_small:")
+                        st.toast('Gerando arquivo Excel...')
                         tm.sleep(.5)
 
 
@@ -2291,7 +2291,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_devolucao"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(filtered_devolucao_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                        st.toast('Gerando arquivo excel...', icon = ":arrow_down_small:")
+                        st.toast('Gerando arquivo Excel...')
                         tm.sleep(.5)
 
                 with c1:
@@ -2513,30 +2513,46 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     estoque266_result = estoque266_result.merge(qtdVendaMes1_result, on='CODPROD', how='left').fillna('0')
                     estoque266_result = estoque266_result.merge(qtdVendaMes0_result, on='CODPROD', how='left').fillna('0')
 
-                    estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: (((x['QTD MÊS ATUAL'].astype(float)) + 
-                                                                                        (x['QTD MÊS 1'].astype(float)) + 
-                                                                                        (x['QTD MÊS 2'].astype(float)) + 
-                                                                                        (x['QTD MÊS 3'].astype(float))) / 4) / diasUteis)
-                    
-                    estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / x["QTDVENDDIA"].astype(float))))
+                    estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: ((((x['QTD MÊS ATUAL'].astype(float)) + 
+                                                                        (x['QTD MÊS 1'].astype(float)) + 
+                                                                        (x['QTD MÊS 2'].astype(float)) + 
+                                                                        (x['QTD MÊS 3'].astype(float))) / 4) / diasUteis).round(0).astype(int))
 
+                    estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / 
+                                                                     x["QTDVENDDIA"].astype(float)).fillna(0).replace([np.inf, -np.inf], 0).round(0).astype(int)))
+                    
+                    estoque266_result['QTDVENDDIA'] = estoque266_result['QTDVENDDIA'].astype(float).round(0).astype(int)
+                    
+                    estoque266_result['QTDESTDIA'] = estoque266_result['QTDESTDIA'].astype(float).round(0).astype(int)
+                    
                     st.markdown("    ")
-                    selected_fornec = st.selectbox(label="Filtro de :red[Fornecedor]", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
+                    selected_fornec = st.selectbox(label="Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
                 # ------ Fora da Coluna
                 filtered_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
                 codFornec = filtered_estoque266_result["CODFORNEC"].iloc[0]
                 nomeFornec = filtered_estoque266_result["CODFORNEC"].iloc[0]
                 filtered_estoque266_result = filtered_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
-                filtered_estoque266_result = filtered_estoque266_result.sort_values('QTDVENDDIA', ascending=False)
-                filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']] = filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
-                filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']] = filtered_estoque266_result[['QTDVENDDIA','QTDESTDIA','QTDULTENT']].astype(float).round(0).astype(int).astype(str)
+                filtered_estoque266_result = filtered_estoque266_result.sort_values(by='QTDESTDIA', ascending=False)
+                filtered_estoque266_result[['QTDULTENT']] = filtered_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
+                filtered_estoque266_result[['QTDULTENT']] = filtered_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
                 with c3:
                 # ------ Retorna para Coluna
                     st.divider()
-                    if st.button('GERAR EXCEL', key="excel_estoque"): # ---- Convertendo para Excel
-                        st.markdown(getTableXls(filtered_estoque266_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                        st.toast('Gerando arquivo excel...', icon = ":arrow_down_small:")
-                        tm.sleep(.5)
+                    colunaExcel, colunaPdf = st.columns([0.6, 1])
+                    with colunaExcel:
+                        if st.button('GERAR EXCEL', key="excel_estoque"): # ---- Convertendo para Excel
+                            st.toast('Gerando arquivo Excel...')
+                            tm.sleep(.5)
+                            st.markdown(getTableXls(filtered_estoque266_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                    with colunaPdf:
+                        if st.button('GERAR PDF', key="pdf_estoque"):
+                            st.toast('Gerando arquivo PDF...')
+                            tm.sleep(.5)
+                            # Formatando a tabela para impressão em PDF
+                            filtered_estoque266_result_pdf = filtered_estoque266_result.drop(columns=["QTD EST CX", "EMBALAGEM", "QTD MÊS 3"])
+                            filtered_estoque266_result_pdf['DESCRICAO'] = filtered_estoque266_result_pdf['DESCRICAO'].apply(lambda x: x[:13] if isinstance(x, str) else x)
+
+                            st.markdown(getTablePdf(filtered_estoque266_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
                 
                 with c1:
                     st.write("Legenda:")
@@ -2569,10 +2585,21 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         5: "DIAS SEM VENDA"
                     })
                     st.divider()
-                    if st.button('GERAR EXCEL', key="excel_prodSemVenda"): # ---- Convertendo para Excel
-                        st.markdown(getTableXls(prodSemVenda_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                        st.toast('Gerando arquivo excel...', icon = ":arrow_down_small:")
-                        tm.sleep(.5)
+                    colunaExcel, colunaPdf = st.columns([0.6, 1])
+                    with colunaExcel:
+                        if st.button('GERAR EXCEL', key="excel_prodSemVenda"): # ---- Convertendo para Excel
+                            st.toast('Gerando arquivo Excel...')
+                            tm.sleep(.5)
+                            st.markdown(getTableXls(prodSemVenda_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                    with colunaPdf:
+                        if st.button('GERAR PDF', key="pdf_prodSemVenda"):
+                            st.toast('Gerando arquivo PDF...')
+                            tm.sleep(.5)
+                            prodSemVenda_result_pdf = prodSemVenda_result
+                            # Formatando a tabela para impressão em PDF
+                            prodSemVenda_result_pdf['DESCRICAO'] = prodSemVenda_result_pdf['DESCRICAO'].apply(lambda x: x[:20] if isinstance(x, str) else x)
+
+                            st.markdown(getTablePdf(prodSemVenda_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
                 
                 with c2_2:
                     st.write("Tabela de Produtos Sem Venda:")
@@ -2736,8 +2763,9 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_semVenda"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(cliente_semVenda_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                        st.toast('Gerando arquivo excel...', icon = ":arrow_down_small:")
+                        st.toast('Gerando arquivo excel... Clique em :blue[Baixar]')
                         tm.sleep(.5)
+                    
 
                 with c2:
                     st.write("Tabela de Clientes :red[Sem Venda]:")
@@ -3017,7 +3045,7 @@ elif st.session_state['active_tab'] == ':notebook:':
             with c2:
                 if st.button('GERAR EXCEL'): # ---- Convertendo para Excel
                     st.markdown(getTableXls(result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                    st.toast('Gerando arquivo excel...', icon = ":arrow_down_small:")
+                    st.toast('Gerando arquivo Excel...')
                     tm.sleep(.5)
 
 st.divider()
@@ -3026,6 +3054,6 @@ with col2:
     st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 1.8.10.9") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
-        st.caption("By SammMartins", help="Desenvolvido por Sammuel G Martins")
+        st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
         with st.spinner('Carregando...'):
             tm.sleep(3)

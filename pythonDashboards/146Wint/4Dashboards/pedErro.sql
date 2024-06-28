@@ -100,7 +100,7 @@ UNION ALL
 SELECT DISTINCT
     c.codcli || '' AS Cliente,
     c.codusur AS RCA,
-    'CODCOB != CODPLPAG' AS Tipo,
+    'SICOOB & ' || c.codplpag AS Tipo,
     (CASE
         WHEN c.posicao LIKE 'B' THEN c.posicao || 'loqueado' 
         WHEN c.posicao LIKE 'C' THEN c.posicao || 'ancelado'
@@ -110,7 +110,7 @@ SELECT DISTINCT
         END) AS Status 
 FROM PONTUAL.PCPEDC c 
 WHERE c.CODCOB IN ('7563') 
-and c.codplpag not in (3,4,10,21,28,29,38,39,40,41,43,44,45,17)
+and c.codplpag not in (3,4,5,6,10,12,17,21,28,29,38,39,40,41,43,44,45,46,47,70)
 AND c.posicao NOT IN ('F', 'C')
 AND c.data > SYSDATE-6
 ------------------------------------------------------------------------------------------------------------------
