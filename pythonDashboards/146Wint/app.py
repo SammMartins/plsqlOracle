@@ -1693,24 +1693,24 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                 st.plotly_chart(grafico_vend_sup, use_container_width=True)
                 metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
                 with metric_col2: 
-                    st.metric(label = "MELHOR VENDEDOR", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
+                    st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
                 with metric_col3:
-                    st.metric(label = "PIOR VENDEDOR", value = df2_result[1].tail(1).iloc[0][6:], delta = "-24º")
+                    st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-26º")
                 coluna1, coluna2 = st.columns(2)
                 with coluna1:
                     st.plotly_chart(grafico_top_rca8, use_container_width=True)
                     subcoluna1, subcoluna2 = st.columns(2)
                     with subcoluna1:
-                        st.metric(label = "MELHOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
+                        st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
                     with subcoluna2:
-                        st.metric(label = "PIOR VENDEDOR DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
+                        st.metric(label = "PIOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
                 with coluna2:
                     st.plotly_chart(grafico_top_rca2, use_container_width=True)
                     subcoluna1, subcoluna2 = st.columns(2)
                     with subcoluna1:
-                        st.metric(label = "MELHOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
+                        st.metric(label = "MELHOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
                     with subcoluna2:
-                        st.metric(label = "PIOR VENDEDOR DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-11º")
+                        st.metric(label = "PIOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-13º")
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_3: # add média de venda por cliente
             container = st.container(border=True)
@@ -2444,9 +2444,9 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
                 st.divider()
-                diasUteis = diasUteis().values[0][0]
+                #diasUteis = diasUteis().values[0][0]
                 # Data atual
-                now = datetime.now()
+                now = datetime.now() - timedelta(days=1) # Data atual menos um dia
                 # Mês 0 - Mês Atual
                 dtIniMesAtual = now.replace(day=1)
                 dtFimMesAtual = now
@@ -2464,25 +2464,25 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     qtdVendaMes0_result = qtdVendaProd(dtIniMesAtual, dtFimMesAtual)
                     qtdVendaMes0_result = qtdVendaMes0_result.iloc[:, [0, 1,]].rename(columns={
                         0: "CODPROD",
-                        1: "QTD MÊS ATUAL",
+                        1: "MÊS ATUAL",
                     })
 
                     qtdVendaMes1_result = qtdVendaProd(dtIniMes1, dtFimMes1)
                     qtdVendaMes1_result = qtdVendaMes1_result.iloc[:, [0, 1,]].rename(columns={
                         0: "CODPROD",
-                        1: "QTD MÊS 1",
+                        1: "MÊS 1",
                     })
 
                     qtdVendaMes2_result = qtdVendaProd(dtIniMes2, dtFimMes2)
                     qtdVendaMes2_result = qtdVendaMes2_result.iloc[:, [0, 1,]].rename(columns={
                         0: "CODPROD",
-                        1: "QTD MÊS 2",
+                        1: "MÊS 2",
                     })
 
                     qtdVendaMes3_result = qtdVendaProd(dtIniMes3, dtFimMes3)
                     qtdVendaMes3_result = qtdVendaMes3_result.iloc[:, [0, 1,]].rename(columns={
                         0: "CODPROD",
-                        1: "QTD MÊS 3",
+                        1: "MÊS 3",
                     })
 
                     estoque266_result = estoque266()
@@ -2513,13 +2513,13 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     estoque266_result = estoque266_result.merge(qtdVendaMes1_result, on='CODPROD', how='left').fillna('0')
                     estoque266_result = estoque266_result.merge(qtdVendaMes0_result, on='CODPROD', how='left').fillna('0')
 
-                    estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: ((((x['QTD MÊS ATUAL'].astype(float)) + 
-                                                                        (x['QTD MÊS 1'].astype(float)) + 
-                                                                        (x['QTD MÊS 2'].astype(float)) + 
-                                                                        (x['QTD MÊS 3'].astype(float))) / 4) / diasUteis).round(0).astype(int))
+                    estoque266_result = estoque266_result.assign(QTDVENDDIA = lambda x: ((((x['MÊS ATUAL'].astype(float)) + 
+                                                                        (x['MÊS 1'].astype(float)) + 
+                                                                        (x['MÊS 2'].astype(float)) + 
+                                                                        (x['MÊS 3'].astype(float))) / 4) / 30).round(0).astype(int))
 
                     estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / 
-                                                                     x["QTDVENDDIA"].astype(float)).fillna(0).replace([np.inf, -np.inf], 0).round(0).astype(int)))
+                                                                                        x["QTDVENDDIA"].astype(float)).fillna(0).replace([np.inf, -np.inf], 0).round(0).astype(int)))
                     
                     estoque266_result['QTDVENDDIA'] = estoque266_result['QTDVENDDIA'].astype(float).round(0).astype(int)
                     
@@ -2549,8 +2549,9 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                             st.toast('Gerando arquivo PDF...')
                             tm.sleep(.5)
                             # Formatando a tabela para impressão em PDF
-                            filtered_estoque266_result_pdf = filtered_estoque266_result.drop(columns=["QTD EST CX", "EMBALAGEM", "QTD MÊS 3"])
-                            filtered_estoque266_result_pdf['DESCRICAO'] = filtered_estoque266_result_pdf['DESCRICAO'].apply(lambda x: x[:13] if isinstance(x, str) else x)
+                            filtered_estoque266_result_pdf = filtered_estoque266_result
+                            filtered_estoque266_result_pdf = filtered_estoque266_result_pdf.drop(columns=["QTD EST CX", "EMBALAGEM"])
+                            filtered_estoque266_result_pdf['DESCRICAO'] = filtered_estoque266_result_pdf['DESCRICAO'].apply(lambda x: x[:12] if isinstance(x, str) else x)
 
                             st.markdown(getTablePdf(filtered_estoque266_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
                 
@@ -2561,7 +2562,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     container2 = st.container(border=True)
                     container2.caption(':blue["QTD EST CX"] É a quantidade disponível de produtos em Caixas Master.')
                     container3 = st.container(border=True)
-                    container3.caption(':green["QTD MÊS 1"] Se refere ao :green[mês anterior] ao mês atual. Mês 2 e 3 antecedem em sequência.')
+                    container3.caption(':green["MÊS 1"] Se refere ao :green[mês anterior] ao mês atual. Mês 2 e 3 antecedem em sequência.')
                     container4 = st.container(border=True)
                     container4.caption(f':blue["QTESTDIA"] É quantidade de estoque para {diasUteis} dias úteis do mês. :green["QTVENDDIA"] É quantidade vendida em {diasUteis} dias.')
 
