@@ -16,14 +16,15 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, cliente_semVenda)
-from grafic import grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
+from grafic import gerar_graficoVendas
 from utils import format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf
 
 # Inicializa st.session_state
 if 'active_tab' not in st.session_state:
-    st.session_state['active_tab'] = ':dollar: VENDA'
+    st.session_state['active_tab'] = ':beginner: INÍCIO'
 if 'buttons_pressed' not in st.session_state:
     st.session_state['buttons_pressed'] = {
+        ':beginner: INÍCIO': False,
         ':dollar: VENDA': False,
         ':bar_chart: FLASH': False,
         ':dart: META': False,
@@ -87,10 +88,46 @@ st.markdown(header, unsafe_allow_html=True)
 st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
 # ----------------------- Dashboard Layout ----------------------- #
-tabs = st.tabs([":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
+tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
 # Botão para iniciar st.session_state e carregar os Dashboards de cada aba (tabs). Cabeçalho das Abas.
 with tabs[0]:
+    if not st.session_state['buttons_pressed'][':beginner: INÍCIO']:
+        # ------------------ TELA DE LOGIN ------------------------ #
+        lc1, lc2, lc3 = st.columns([1, 1, 1])
+        with lc1:
+            st.title("LOGIN")
+            usernameSemTratar = st.text_input("Username")
+            passwordSemTratar = st.text_input("Password", type="password")
+            username = bleach.clean(usernameSemTratar)
+            password = bleach.clean(passwordSemTratar)
+            login_button = st.button("Login")
+            
+            if login_button:
+                if username == "admin" and password == "password":
+                    st.success("Login successful!")
+                    st.session_state['buttons_pressed'][':beginner: INÍCIO'] = True
+                else:
+                    st.error("Invalid username or password")
+
+    else:
+         # ------------------ TELA DE LOGIN ------------------------ #
+        lc1, lc2, lc3 = st.columns([1, 1, 1])
+        with lc1:
+            st.title("LOGIN")
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            login_button = st.button("Login")
+            
+            if login_button:
+                if username == "admin" and password == "password":
+                    st.success("Login successful!")
+                    st.session_state['buttons_pressed'][':beginner: INÍCIO'] = True
+                else:
+                    st.error("Invalid username or password")
+
+
+with tabs[1]:
     if not st.session_state['buttons_pressed'][':dollar: VENDA']:
         c1, c2 = st.columns([0.300, 1])
         with c1:
@@ -110,7 +147,7 @@ with tabs[0]:
             st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
             st.button('CARREGAR', key="loadVENDA", on_click=set_active_tab, args=(':dollar: VENDA',))
 
-with tabs[1]:
+with tabs[2]:
     if not st.session_state['buttons_pressed'][':bar_chart: FLASH']:
         c1, c2 = st.columns([0.300, 1])
         with c1:
@@ -130,7 +167,7 @@ with tabs[1]:
             st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
             st.button('CARREGAR', key="loadFLASH", on_click=set_active_tab, args=(':bar_chart: FLASH',))
 
-with tabs[2]:
+with tabs[3]:
     if not st.session_state['buttons_pressed'][':dart: META']:
         c1, c2 = st.columns([0.300, 1])
         with c1:
@@ -150,7 +187,7 @@ with tabs[2]:
             st.markdown("<br>", unsafe_allow_html=True)
             st.button('CARREGAR', key="loadMETA", on_click=set_active_tab, args=(':dart: META',))
 
-with tabs[3]:
+with tabs[4]:
     if not st.session_state['buttons_pressed'][':department_store: CLIENTES']:
         c1, c2 = st.columns([0.300, 1])
         with c1:
@@ -170,7 +207,7 @@ with tabs[3]:
             st.markdown("<br>", unsafe_allow_html=True)
             st.button('CARREGAR', key="loadCLIENTES", on_click=set_active_tab, args=(':department_store: CLIENTES',))
 
-with tabs[4]:
+with tabs[5]:
     if not st.session_state['buttons_pressed'][':bank: VERBAS']:
         c1, c2 = st.columns([0.300, 1])
         with c1:
@@ -190,7 +227,7 @@ with tabs[4]:
             st.markdown("<br>", unsafe_allow_html=True)
             st.button('CARREGAR', key="loadVERBAS", on_click=set_active_tab, args=(':bank: VERBAS',))
 
-with tabs[5]:
+with tabs[6]:
     if not st.session_state['buttons_pressed'][':point_up: DEDO DURO']:
         colum1, colum2 = st.columns([0.300, 1])
         with colum1:
@@ -210,7 +247,7 @@ with tabs[5]:
             st.markdown("<br>", unsafe_allow_html=True)
             st.button('CARREGAR', key="loadDEDODURO", on_click=set_active_tab, args=(':point_up: DEDO DURO',))
 
-with tabs[6]:
+with tabs[7]:
     if not st.session_state['buttons_pressed'][':notebook:']:
         st.button('CARREGAR', key="loadNOTEBOOK", on_click=set_active_tab, args=(':notebook:',))
     else:
@@ -218,7 +255,7 @@ with tabs[6]:
 
 # --------------------------- Flash ------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 if st.session_state['active_tab'] == ':bar_chart: FLASH':
-    with tabs[1]:
+    with tabs[2]:
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
         col_1, col_2 = st.columns([0.70, 1])
@@ -1498,7 +1535,7 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
 
 # --------------------------- Vendas ------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':dollar: VENDA':
-    with tabs[0]:
+    with tabs[1]:
         with st.spinner('Carregando dados...'): 
             tm.sleep(1) # Política de prioridade para diferentes abas
         st.divider()
@@ -1688,6 +1725,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     start_of_week = data_semana_ini()
                     end_of_week = data_semana_fim()
                     df2_result = df2(start_of_week, end_of_week)
+                    grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas()
                     df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
                     df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
                 st.plotly_chart(grafico_vend_sup, use_container_width=True)
@@ -1805,7 +1843,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
 
 # --------------------------- CLIENTES ----------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':department_store: CLIENTES':
-    with tabs[3]:
+    with tabs[4]:
         aba4_1, aba4_2 = st.tabs([':convenience_store: GERAL', ':man: POR VENDEDOR'])
         # --------------------------------- GERAL --------------------------------- #
         with aba4_1:
@@ -2131,7 +2169,7 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
 
 # --------------------------- VERBAS -------------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':bank: VERBAS':
-    with tabs[4]:
+    with tabs[5]:
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([0.5, 1, 3.75])
@@ -2176,7 +2214,7 @@ elif st.session_state['active_tab'] == ':bank: VERBAS':
 
 # --------------------------- DEDO DURO ----------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
-    with tabs[5]:
+    with tabs[6]:
 
         aba6_1, aba6_2, aba6_3, aba6_4, aba6_5, aba6_6 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":rotating_light: Inadimplência", ":package: Estoque", ":chart_with_downwards_trend: Sem Compra"])
         # ---------- ERROS ---------- #
@@ -2790,7 +2828,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
 # --------------------------- META --------------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':dart: META':
-    with tabs[2]:
+    with tabs[3]:
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
         aba3_1, aba3_2 = st.tabs(["VENDEDOR", "SUPERVISOR"])
@@ -3037,7 +3075,7 @@ elif st.session_state['active_tab'] == ':dart: META':
 
 # --------------------------- Outros ----------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':notebook:':
-    with tabs[6]:
+    with tabs[7]:
         with st.spinner('Carregando dados...'): 
             tm.sleep(20)
             result = campanhaDanone()
@@ -3052,7 +3090,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 1.8.10.9") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 1.8.10.10") # "X." Versão Total | ".X." Versão do SQL | ".X." Versão Navigator e Opções de Paineis | ".X" Versão Layout (disposição dos itens. HTML, CSS, Streamlit)
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
