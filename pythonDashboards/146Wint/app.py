@@ -95,13 +95,13 @@ tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":d
 # Botão para iniciar st.session_state e carregar os Dashboards de cada aba (tabs). Cabeçalho das Abas.
 with tabs[0]:
     if not st.session_state['buttons_pressed'][':beginner: INÍCIO']:
-        # ------------------ TELA DE LOGIN ------------------------ #
-        control = 0
-        lc1, lc2, lc3 = st.columns([1, 1, 1])
+        # ------------------ TELA DE LOGIN ------------------ #
+        st.session_state['control'] = 0
+        lc1, lc2, lc3 = st.columns([0.5, 1, 1])
         with lc1:
             st.title("LOGIN")
-            usernameSemTratar = st.text_input("Username")
-            passwordSemTratar = st.text_input("Password", type="password")
+            usernameSemTratar = st.text_input("Usuário")
+            passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
             usernameInput = bleach.clean(usernameSemTratar)
             passwordInput = bleach.clean(passwordSemTratar)
             login_button = st.button("Login")
@@ -118,7 +118,8 @@ with tabs[0]:
                 try:
                     username = config.get(f'{usernameInput}_user_dashboard', 'username')
                     password = config.get(f'{usernameInput}_user_dashboard', 'password')
-                    control = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
+                    # Armazena control no estado da sessão
+                    st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
 
                 except Exception as e:
                     st.error(":x: Usuário ou senha inválido!")
@@ -130,11 +131,46 @@ with tabs[0]:
                     
                 else:
                     st.error(":x: Usuário ou senha inválido!")
-                    control = 0
+                    st.session_state['control'] = 0
 
     else:
-         # ------------------ TELA DE LOGIN ------------------------ #
-        lc1, lc2, lc3 = st.columns([1, 1, 1])
+         # ------------------ TELA DE LOGIN ------------------ #
+        st.session_state['control'] = 0
+        lc1, lc2, lc3 = st.columns([0.5, 1, 1])
+        with lc1:
+            st.title("LOGIN")
+            usernameSemTratar = st.text_input("Usuário")
+            passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
+            usernameInput = bleach.clean(usernameSemTratar)
+            passwordInput = bleach.clean(passwordSemTratar)
+            login_button = st.button("Login")
+            
+            if login_button:
+                with open('/home/ti_premium/dbpath.txt', 'r') as file:
+                    dbpath = file.read().strip().strip("'")
+                config = ConfigParser()
+                files = config.read(dbpath)
+                if not files:
+                    st.error(":x: Erro de leitura")
+                    raise ValueError(f"Não foi possível ler o arquivo: {dbpath}")
+                
+                try:
+                    username = config.get(f'{usernameInput}_user_dashboard', 'username')
+                    password = config.get(f'{usernameInput}_user_dashboard', 'password')
+                    # Armazena control no estado da sessão
+                    st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
+
+                except Exception as e:
+                    st.error(":x: Usuário ou senha inválido!")
+                    #raise ValueError("Erro ao obter as informações de conexão do arquivo de configuração") from e
+                
+                if usernameInput == username and passwordInput == password:
+                    st.success("Login successful!")
+                    st.session_state['buttons_pressed'][':beginner: INÍCIO'] = True
+                    
+                else:
+                    st.error(":x: Usuário ou senha inválido!")
+                    st.session_state['control'] = 0
      
 
 
@@ -147,7 +183,7 @@ with tabs[1]:
             st.title("PAINEL DE VENDAS")
             st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
             st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
-            if control >= 5:
+            if 'control' in st.session_state and st.session_state['control'] >= 5:
                 st.button('CARREGAR', key="loadVENDA", on_click=set_active_tab, args=(':dollar: VENDA',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")
@@ -159,7 +195,7 @@ with tabs[1]:
             st.title("PAINEL DE VENDAS")
             st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
             st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
-            if control >= 5:
+            if 'control' in st.session_state and st.session_state['control'] >= 5:
                 st.button('CARREGAR', key="loadVENDA", on_click=set_active_tab, args=(':dollar: VENDA',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")
@@ -173,7 +209,7 @@ with tabs[2]:
             st.title("RELATÓRIO FLASH")
             st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
             st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
-            if control >= 5:
+            if 'control' in st.session_state and st.session_state['control'] >= 5:
                 st.button('CARREGAR', key="loadFLASH", on_click=set_active_tab, args=(':bar_chart: FLASH',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")
@@ -185,7 +221,7 @@ with tabs[2]:
             st.title("RELATÓRIO FLASH")
             st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
             st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
-            if control >= 5:
+            if 'control' in st.session_state and st.session_state['control'] >= 5:
                 st.button('CARREGAR', key="loadFLASH", on_click=set_active_tab, args=(':bar_chart: FLASH',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")                
@@ -199,7 +235,7 @@ with tabs[3]:
             st.title("CONSULTAR META")
             st.markdown("Painel destinado a :blue[CONSULTA] das metas")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 5:
+            if 'control' in st.session_state and st.session_state['control'] >= 5:
                 st.button('CARREGAR', key="loadMETA", on_click=set_active_tab, args=(':dart: META',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")
@@ -211,7 +247,7 @@ with tabs[3]:
             st.title("CONSULTAR META")
             st.markdown("Painel destinado a :blue[CONSULTA] das metas")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 5:
+            if 'control' in st.session_state and st.session_state['control'] >= 5:
                 st.button('CARREGAR', key="loadMETA", on_click=set_active_tab, args=(':dart: META',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")            
@@ -225,7 +261,7 @@ with tabs[4]:
             st.title("RELATÓRIO CLIENTES")
             st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 5:            
+            if 'control' in st.session_state and st.session_state['control'] >= 5:            
                 st.button('CARREGAR', key="loadCLIENTES", on_click=set_active_tab, args=(':department_store: CLIENTES',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")                  
@@ -237,7 +273,7 @@ with tabs[4]:
             st.title("RELATÓRIO CLIENTES")
             st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 5:            
+            if 'control' in st.session_state and st.session_state['control'] >= 5:            
                 st.button('CARREGAR', key="loadCLIENTES", on_click=set_active_tab, args=(':department_store: CLIENTES',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")   
@@ -251,7 +287,7 @@ with tabs[5]:
             st.title("CONSULTAR VERBA")
             st.markdown("Painel destinado a consultar :green[VERBAS]")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 5:                     
+            if 'control' in st.session_state and st.session_state['control'] >= 5:                     
                 st.button('CARREGAR', key="loadVERBAS", on_click=set_active_tab, args=(':bank: VERBAS',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")               
@@ -263,7 +299,7 @@ with tabs[5]:
             st.title("CONSULTAR VERBA")
             st.markdown("Painel destinado a consultar :green[VERBAS]")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 5:                     
+            if 'control' in st.session_state and st.session_state['control'] >= 5:                     
                 st.button('CARREGAR', key="loadVERBAS", on_click=set_active_tab, args=(':bank: VERBAS',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")   
@@ -277,7 +313,7 @@ with tabs[6]:
             st.title(":point_up: DEDO DURO")
             st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 3:                     
+            if 'control' in st.session_state and st.session_state['control'] >= 3:                  
                 st.button('CARREGAR', key="loadDEDODURO", on_click=set_active_tab, args=(':point_up: DEDO DURO',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")               
@@ -289,19 +325,19 @@ with tabs[6]:
             st.title(":point_up: DEDO DURO")
             st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
             st.markdown("<br>", unsafe_allow_html=True)
-            if control >= 3:                     
+            if 'control' in st.session_state and st.session_state['control'] >= 3:                  
                 st.button('CARREGAR', key="loadDEDODURO", on_click=set_active_tab, args=(':point_up: DEDO DURO',))
             else:
                 st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")         
 
 with tabs[7]:
     if not st.session_state['buttons_pressed'][':notebook:']:
-        if control >= 6:              
+        if 'control' in st.session_state and st.session_state['control'] >= 6:         
             st.button('CARREGAR', key="loadNOTEBOOK", on_click=set_active_tab, args=(':notebook:',))
         else:
             st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")    
     else:
-        if control >= 6:              
+        if 'control' in st.session_state and st.session_state['control'] >= 6:         
             st.button('CARREGAR', key="loadNOTEBOOK", on_click=set_active_tab, args=(':notebook:',))
         else:
             st.error(":x: RECURSO BLOQUEADO PARA ESSE USUÁRIO")  
