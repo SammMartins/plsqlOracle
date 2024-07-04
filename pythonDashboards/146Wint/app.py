@@ -96,17 +96,16 @@ tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":d
 with tabs[0]:
     if not st.session_state['buttons_pressed'][':beginner: INÍCIO']:
         # ------------------ TELA DE LOGIN ------------------ #
-        st.session_state['control'] = 0
-        lc1, lc2, lc3 = st.columns([0.5, 1, 1])
-        with lc1:
+        lc1, lc2, lc3 = st.columns([1, 0.5, 1])
+        with lc2:
             st.title("LOGIN")
             usernameSemTratar = st.text_input("Usuário")
             passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
-            usernameInput = bleach.clean(usernameSemTratar)
-            passwordInput = bleach.clean(passwordSemTratar)
             login_button = st.button("Login")
             
             if login_button:
+                usernameInput = bleach.clean(usernameSemTratar)
+                passwordInput = bleach.clean(passwordSemTratar)
                 with open('/home/ti_premium/dbpath.txt', 'r') as file:
                     dbpath = file.read().strip().strip("'")
                 config = ConfigParser()
@@ -118,8 +117,9 @@ with tabs[0]:
                 try:
                     username = config.get(f'{usernameInput}_user_dashboard', 'username')
                     password = config.get(f'{usernameInput}_user_dashboard', 'password')
-                    # Armazena control no estado da sessão
-                    st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
+                    if 'control' not in st.session_state:
+                        # Armazena control no estado da sessão caso já não tenha sido feito
+                        st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
 
                 except Exception as e:
                     st.error(":x: Usuário ou senha inválido!")
@@ -131,21 +131,21 @@ with tabs[0]:
                     
                 else:
                     st.error(":x: Usuário ou senha inválido!")
-                    st.session_state['control'] = 0
+                    if 'control' not in st.session_state:
+                        st.session_state['control'] = 0
 
     else:
-         # ------------------ TELA DE LOGIN ------------------ #
-        st.session_state['control'] = 0
-        lc1, lc2, lc3 = st.columns([0.5, 1, 1])
-        with lc1:
+        # ------------------ TELA DE LOGIN ------------------ #
+        lc1, lc2, lc3 = st.columns([1, 0.5, 1])
+        with lc2:
             st.title("LOGIN")
             usernameSemTratar = st.text_input("Usuário")
             passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
-            usernameInput = bleach.clean(usernameSemTratar)
-            passwordInput = bleach.clean(passwordSemTratar)
             login_button = st.button("Login")
             
             if login_button:
+                usernameInput = bleach.clean(usernameSemTratar)
+                passwordInput = bleach.clean(passwordSemTratar)
                 with open('/home/ti_premium/dbpath.txt', 'r') as file:
                     dbpath = file.read().strip().strip("'")
                 config = ConfigParser()
@@ -157,8 +157,9 @@ with tabs[0]:
                 try:
                     username = config.get(f'{usernameInput}_user_dashboard', 'username')
                     password = config.get(f'{usernameInput}_user_dashboard', 'password')
-                    # Armazena control no estado da sessão
-                    st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
+                    if 'control' not in st.session_state:
+                        # Armazena control no estado da sessão caso já não tenha sido feito
+                        st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
 
                 except Exception as e:
                     st.error(":x: Usuário ou senha inválido!")
@@ -170,9 +171,8 @@ with tabs[0]:
                     
                 else:
                     st.error(":x: Usuário ou senha inválido!")
-                    st.session_state['control'] = 0
-     
-
+                    if 'control' not in st.session_state:
+                        st.session_state['control'] = 0
 
 with tabs[1]:
     if not st.session_state['buttons_pressed'][':dollar: VENDA']:
