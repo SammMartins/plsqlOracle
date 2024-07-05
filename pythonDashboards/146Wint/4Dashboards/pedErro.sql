@@ -100,7 +100,7 @@ UNION ALL
 SELECT DISTINCT
     c.codcli || '' AS Cliente,
     c.codusur AS RCA,
-    'SICOOB & ' || c.codplpag AS Tipo,
+    'ERRO BOLETO E CODPLPAG ' || c.codplpag AS Tipo,
     (CASE
         WHEN c.posicao LIKE 'B' THEN c.posicao || 'loqueado' 
         WHEN c.posicao LIKE 'C' THEN c.posicao || 'ancelado'

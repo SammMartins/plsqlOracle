@@ -1,7 +1,7 @@
-SELECT Distinct a.CODPROD, c.descricao, 
-       SUM(a.QT) "Itens Pedidos", 
-       (b.qtest - b.qtreserv) "QT. Estoque", 
-       SUM(a.QT) - (b.qtest - b.qtreserv) as "Corte Previsto"
+SELECT Distinct(a.CODPROD) || '' codprod, c.descricao, 
+       '' || SUM(a.QT) "Itens Pedidos", 
+       '' || (b.qtest - b.qtreserv) "QT. Estoque", 
+       '' || SUM(a.QT) - (b.qtest - b.qtreserv) as "Corte Previsto"
 from pontual.pcpedi a
     JOIN pontual.PCest b on a.codprod = b.codprod
     join pontual.pcprodut c on a.codprod = c.codprod

@@ -17,7 +17,8 @@ import bcrypt
 from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
-                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, cliente_semVenda)
+                     pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
+                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO)
 from grafic import gerar_graficoVendas
 from utils import format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf
 
@@ -100,8 +101,8 @@ with tabs[0]:
         with lc2:
             st.title("LOGIN")
             usernameSemTratar = st.text_input("Usuário")
-            passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
-            login_button = st.button("Login")
+            passwordSemTratar = st.text_input("Senha", type="password", max_chars = 14)
+            login_button = st.button("ACESSAR")
             
             if login_button:
                 usernameInput = bleach.clean(usernameSemTratar)
@@ -141,7 +142,7 @@ with tabs[0]:
             st.title("LOGIN")
             usernameSemTratar = st.text_input("Usuário")
             passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
-            login_button = st.button("Login")
+            login_button = st.button("ACESSAR")
             
             if login_button:
                 usernameInput = bleach.clean(usernameSemTratar)
@@ -2305,7 +2306,7 @@ elif st.session_state['active_tab'] == ':bank: VERBAS':
 elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
     with tabs[6]:
 
-        aba6_1, aba6_2, aba6_3, aba6_4, aba6_5, aba6_6 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":rotating_light: Inadimplência", ":package: Estoque", ":chart_with_downwards_trend: Sem Compra"])
+        aba6_1, aba6_2, aba6_3, aba6_4, aba6_5, aba6_6 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":rotating_light: Inadimplência", ":package: Estoque", ":x: Sem Compra"])
         # ---------- ERROS ---------- #
         with aba6_1:
             st.header(":warning: Erros Diversos")
@@ -2375,8 +2376,41 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     table_html = pedCont_result.to_html(classes='table-style-bloq', index=False)
                     table_html = table_html.replace('<td>', '<td class="linha-table-bloq">')
                     st.markdown(table_html, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
-                c1,c2,c3 = st.columns([0.7,2,0.7])
+                st.divider()
+                c1,c2,c3 = st.columns([0.7,1.75,0.7])
+                with c3:
+                    pedVsEst_result = pedidoVsEstoque()
+                    pedVsEst_result = pedVsEst_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
+                        0: "CODPROD",
+                        1: "DESCRIÇÃO",
+                        2: "PEDIDO",
+                        3: "ESTOQUE",
+                        4: "CORTE"
+                    })
+                    minCorte = int(st.number_input("Filtro quantidade mínima considerada", value=1, placeholder="Digite um número mínimo de cortes", step = 1))
+                filtered_pedVsEst_result = pedVsEst_result[pedVsEst_result["CORTE"].astype(int) >= minCorte]
+                filtered_pedVsEst_result['CORTE'] = filtered_pedVsEst_result['CORTE'].astype(str)
+
+                with c1:
+                    st.write("Legenda:")
+                    container1 = st.container(border=True)
+                    container1.caption('A coluna "PEDIDO" mostra as quantidades de itens nos pedidos que estão no sistema.')
+                    container2 = st.container(border=True)
+                    container2.caption('A coluna "CORTE" é a quantidade de corte após abater o estoque.')
                 
+                with c2:
+                    st.write("TABELA PEDIDO VS ESTOQUE:")
+                    if filtered_pedVsEst_result.empty:
+                        st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                    else:
+                        st.dataframe(filtered_pedVsEst_result)
+
+                with c3:
+                    st.divider()
+                    if st.button('GERAR EXCEL', key="excel_pedVsEst"): # ---- Convertendo para Excel
+                        st.markdown(getTableXls(filtered_pedVsEst_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                        st.toast('Gerando arquivo Excel...')
+                        tm.sleep(.5)
 
         # ---------- Devoluções ----- #
         with aba6_3:
@@ -2743,7 +2777,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ---------- SEM COMPRA ---------- #
         with aba6_6:
-            st.header(":package: Clientes Sem Compra")
+            st.header(":x: Clientes Sem Compra")
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
                 col1, col2, col3, col4, col5 = st.columns([1, 1, 1.1, 1, 1])
@@ -2888,6 +2922,19 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                 with c3:
                     cliente_semVenda_result = cliente_semVenda(vendedorCod, supCod, supOnOff, rcaOnOff, selected_codFornec) # (sup, rca, supOnOff, rcaOnOff, fornec)
+                    cliente_semVenda_result = cliente_semVenda_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]].rename(columns={
+                        0: "CLIENTE",
+                        1: "COD",
+                        2: "RCA",
+                        3: "SUP",
+                        4: "FANTASIA",
+                        5: "ULT. COMPRA",
+                        6: "BLOQUEIO",
+                        7: "INAD.",
+                        8: "FREEZER",
+                        9: "CADASTRO",
+                        10: "1ª COMPRA"
+                    })
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_semVenda"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(cliente_semVenda_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
@@ -2896,7 +2943,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     
 
                 with c2:
-                    st.write("Tabela de Clientes :red[Sem Venda]:")
+                    st.write("Tabela de Clientes :red[Sem Venda:]")
                     if cliente_semVenda_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados acima :point_up:")
                     else:
@@ -2911,9 +2958,11 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         if recarregarDados:
             pedErro_result = pedErro()
             pedCont_result = pedCont()
+            pedVsEst_result = pedidoVsEstoque()
             inad_result = inad(vendedorCod)
             devolucao_result = devolucao(dataIni, dataFim)
             cliente_semVenda_result = cliente_semVenda(vendedorCod, supCod, supOnOff, rcaOnOff, selected_codFornec)
+
 
 # --------------------------- META --------------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':dart: META':
@@ -3166,15 +3215,26 @@ elif st.session_state['active_tab'] == ':dart: META':
 elif st.session_state['active_tab'] == ':notebook:':
     with tabs[7]:
         with st.spinner('Carregando dados...'): 
-            tm.sleep(20)
+            tm.sleep(10)
             result = campanhaDanone()
             st.table(result)
             c1, c2, c3 = st.columns([2,0.75,2])
             with c2:
-                if st.button('GERAR EXCEL'): # ---- Convertendo para Excel
+                if st.button('GERAR EXCEL 1'): # ---- Convertendo para Excel
                     st.markdown(getTableXls(result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
                     st.toast('Gerando arquivo Excel...')
                     tm.sleep(.5)
+            st.divider()
+            tm.sleep(10)
+            result2 = campanhaYoPRO()
+            st.dataframe(result2)
+            c1, c2, c3 = st.columns([2,0.75,2])
+            with c2:
+                if st.button('GERAR EXCEL 2'): # ---- Convertendo para Excel
+                    st.markdown(getTableXls(result2), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                    st.toast('Gerando arquivo Excel...')
+                    tm.sleep(.5)
+
 
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
