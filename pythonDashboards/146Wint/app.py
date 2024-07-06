@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import bleach 
-import bcrypt
 
 # Módulos da aplicação/locais 
 from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
@@ -1944,7 +1943,7 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
             st.markdown("    ")
 
             # --------------------------------- RANK TOP 100 --------------------------------- #
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR RANK TOP 100"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR RANK TOP 100", expanded=True):
                 # --------------------- Cabeçalho de itens ---------------------
                 col1, col2, col3, col4 = st.columns([1, 1, 2, 0.55])
                 with col1:
@@ -2026,7 +2025,7 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
 
 
             # --------------------------------- COMPARATIVO --------------------------------- #
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR RANK TOP 100 - COMPARATIVO"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR RANK TOP 100 - COMPARATIVO", expanded=True):
                 # --------------------- Cabeçalho de itens ---------------------
                 col1, col2, col3, col4 = st.columns([1, 1, 2, 0.55])
                 with col1:
@@ -2206,7 +2205,7 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
             with col1:
                 st.markdown("<br>", unsafe_allow_html=True)
             # --------------- Dados Top CLI -----------------------
-            with st.expander(f"RANK TOP 10 - {vendedorName}"):
+            with st.expander(f"RANK TOP 10 - {vendedorName}", expanded=True):
                 with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                     # ------------- RANK TOP 10 ------------ #
                     topCli2_result = top10CliRCA(vendedorCod)
@@ -2311,7 +2310,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with aba6_1:
             st.header(":warning: Erros Diversos")
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 st.divider()
                 c1,c2,c3 = st.columns([0.7,1.3,1])
                 with c3:
@@ -2360,7 +2359,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with aba6_2:
             st.header(":pencil: Pedidos com Erros")
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 pedCont_result = pedCont()
                 st.markdown(f"<h3 class='dnH3'>QUANTIDADE DE PEDIDOS BLOQUEADOS</h3>", unsafe_allow_html=True)
                 subcoluna1, subcoluna2, subcoluna3= st.columns([1, 1.5, 1])
@@ -2416,7 +2415,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with aba6_3:
             st.header(":small_red_triangle_down: Devoluções por período")
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 subcoluna1, subcoluna2, subcoluna3, subcoluna4 = st.columns([0.5, 0.5, 1, 1])
                 with subcoluna1:
                     dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD/MM/YYYY', key='DEV1')
@@ -2482,7 +2481,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with aba6_4:
             st.header(":rotating_light: Inadimplência por Cliente")
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 col1, col2, col3, col4 = st.columns([1, 1, 0.55, 2])
                 with col1:
                         vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_4', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
@@ -2603,7 +2602,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with aba6_5:
             st.header(":package: Estoque Gerencial")
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 st.divider()
                 #diasUteis = diasUteis().values[0][0]
                 # Data atual
@@ -2779,7 +2778,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with aba6_6:
             st.header(":x: Clientes Sem Compra")
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:"):
+            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 col1, col2, col3, col4, col5 = st.columns([1, 1, 1.1, 1, 1])
                 with col1:
                         vendedorName = st.selectbox(":man: VENDEDOR", ("TODOS", "LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_6', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
