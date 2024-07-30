@@ -36,11 +36,11 @@
 * Introdução, história e importância <a href="https://youtu.be/kMznyI7r2Tc?si=FAeQpOxc0NvEKrcI" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
 * Tipos de dados: texto, numéricos, datas, etc <a href="https://youtu.be/WsfVnM-Q-1M" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
 * Estrutura básica de uma consulta SQL <a href="https://www.sqlbasicquery.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Básico: `SELECT`, `FROM` e `WHERE` <a href="https://www.sqlclauses.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Funções de agregação: `SUM`, `AVG`, `COUNT`, `MAX`, `MIN` <a href="https://www.sqlaggregation.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Agrupamento: `GROUP BY` e `HAVING` <a href="https://www.sqlgroupby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Básico: `SELECT, FROM e WHERE` <a href="https://www.sqlclauses.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Funções de agregação: `SUM, AVG, COUNT, MAX, MIN` <a href="https://www.sqlaggregation.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Agrupamento: `GROUP BY e HAVING` <a href="https://www.sqlgroupby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
   * Ordenação dos resultados: `ORDER BY` <a href="https://www.sqlorderby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * União de tabelas: `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL JOIN` <a href="https://www.sqljoins.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * União de tabelas: `INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN` <a href="https://www.sqljoins.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
 
 </details>
 
