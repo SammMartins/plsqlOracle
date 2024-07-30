@@ -1,6 +1,6 @@
 <h1 align="Center">Roadmap (EM DESENVOLVIMENTO)</h1>
 <br>
-<h3 align="Center">Roadmap: Dominando o SQL</h3>
+<h3 align="Center">Roadmap: Dominando Consultas no SQL</h3>
 <br>
 <div align="Center"><img src="https://cdn-icons-png.flaticon.com/512/7069/7069798.png" width="150" height="150"/></div>
 
@@ -26,7 +26,7 @@
 
 <br>
 
-<h2 name="0FS">0 - Fundamentos do SQL</h2>
+<h2 name="0FS">Fundamentos do SQL</h2>
 
 <p>Os fundamentos do SQL envolvem uma compreensão básica e essencial sobre como funciona a linguagem de consulta estruturada, incluindo sua história, tipos de dados, e a construção de consultas básicas.</p>
 
@@ -35,12 +35,12 @@
 
 * Introdução, história e importância <a href="https://youtu.be/kMznyI7r2Tc?si=FAeQpOxc0NvEKrcI" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
 * Tipos de dados: texto, numéricos, datas, etc <a href="https://youtu.be/WsfVnM-Q-1M" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-* Estrutura básica de uma consulta SQL <a href="https://www.sqlbasicquery.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Básico: `SELECT, FROM e WHERE` <a href="https://www.sqlclauses.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Funções de agregação: `SUM, AVG, COUNT, MAX, MIN` <a href="https://www.sqlaggregation.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Agrupamento: `GROUP BY e HAVING` <a href="https://www.sqlgroupby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * Ordenação dos resultados: `ORDER BY` <a href="https://www.sqlorderby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
-  * União de tabelas: `INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN` <a href="https://www.sqljoins.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* Estrutura básica de uma consulta SQL <a href="https://youtu.be/0xO1rVj6oHA?list=PLucm8g_ezqNqI5cW3alteV5olcMCcHYRK&t=4" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Básico: `SELECT, FROM e WHERE` <a href="https://youtu.be/jdeivoGi_QI" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Funções de agregação: `SUM, AVG, COUNT, MAX, MIN` <a href="https://youtu.be/BBASKdGg2Wo" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Agrupamento: `GROUP BY e HAVING` <a href="https://youtu.be/CMDHxPW-6ow" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Ordenação dos resultados: `ORDER BY` <a href="https://youtu.be/HNZxBgHW_VY" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * União de tabelas: `INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN, etc.` <a href="https://youtu.be/165r4qUvp8Q" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
 
 </details>
 
