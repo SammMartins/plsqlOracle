@@ -1,134 +1,47 @@
-## Introdução
+<h1 align="Center">Roadmap (EM DESENVOLVIMENTO)</h1>
+<br>
+<h3 align="Center">Roadmap: Dominando o SQL</h3>
+<br>
+<div align="Center"><img src="https://cdn-icons-png.flaticon.com/512/7069/7069798.png" width="150" height="150"/></div>
 
-Bem-vindo! Aqui você encontrará uma coleção de consultas SQL, Dashboards em Python, e outros códigos PL/SQL abrangendo diversas áreas de manipulação e análise de dados. Explore os arquivos para ver diversas consultas criadas por mim durante minha atuação como Programador SQL. Abaixo você verá uma introdução a consultas SQL.
+<b><p align="Center">Desenvolvido por [SammMartins](https://github.com/SammMartins)</p></b>
 
-## Como Criar Consultas SQL
+<hr><br>
 
-Se você é novo em SQL ou deseja aprimorar suas habilidades, você está no lugar certo! Aqui estão algumas dicas básicas para começar a criar consultas SQL de forma simples.
+<h2>Índice</h2>
 
-## Selecionando Dados Básicos
 
-Para recuperar dados de uma tabela, use a cláusula `SELECT`:
+[0 - Fundamentos do SQL](#0FS) 
 
-```sql
-SELECT * FROM exemplo;
-```
-Isso seleciona tudo que a tabela exemplo contém.
+[1 - Manipulação de Dados](#1MD)
 
-## Selecionando Dados Básicos com filtros
+[2 - Consultas Avançadas](#2CA)
 
-Selecione apenas os registros que atendem a uma condição específica usando a cláusula `WHERE`:
+[3 - Gerenciamento de Banco de Dados](#3GBD)
 
-```sql
-SELECT nome, idade
-FROM pessoa
-WHERE nome = 'Lucas';
-```
-Isso seleciona as colunas nome e idade na tabela pessoa ONDE (WHERE) o nome é Lucas.
+[4 - Segurança e Otimização](#4SO)
 
-## Ordenando dados selecionados
 
-Faça o ordenamento dos dados usando `ORDER BY`:
 
-```sql
-SELECT nome, idade
-FROM pessoa
-WHERE nome = 'Marcos'
-ORDER BY idade DESC; -- DESC = Decrescente
-```
-Isso ordena da maior idade para a menor, onde o nome é Marcos, atrevés do `ORDER BY` e `DESC`. O contrário do `DESC` é o `ASC`. Ele torna a ordenação do menor para o maior, ou seja, crescente.
-```sql
-ORDER BY nome; -- O ASC e DESC também são usados para ordem alfabética.
-```
-Em caso de não haver a especificação `ASC` ou `DESC`, o padrão sempre será `ASC`.
 
-## Avançando em Consultas
+<br>
 
-Agora, vamos explorar maneiras de ir além e aprimorar suas habilidades.
+<h2 name="0FS">0 - Fundamentos do SQL</h2>
 
-### A Importância da Prática e Desafios
+<p>Os fundamentos do SQL envolvem uma compreensão básica e essencial sobre como funciona a linguagem de consulta estruturada, incluindo sua história, tipos de dados, e a construção de consultas básicas.</p>
 
-O avanço no PL/SQL, assim como em qualquer linguagem, vem através da prática e da resolução de desafios mais complexos. Experimente projetos práticos e desafie-se com problemas do mundo real para consolidar seu conhecimento.
+<details>
+<summary><b>Fundamentos do SQL</b></summary>
 
-### Entendendo JOINs
-O `JOIN` é uma parte crucial para manipular dados em várias tabelas. Comece com o básico:
+* Introdução, história e importância <a href="https://youtu.be/kMznyI7r2Tc?si=FAeQpOxc0NvEKrcI" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* Tipos de dados: texto, numéricos, datas, etc <a href="https://youtu.be/WsfVnM-Q-1M" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* Estrutura básica de uma consulta SQL <a href="https://www.sqlbasicquery.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Básico: `SELECT`, `FROM` e `WHERE` <a href="https://www.sqlclauses.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Funções de agregação: `SUM`, `AVG`, `COUNT`, `MAX`, `MIN` <a href="https://www.sqlaggregation.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Agrupamento: `GROUP BY` e `HAVING` <a href="https://www.sqlgroupby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * Ordenação dos resultados: `ORDER BY` <a href="https://www.sqlorderby.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+  * União de tabelas: `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL JOIN` <a href="https://www.sqljoins.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
 
-```sql
-SELECT A.nome, B.cargo, A.idade, B.salario
-FROM pessoa A
-JOIN empregado B ON A.cpf = B.cpf; /* A e B são aliases ou apelidos para as tabelas envolvidas na consulta.
-                                       Isso substitui usar o nome completo da coluna ex.: pessoa.cpf */
-```
-Isso retorna dados combinados das duas tabelas com base nas colunas especificadas.
+</details>
 
-#### INNER JOIN
-
-O `INNER JOIN` é a forma mais comum de `JOIN` e retorna registros que têm correspondências nas duas tabelas. A sintaxe básica é:
-
-```sql
-SELECT A.nome, B.cargo, A.idade, B.salario
-FROM pessoa A
-INNER JOIN empregado B ON A.cpf = B.cpf; /* Nesta consulta, apenas as linhas em que há correspondência entre
-                                             pessoa e empregados serão retornadas. */
-```
-#### LEFT e RIGHT JOIN
-
-O `LEFT JOIN` retorna todas as linhas da tabela à esquerda (primeira tabela mencionada após o `ON` pessoa A) e as linhas correspondentes da tabela à direita. Se não houver correspondência, os resultados da tabela à direita serão NULL.
-
-O `RIGHT JOIN` é semelhante ao `LEFT JOIN`, mas retorna todas as linhas da tabela à direita (segunda tabela mencionada após o 'ON' - empregados B) e as linhas correspondentes da tabela à esquerda. Se não houver correspondência, os resultados da tabela à esquerda serão NULL.
-
-### Explorando Subconsultas
-As subconsultas são poderosas para filtrar dados complexos. Experimente:
-```sql
-SELECT pessoa.nome, pessoa.idade, pessoa.cpf
-FROM pessoa
-WHERE cpf IN (SELECT cpf FROM empregado); /* Isso fará um filtro onde apenas as pessoas que forem empregadas
-                                              (que seu cpf está na tabela empregado) serão apresentadas no
-                                              resultado da consulta. */
-```
-Uma outra forma de se usar subconsultas é complementando colunas:
-```sql
-SELECT A.nome, A.idade, A.cpf, (SELECT B.id FROM empregado B WHERE B.cpf = A.cpf) AS id -- redefine nome da coluna
-FROM pessoa A;
-```
-Nesse caso a subconsulta retornará a coluna id da tabela funcionário onde há o mesmo cpf nas duas tabelas.
-
-### Utilizando CTE (Common Table Expressions)
-As CTEs são uma forma eficiente de melhorar a legibilidade e a otimização das consultas. 
-```sql
-WITH cteEmpregado AS (
-    SELECT EMP.nome, EMP.cargo, EMP.salario, CART.funcao
-    FROM empregado EMP
-    JOIN carteira CART ON EMP.id = CART.id
-    WHERE EMP.salario > 2000
-) -- A CTE criar uma nova tabela "temporária" com as colunas que vc irá ultilizar na sua consulta princiapal
-
-SELECT A.nome, B.cargo, B.funcao, B.salario
-FROM pessoa A
-INNER JOIN cteEmpregado B on A.nome = B.nome; /* O ideal é sempre ultilizar chaves únicas, mas também
-                                                 é possível usar chaves como 'nome'. Corre o risco de
-                                                 haver outro nome igual ou nomes escritos errados em
-                                                 alguma das tabelas. Esteja ciente ao usar. */
-```
-As CTEs tornam as consultas mais organizadas e podem melhorar o desempenho em relação a subconsultas. Então prefira usá-las em lugar de subconsultas.
-
-### Pesquisando com Inteligência Artificial
-Chats de Inteligência Artificial são poderosas formas para você saber como fazer algo. Uma forma de você usar da maneira correta pode ser através do seguinte prompt: <br>
-`
-Como faço para filtrar dados em uma consulta PL/SQL onde a data se encontra entre o primeiro dia do mês e hoje?
-`
-###### ChatGPT: 
-Para filtrar dados em uma consulta PL/SQL onde a data está entre o primeiro dia do mês e hoje, você pode usar a função TRUNC para obter o primeiro dia do mês atual e comparar com a data desejada. Aqui está um exemplo:
-```
-SELECT *
-FROM sua_tabela
-WHERE sua_coluna_data >= TRUNC(SYSDATE, 'MM') -- Primeiro dia do mês atual
-  AND sua_coluna_data <= SYSDATE; -- Hoje
-```
-Neste exemplo:
-
-TRUNC(SYSDATE, 'MM') retorna o primeiro dia do mês atual.
-sua_coluna_data >= TRUNC(SYSDATE, 'MM') filtra datas a partir do primeiro dia do mês.
-sua_coluna_data <= SYSDATE filtra datas até o dia atual.
-Certifique-se de substituir sua_tabela pelo nome real da tabela e sua_coluna_data pelo nome real da coluna que armazena as datas. Essa consulta retornará todas as linhas onde a data está entre o primeiro dia do mês atual e hoje.
-
+<br>
