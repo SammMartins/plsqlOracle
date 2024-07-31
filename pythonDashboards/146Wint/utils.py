@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import datetime
 import base64
+import requests
 from io import BytesIO
 import base64
 from reportlab.lib.pagesizes import landscape, letter
@@ -80,3 +81,21 @@ def getTablePdf(df):
     b64 = base64.b64encode(buffer.read()).decode()
     href = f'<br><a class="download" href="data:application/pdf;base64,{b64}" download="TabelaPDF.pdf">BAIXAR</a>'
     return href
+
+# ---------------- Função para obter coordenadas de um CEP usando a awesomeAPI ----------------
+def get_coords_from_cep(cep):
+    # Converter para string
+    cep = str(cep)
+    # Remove caracteres não numéricos
+    cep = ''.join(filter(str.isdigit, cep))
+
+    # Realiza a requisição 
+    response = requests.get(f"https://cep.awesomeapi.com.br/json/{cep}")
+
+    # Verifica se a requisição foi bem sucedida e se não retornou erro
+    if response.status_code == 200: # 200 significa que a requisição foi bem sucedida
+        # Converte a resposta HTTP de JSON para um dicionário Python
+        data = response.json()
+        if 'erro' not in data:
+            return data.get('lat'), data.get('lng')
+    return None

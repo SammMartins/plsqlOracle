@@ -12,14 +12,14 @@ import pandas as pd
 import streamlit as st
 import bleach 
 
-# Módulos da aplicação/locais 
+# Módulos da aplicação e locais 
 from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
-                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO)
+                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps)
 from grafic import gerar_graficoVendas
-from utils import format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf
+from utils import format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep
 
 # Inicializa st.session_state
 if 'active_tab' not in st.session_state:
@@ -1823,6 +1823,8 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
                 with metric_col3:
                     st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-26º")
+
+                st.divider()
                 coluna1, coluna2 = st.columns(2)
                 with coluna1:
                     st.plotly_chart(grafico_top_rca8, use_container_width=True)
@@ -1838,6 +1840,28 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         st.metric(label = "MELHOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
                     with subcoluna2:
                         st.metric(label = "PIOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-13º")
+                
+                st.divider()
+                ceps_result = ceps()
+                
+                ceps_list = {'cep': []}
+                cep_coordenadas = {'lat': [], 'lon': []}
+
+                for cep in ceps_result[0]:  
+                    ceps_list['cep'].append(str(cep)) 
+
+                for cep in ceps_list['cep']:
+                    coordenadas = get_coords_from_cep(cep)
+                    if coordenadas:
+                        cep_coordenadas['lat'].append(float(coordenadas[0]))  
+                        cep_coordenadas['lon'].append(float(coordenadas[1])) 
+                    else:
+                        pass
+
+                # Visualizar no mapa Streamlit
+                st.map(cep_coordenadas)
+
+
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_3: # add média de venda por cliente
             container = st.container(border=True)

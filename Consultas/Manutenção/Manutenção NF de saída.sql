@@ -10,7 +10,7 @@ FROM PCNFSAIDPREFAT A
 WHERE A.SITUACAONFE not in (1)
 --and a.numped = 15221861
 --AND A.numcar > 196823
-and numnota = 468085
+and numnota = 478323
 --AND A.DTFAT BETWEEN '07-DEC-2023' AND '09-DEC-2023'
 
 
