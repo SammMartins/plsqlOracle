@@ -79,8 +79,8 @@ def df2(dataIni, dataFim):
     with open(path + 'vendasPorRCA.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
-    dataIni = dataIni.strftime('%d-%b-%Y')
-    dataFim = dataFim.strftime('%d-%b-%Y')
+    dataIni = dataIni.strftime('%d-%m-%Y')
+    dataFim = dataFim.strftime('%d-%m-%Y')
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
 
@@ -155,8 +155,8 @@ def df4(dataIni, dataFim):
     with open(path + 'vendasPorFornecedor.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
-    dataIni = dataIni.strftime('%d-%b-%Y')
-    dataFim = dataFim.strftime('%d-%b-%Y')
+    dataIni = dataIni.strftime('%d-%m-%Y')
+    dataFim = dataFim.strftime('%d-%m-%Y')
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
 
@@ -833,8 +833,6 @@ def devolucao(dataIni, dataFim):
     with open(path + 'devolucoes.sql', 'r') as arquivo:
         consulta = arquivo.read()
 
-    dataIni = dataIni.strftime('%d-%b-%Y')
-    dataFim = dataFim.strftime('%d-%b-%Y')
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
     try:
@@ -869,9 +867,6 @@ def qtdVendaProd(dataIni, dataFim):
 
     with open(path + 'qtdVendaProd.sql', 'r') as arquivo:
         consulta = arquivo.read()
-
-    dataIni = dataIni.strftime('%d-%b-%Y')
-    dataFim = dataFim.strftime('%d-%b-%Y')
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
     try:
@@ -1166,6 +1161,40 @@ def ceps():
 
     with open(path + 'ceps.sql', 'r') as arquivo: 
         consulta = arquivo.read()
+
+    try:
+        cursor.execute(consulta)
+
+        resultados = cursor.fetchall()
+
+        df = pd.DataFrame.from_dict(resultados)
+    finally:
+        cursor.close()
+        con.close()
+    return df
+
+def cortesEquipe(fornec, dtIni, dtFim):
+    if None in [username, password, host, port, sid]:
+        raise ValueError("Uma ou mais variáveis necessárias não estão estão definidas")
+
+    dsn_tns = cx.makedsn(host, port, sid)
+    try:
+        con = cx.connect(user=username, password=password, dsn=dsn_tns)
+    except cx.DatabaseError as e:
+        error, = e.args
+        if error.code == 1017:
+            print('Por favor cheque as credenciais.')
+        else:
+            print('Erro Banco de Dados: {}'.format(e))
+    except cx.OperationalError as e:
+        print('Erro na operação: {}'.format(e))
+
+    cursor = con.cursor()
+
+    with open(path + 'cortesEquipe.sql', 'r') as arquivo: 
+        consulta = arquivo.read()
+    
+    consulta = consulta.format(fornec=fornec , dtIni=dtIni, dtFim=dtFim)
 
     try:
         cursor.execute(consulta)

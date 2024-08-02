@@ -1,4 +1,4 @@
-# Módulos da biblioteca padrão
+# Módulos da bibliotecas Python
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import math
@@ -6,20 +6,25 @@ import time as tm
 import numpy as np
 from configparser import ConfigParser
 
-# Módulos Dashboards e outros
+# Módulos Python para Dashboards e outros usos
 import numpy as np
 import pandas as pd
 import streamlit as st
+import locale
 import bleach 
+
 
 # Módulos da aplicação e locais 
 from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA, flashDN322RCA, flash1464RCA, 
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
-                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps)
+                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe)
+
 from grafic import gerar_graficoVendas
-from utils import format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep
+from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
+                    format_currency, format_date_value)
+
 
 # Inicializa st.session_state
 if 'active_tab' not in st.session_state:
@@ -2348,12 +2353,12 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.markdown("    ")
                     selected_errors = st.multiselect(label="Filtro de Erros", options = pedErro_result['TIPO ERRO'].unique().tolist(), default = pedErro_result['TIPO ERRO'].unique().tolist(), placeholder="Filtro de erros", help="Selecione o tipo de erro para filtrar na tabela")
                 # ------ Fora da Coluna
-                filtered_pedErro_result = pedErro_result[pedErro_result['TIPO ERRO'].isin(selected_errors)]
+                filtrado_pedErro_result = pedErro_result[pedErro_result['TIPO ERRO'].isin(selected_errors)]
                 with c3:
                 # ------ Retorna para Coluna
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_pedErro"): # ---- Convertendo para Excel
-                        st.markdown(getTableXls(filtered_pedErro_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                        st.markdown(getTableXls(filtrado_pedErro_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
                         st.toast('Gerando arquivo Excel...')
                         tm.sleep(.5)
 
@@ -2373,15 +2378,15 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                 with c2:
                     st.write("Tabela de Erros:")
-                    if filtered_pedErro_result.empty:
+                    if filtrado_pedErro_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        st.dataframe(filtered_pedErro_result)
+                        st.dataframe(filtrado_pedErro_result)
 
 
         # ---------- Pedidos -------- #
         with aba6_2:
-            st.header(":pencil: Pedidos com Erros")
+            st.header(":pencil: Supervisão de Pedidos")
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 pedCont_result = pedCont()
@@ -2411,8 +2416,8 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         4: "CORTE"
                     })
                     minCorte = int(st.number_input("Filtro quantidade mínima considerada", value=1, placeholder="Digite um número mínimo de cortes", step = 1))
-                filtered_pedVsEst_result = pedVsEst_result[pedVsEst_result["CORTE"].astype(int) >= minCorte]
-                filtered_pedVsEst_result['CORTE'] = filtered_pedVsEst_result['CORTE'].astype(str)
+                filtrado_pedVsEst_result = pedVsEst_result[pedVsEst_result["CORTE"].astype(int) >= minCorte]
+                filtrado_pedVsEst_result['CORTE'] = filtrado_pedVsEst_result['CORTE'].astype(str)
 
                 with c1:
                     st.write("Legenda:")
@@ -2423,15 +2428,15 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 
                 with c2:
                     st.write("TABELA PEDIDO VS ESTOQUE:")
-                    if filtered_pedVsEst_result.empty:
+                    if filtrado_pedVsEst_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        st.dataframe(filtered_pedVsEst_result)
+                        st.dataframe(filtrado_pedVsEst_result)
 
                 with c3:
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_pedVsEst"): # ---- Convertendo para Excel
-                        st.markdown(getTableXls(filtered_pedVsEst_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                        st.markdown(getTableXls(filtrado_pedVsEst_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
                         st.toast('Gerando arquivo Excel...')
                         tm.sleep(.5)
 
@@ -2442,12 +2447,13 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 subcoluna1, subcoluna2, subcoluna3, subcoluna4 = st.columns([0.5, 0.5, 1, 1])
                 with subcoluna1:
-                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD/MM/YYYY', key='DEV1')
+                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD-MM-YYYY', key='DEV1')
                 with subcoluna2:
-                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='DEV2')
+                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD-MM-YYYY', key='DEV2')
                 st.divider()
                 c1,c2,c3 = st.columns([0.7,2,0.7])
                 with c3:
+                    st.write(dataIni, dataFim)
                     devolucao_result = devolucao(dataIni, dataFim)
                     devolucao_result = devolucao_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
                         0: "NUMNOTA",
@@ -2469,12 +2475,12 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.markdown("    ")
                     selected_errors = st.multiselect(label="Filtro de Tipo", key="selected_errors", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
                 # ------ Fora da Coluna
-                filtered_devolucao_result = devolucao_result[devolucao_result['TIPO'].isin(selected_errors)]
+                filtrado_devolucao_result = devolucao_result[devolucao_result['TIPO'].isin(selected_errors)]
                 with c3:
                 # ------ Retorna para Coluna
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_devolucao"): # ---- Convertendo para Excel
-                        st.markdown(getTableXls(filtered_devolucao_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                        st.markdown(getTableXls(filtrado_devolucao_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
                         st.toast('Gerando arquivo Excel...')
                         tm.sleep(.5)
 
@@ -2495,10 +2501,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 
                 with c2:
                     st.write("Tabela de Erros:")
-                    if filtered_devolucao_result.empty:
+                    if filtrado_devolucao_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        st.dataframe(filtered_devolucao_result)
+                        st.dataframe(filtrado_devolucao_result)
 
 
         # ---------- Inadimplência -- #
@@ -2628,7 +2634,6 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 st.divider()
-                #diasUteis = diasUteis().values[0][0]
                 # Data atual
                 now = datetime.now() - timedelta(days=1) # Data atual menos um dia
                 # Mês 0 - Mês Atual
@@ -2643,6 +2648,17 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 # Mês 3 - 3 Meses Antes
                 dtIniMes3 = dtIniMes2 - relativedelta(months=1)
                 dtFimMes3 = dtIniMes2 - relativedelta(days=1)
+                
+                # Converter as datas para strings no formato desejado
+                dtIniMesAtual = dtIniMesAtual.strftime('%d-%m-%Y')
+                dtFimMesAtual = dtFimMesAtual.strftime('%d-%m-%Y')
+                dtIniMes1 = dtIniMes1.strftime('%d-%m-%Y')
+                dtFimMes1 = dtFimMes1.strftime('%d-%m-%Y')
+                dtIniMes2 = dtIniMes2.strftime('%d-%m-%Y')
+                dtFimMes2 = dtFimMes2.strftime('%d-%m-%Y')
+                dtIniMes3 = dtIniMes3.strftime('%d-%m-%Y')
+                dtFimMes3 = dtFimMes3.strftime('%d-%m-%Y')         
+
                 c1,c2,c3 = st.columns([0.6,1.5,1])
                 with c3:
                     qtdVendaMes0_result = qtdVendaProd(dtIniMesAtual, dtFimMesAtual)
@@ -2712,13 +2728,13 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.markdown("    ")
                     selected_fornec = st.selectbox(label="Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
                 # ------ Fora da Coluna
-                filtered_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
-                codFornec = filtered_estoque266_result["CODFORNEC"].iloc[0]
-                nomeFornec = filtered_estoque266_result["CODFORNEC"].iloc[0]
-                filtered_estoque266_result = filtered_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
-                filtered_estoque266_result = filtered_estoque266_result.sort_values(by='QTDESTDIA', ascending=False)
-                filtered_estoque266_result[['QTDULTENT']] = filtered_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
-                filtered_estoque266_result[['QTDULTENT']] = filtered_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
+                filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
+                codFornec = filtrado_estoque266_result["CODFORNEC"].iloc[0]
+                nomeFornec = filtrado_estoque266_result["FORNECEDOR"].iloc[0]
+                filtrado_estoque266_result = filtrado_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
+                filtrado_estoque266_result = filtrado_estoque266_result.sort_values(by='QTDESTDIA', ascending=False)
+                filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
+                filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
                 with c3:
                 # ------ Retorna para Coluna
                     st.divider()
@@ -2727,17 +2743,17 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         if st.button('GERAR EXCEL', key="excel_estoque"): # ---- Convertendo para Excel
                             st.toast('Gerando arquivo Excel...')
                             tm.sleep(.5)
-                            st.markdown(getTableXls(filtered_estoque266_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+                            st.markdown(getTableXls(filtrado_estoque266_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
                     with colunaPdf:
                         if st.button('GERAR PDF', key="pdf_estoque"):
                             st.toast('Gerando arquivo PDF...')
                             tm.sleep(.5)
                             # Formatando a tabela para impressão em PDF
-                            filtered_estoque266_result_pdf = filtered_estoque266_result
-                            filtered_estoque266_result_pdf = filtered_estoque266_result_pdf.drop(columns=["QTD EST CX", "EMBALAGEM"])
-                            filtered_estoque266_result_pdf['DESCRICAO'] = filtered_estoque266_result_pdf['DESCRICAO'].apply(lambda x: x[:12] if isinstance(x, str) else x)
+                            filtrado_estoque266_result_pdf = filtrado_estoque266_result
+                            filtrado_estoque266_result_pdf = filtrado_estoque266_result_pdf.drop(columns=["QTD EST CX", "EMBALAGEM"])
+                            filtrado_estoque266_result_pdf['DESCRICAO'] = filtrado_estoque266_result_pdf['DESCRICAO'].apply(lambda x: x[:12] if isinstance(x, str) else x)
 
-                            st.markdown(getTablePdf(filtered_estoque266_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
+                            st.markdown(getTablePdf(filtrado_estoque266_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
                 
                 with c1:
                     st.write("Legenda:")
@@ -2748,27 +2764,30 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     container3 = st.container(border=True)
                     container3.caption(':green["MÊS 1"] Se refere ao :green[mês anterior] ao mês atual. Mês 2 e 3 antecedem em sequência.')
                     container4 = st.container(border=True)
-                    container4.caption(f':blue["QTESTDIA"] É quantidade de estoque para {diasUteis} dias úteis do mês. :green["QTVENDDIA"] É quantidade vendida em {diasUteis} dias.')
+                    container4.caption(':blue["QTESTDIA"] É quantidade de estoque para 30 dias úteis do mês. :green["QTVENDDIA"] É quantidade vendida em 30 dias.')
 
                 with c2:
                     st.write("Tabela de Estoque Gerencial:")
-                    if filtered_estoque266_result.empty:
-                        st.warning("Sem dados para exibir. Verifique os filtros selecionados ao lado :point_right:")
+                    if filtrado_estoque266_result.empty:
+                        st.warning("Sem dados para exibir. Verifique os filtros selecionados")
                     else:
-                        st.dataframe(filtered_estoque266_result)
+                        st.dataframe(filtrado_estoque266_result)
 
-                st.divider()
+                st.divider() # ----------- Produtos sem venda
                 c1_2, c2_2, c3_2 = st.columns([0.6,1.5,1])
                 with c3_2:
                     prodSemVenda_result = prodSemVenda(codFornec)
-                    prodSemVenda_result = prodSemVenda_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
-                        0: "CODPROD",
-                        1: "DESCRICAO",
-                        2: "DTULTENT",
-                        3: "QTDULTENT",
-                        4: "ESTOQUE",
-                        5: "DIAS SEM VENDA"
-                    })
+                    if prodSemVenda_result.empty:
+                        pass
+                    else:
+                        prodSemVenda_result = prodSemVenda_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
+                            0: "CODPROD",
+                            1: "DESCRICAO",
+                            2: "DTULTENT",
+                            3: "QTDULTENT",
+                            4: "ESTOQUE",
+                            5: "DIAS SEM VENDA"
+                        })
                     st.divider()
                     colunaExcel, colunaPdf = st.columns([0.6, 1])
                     with colunaExcel:
@@ -2789,14 +2808,93 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c2_2:
                     st.write("Tabela de Produtos Sem Venda:")
                     if prodSemVenda_result.empty:
-                        st.warning("Sem dados para exibir. Verifique os filtros selecionados ao lado :point_right:")
+                        st.warning("Sem dados para exibir. Verifique os filtros selecionados")
                     else:
                         st.dataframe(prodSemVenda_result)
 
                 with c1_2:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Produtos sem venda a mais de 7 dias do fornecedor {nomeFornec}')
+                    container1.caption(f'Produtos sem venda a mais de 7 dias do fornecedor {nomeFornec} ({codFornec})')
+                
+
+                st.divider() # ----------- Cortes Por supervisor (equipe)
+                c1_3, c2_3, c3_3 = st.columns([0.6,1.5,1])
+
+                with c3_3:
+                    hoje = datetime.now() 
+                    dtIniMesAtual = hoje.replace(day=1) 
+                    dia1 = dtIniMesAtual - relativedelta(months=1) 
+
+                    selected_data = st.date_input(
+                        "Período dos dados - Data Inicial e Final",
+                        (dia1, hoje),
+                        dia1,
+                        hoje,
+                        format="DD/MM/YYYY",
+                        help='Digite a data inicial e final separados por um traço - '
+                    )
+                     # Formatar as datas para o formato esperado
+                    data_inicial = selected_data[0].strftime('%d-%m-%Y')
+                    data_final = selected_data[1].strftime('%d-%m-%Y')
+                    cortesEquipe_result = cortesEquipe(codFornec, data_inicial, data_final)
+
+                    if cortesEquipe_result.empty:
+                        pass
+                    else:
+                        cortesEquipe_result = cortesEquipe_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7]].rename(columns={
+                            0: "CODPROD",
+                            1: "DESCRICAO",
+                            2: "QTD. PEDIDO",
+                            3: "QTD. CORTE",
+                            4: "%",
+                            5: "R$",
+                            6: "CODSUPERVISOR",
+                            7: "CODFORNEC",
+                        })
+
+
+                    selected_equipe = st.selectbox(label="Filtro de Supervisor (Equipe)", options=cortesEquipe_result["CODSUPERVISOR"].unique().tolist(), index=0, placeholder="Filtro de Equipe", help="Selecione uma opção para filtrar")
+                    if selected_equipe == 8:
+                        supName = "Vilmar Jr"
+                    elif selected_equipe == 2:
+                        supName = "Adailton"
+                    else:
+                        supName = "?"
+
+
+                    st.divider()
+
+                with c1_3:
+                    st.write("Legenda:")
+                    container1 = st.container(border=True)
+                    container1.caption(f'Cortes da equipe de {supName} do fornecedor {nomeFornec} ({codFornec})')
+
+                with c2_3:
+                    if cortesEquipe_result.empty:
+                        st.warning("Sem dados para exibir. Verifique os filtros selecionados")
+                    else:
+                        valor_total_corte_fornec = format_number(cortesEquipe_result['R$'].sum())
+
+                        filtrado_cortesEquipe_result = cortesEquipe_result[(cortesEquipe_result["CODSUPERVISOR"] == selected_equipe)]
+                        filtrado_cortesEquipe_result = filtrado_cortesEquipe_result.drop(columns=["CODSUPERVISOR", "CODFORNEC"]).sort_values(by="R$", ascending=False)
+                        
+                        # Formatar a coluna R$ para a moeda brasileira
+                        filtrado_cortesEquipe_result['R$'] = filtrado_cortesEquipe_result['R$'].apply(lambda x: format_currency(x, 'BRL', locale='pt_BR.UTF-8'))
+                        # Converter a coluna R$ para float 
+                        filtrado_cortesEquipe_result['R$'] = filtrado_cortesEquipe_result['R$'].apply(lambda x: float(x.replace('R$', '').replace('.', '').replace(',', '.')))
+                        # Converter a coluna QTD. CORTE para inteiro
+                        filtrado_cortesEquipe_result['QTD. CORTE'] = filtrado_cortesEquipe_result['QTD. CORTE'].astype(int)
+        
+                        container_superior = st.container(border=True)
+                        cs_col1, cs_col2, cs_col3 = container_superior.columns([1, 1, 1])
+                        cs_col1.metric(label="VALOR CORTADO EQUIPE", help="Valor total somado", value=format_number(filtrado_cortesEquipe_result['R$'].sum()))
+                        cs_col2.metric(label="QTD. CORTES EQUIPE", help="Quantidade total somada", value=filtrado_cortesEquipe_result["QTD. CORTE"].sum())
+                        cs_col3.metric(label="VL. CORTE FORNECEDOR", help="Valor total somado do fornecedor de todas as equipes", value=valor_total_corte_fornec)
+                        
+                        st.dataframe(filtrado_cortesEquipe_result)
+
+
 
         # ---------- SEM COMPRA ---------- #
         with aba6_6:

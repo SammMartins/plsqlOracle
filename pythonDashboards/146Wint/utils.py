@@ -7,9 +7,14 @@ from io import BytesIO
 import base64
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.pdfgen import canvas
+from babel.numbers import format_currency as babel_format_currency
+
 
 # ----------------- Função para formatar números -----------------
 def format_number(value):
+    # Verificar se o valor é uma string e convertê-lo para float
+    if isinstance(value, str):
+        value = float(value.replace('R$', '').replace('.', '').replace(',', '.'))
     return 'R${:,.0f}'.format(value).replace(",", "v").replace(".", ",").replace("v", ".")
 
 # ----------------- Função Define datas -----------------
@@ -99,3 +104,11 @@ def get_coords_from_cep(cep):
         if 'erro' not in data:
             return data.get('lat'), data.get('lng')
     return None
+
+# Função para formatar moeda
+def format_currency(value, currency, locale):
+    return babel_format_currency(value, currency, locale=locale)
+
+# Função para formatar data
+def format_date_value(date, locale):
+    return format_date(date, locale=locale)

@@ -3,7 +3,7 @@ WITH Fat AS
              SUM(a.vlatend) Valor
         FROM pontual.PCPEDC a
         JOIN pontual.pcclient c on c.codcli = a.codcli
-        WHERE a.DATA BETWEEN '{dtIni}' AND '{dtFim}'
+        WHERE a.DATA BETWEEN TO_DATE('{dtIni}', 'DD/MM/YYYY') AND TO_DATE('{dtFim}', 'DD/MM/YYYY')
           AND a.DTCANCEL IS NULL
           AND a.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
           AND a.CODCOB IN ('7563','CH','C','D','DH')
@@ -17,7 +17,7 @@ DN AS (SELECT ped.codusur codusur,
             FROM pontual.PCPEDC ped
                 JOIN pontual.PCPEDI pedi on pedi.numped = ped.numped
                 JOIN pontual.pcprodut prod on pedi.codprod = prod.codprod
-            WHERE ped.DATA BETWEEN '{dtIni}' AND '{dtFim}'
+            WHERE ped.DATA BETWEEN TO_DATE('{dtIni}', 'DD/MM/YYYY') AND TO_DATE('{dtFim}', 'DD/MM/YYYY')
                 AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
                 AND ped.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
             GROUP BY ped.codusur),
