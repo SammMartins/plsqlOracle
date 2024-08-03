@@ -19,7 +19,7 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
-                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe)
+                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec)
 
 from grafic import gerar_graficoVendas
 from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
@@ -2726,7 +2726,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     estoque266_result['QTDESTDIA'] = estoque266_result['QTDESTDIA'].astype(float).round(0).astype(int)
                     
                     st.markdown("    ")
-                    selected_fornec = st.selectbox(label="Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
+                    selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
                 # ------ Fora da Coluna
                 filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
                 codFornec = filtrado_estoque266_result["CODFORNEC"].iloc[0]
@@ -2815,24 +2815,122 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c1_2:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Produtos sem venda a mais de 7 dias do fornecedor {nomeFornec} ({codFornec})')
+                    container1.caption(f'Produtos sem venda a mais de 7 Fornecedor {codFornec}')
                 
-
-                st.divider() # ----------- Cortes Por supervisor (equipe)
+                
+                st.divider() # ----------- Cortes Por Fornecedor (indústria)
                 c1_3, c2_3, c3_3 = st.columns([0.6,1.5,1])
 
                 with c3_3:
+                    st.write("   ")
                     hoje = datetime.now() 
                     dtIniMesAtual = hoje.replace(day=1) 
-                    dia1 = dtIniMesAtual - relativedelta(months=1) 
+                    dia1 = dtIniMesAtual - relativedelta(months=6) 
 
                     selected_data = st.date_input(
-                        "Período dos dados - Data Inicial e Final",
+                        ":date: Data Inicial e Final",
                         (dia1, hoje),
                         dia1,
                         hoje,
                         format="DD/MM/YYYY",
-                        help='Digite a data inicial e final separados por um traço - '
+                        help='Digite a data inicial e final separados por um traço - ',
+                        key='selected_data1'
+                    )
+                     # Formatar as datas para o formato esperado
+                    data_inicial = selected_data[0].strftime('%d-%m-%Y')
+                    data_final = selected_data[1].strftime('%d-%m-%Y')
+                    
+                    sup_colum1, sup_colum2 = st.columns([1, 1])
+                    with sup_colum1:
+                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_7', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                        if supName == "ADAILTON":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN"     # -- Está em 2
+                        elif supName == "VILMAR JR":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (8,), index=0, key='vilmar_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN"     # -- Está em 8
+                        elif supName == "TODOS":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (0,), index=0, key='todos_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "NOT IN" # -- Não está em 0
+                        else:
+                            with sup_colum2:
+                                supCod = st.selectbox("ERRO", (999,), index=0, key='3', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN" 
+                    cortes_Fornec = cortesFornec(data_inicial, data_final, supOnOff, supCod)
+                    st.divider()
+
+                
+                with c2_3:
+                    if cortes_Fornec.empty:
+                        st.warning("Sem dados para exibir. Verifique os filtros selecionados")
+                    else:
+                        st.write("Corte por Equipes e Fornecedores:")
+                        cortes_Fornec = cortes_Fornec.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8]].rename(columns={
+                            0: "CODSUPERVISOR", # CÓDIGO SUPERVISOR
+                            1: "CODFORNEC", # CÓDIGO FORNECEDOR
+                            2: "FORNECEDOR", # NOME FORNECEDOR
+                            3: "CODPROD", # CÓDIGO PRODUTO
+                            4: "DESCRICAO", # DESCRICAO DO PRODUTO
+                            5: "QTD. PEDIDO", # QUANTIDADE SOMADO DO PRODUTO EM TODOS PEDIDOS
+                            6: "QTD. CORTE", # QUANTIDADE SOMADO DOS CORTES DO PRODUTO
+                            7: "%", # PORCENTAGEM DE CORTE
+                            8: "R$" # QUANTIDADE DE CORTES VEZES O VALOR DO PRODUTO
+                        })
+
+                        # cortesfornec_result = "CODFORNEC", "FORNECEDOR", "CORTE TOTAL" QUE É A SOMA DE TODOS OS CORTES DE TODOS PRODUTOS, "TOTAL R$" QUE É A SOMA DA COLUNA "R$" DO cortes_Fornec
+                        cortesFornec_result = cortes_Fornec.groupby(["CODFORNEC", "FORNECEDOR"]).agg({"QTD. CORTE": "sum", "R$": "sum"}).reset_index()
+                        cortesFornec_result = cortesFornec_result.rename(columns={
+                            "CODFORNEC": "CODFORNEC", # CÓDIGO FORNECEDOR
+                            "FORNECEDOR": "FORNECEDOR", # NOME FORNECEDOR
+                            "QTD. CORTE": "CORTE TOTAL", # QUANTIDADE SOMADO DOS CORTES DO PRODUTO DE CADA FORNECEDOR
+                            "R$": "R$" # QUANTIDADE DE CORTES VEZES O VALOR DO PRODUTO
+                        }).sort_values(by="R$", ascending=False)
+
+
+                        container_superior3 = st.container(border=True)
+                        cs3_col1, cs3_col2, cs3_col3 = container_superior3.columns([1, 1, 1])
+                        
+                        cs3_col1.metric(label="VALOR MEDIANO", help="A mediana é o valor central de um conjunto de dados ordenados", value=format_number(cortesFornec_result["R$"].median()))
+                        
+                        qtdtotal_corte = cortesFornec_result["CORTE TOTAL"].sum()
+                        cs3_col2.metric(label="QTD. CORTES", help="Quantidade total somada em unidades", value=qtdtotal_corte)
+                        
+                        vltotal_corte = format_number(cortesFornec_result['R$'].sum())
+                        cs3_col3.metric(label="VALOR EM CORTES", help="Valor total somado dos fornecedores", value=vltotal_corte)
+                        
+                        # Aplicar format_number a cada valor da coluna "R$"
+                        cortesFornec_result["R$"] = cortesFornec_result["R$"].apply(format_number)
+                        st.dataframe(cortesFornec_result)
+
+
+
+                with c1_3:
+                    st.write("Legenda:")
+                    container1 = st.container(border=True)
+                    container1.caption(f'Quantidades por Fornecedor')
+
+                
+                st.divider() # ----------- Cortes Por supervisor (equipe)
+                c1_3, c2_3, c3_3 = st.columns([0.6,1.5,1])
+
+                with c3_3:
+                    st.write("   ")
+                    selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela", key="selected_fornec2")
+                    filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
+                    codFornec = filtrado_estoque266_result["CODFORNEC"].iloc[0]
+                    nomeFornec = filtrado_estoque266_result["FORNECEDOR"].iloc[0]
+
+                    selected_data = st.date_input(
+                        ":date: Data Inicial e Final",
+                        (dia1, hoje),
+                        dia1,
+                        hoje,
+                        format="DD/MM/YYYY",
+                        help='Digite a data inicial e final separados por um traço - ',
+                        key='selected_data2'
                     )
                      # Formatar as datas para o formato esperado
                     data_inicial = selected_data[0].strftime('%d-%m-%Y')
@@ -2853,14 +2951,20 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                             7: "CODFORNEC",
                         })
 
-
-                    selected_equipe = st.selectbox(label="Filtro de Supervisor (Equipe)", options=cortesEquipe_result["CODSUPERVISOR"].unique().tolist(), index=0, placeholder="Filtro de Equipe", help="Selecione uma opção para filtrar")
-                    if selected_equipe == 8:
-                        supName = "Vilmar Jr"
-                    elif selected_equipe == 2:
-                        supName = "Adailton"
-                    else:
-                        supName = "?"
+                    sup_colum1, sup_colum2 = st.columns([1, 1])
+                    with sup_colum1:
+                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_6', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                        if supName == "ADAILTON":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN"     # -- Está em 2
+                        elif supName == "VILMAR JR":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (8,), index=0, key='vilmar_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN"     # -- Está em 8
+                        else:
+                            with sup_colum2:
+                                supCod = st.selectbox("ERRO", (999,), index=0, key='3', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
 
 
                     st.divider()
@@ -2868,7 +2972,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c1_3:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Cortes da equipe de {supName} do fornecedor {nomeFornec} ({codFornec})')
+                    container1.caption(f'Quantidades por Produto')
 
                 with c2_3:
                     if cortesEquipe_result.empty:
@@ -2876,7 +2980,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     else:
                         valor_total_corte_fornec = format_number(cortesEquipe_result['R$'].sum())
 
-                        filtrado_cortesEquipe_result = cortesEquipe_result[(cortesEquipe_result["CODSUPERVISOR"] == selected_equipe)]
+                        filtrado_cortesEquipe_result = cortesEquipe_result[(cortesEquipe_result["CODSUPERVISOR"] == supCod)]
                         filtrado_cortesEquipe_result = filtrado_cortesEquipe_result.drop(columns=["CODSUPERVISOR", "CODFORNEC"]).sort_values(by="R$", ascending=False)
                         
                         # Formatar a coluna R$ para a moeda brasileira
@@ -2885,13 +2989,16 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         filtrado_cortesEquipe_result['R$'] = filtrado_cortesEquipe_result['R$'].apply(lambda x: float(x.replace('R$', '').replace('.', '').replace(',', '.')))
                         # Converter a coluna QTD. CORTE para inteiro
                         filtrado_cortesEquipe_result['QTD. CORTE'] = filtrado_cortesEquipe_result['QTD. CORTE'].astype(int)
-        
-                        container_superior = st.container(border=True)
-                        cs_col1, cs_col2, cs_col3 = container_superior.columns([1, 1, 1])
-                        cs_col1.metric(label="VALOR CORTADO EQUIPE", help="Valor total somado", value=format_number(filtrado_cortesEquipe_result['R$'].sum()))
-                        cs_col2.metric(label="QTD. CORTES EQUIPE", help="Quantidade total somada", value=filtrado_cortesEquipe_result["QTD. CORTE"].sum())
-                        cs_col3.metric(label="VL. CORTE FORNECEDOR", help="Valor total somado do fornecedor de todas as equipes", value=valor_total_corte_fornec)
+
+                        st.write(f"Corte por Equipe e Produtos - {supName}:")
+                        container_superior4 = st.container(border=True)
+                        cs4_col1, cs4_col2, cs4_col3 = container_superior4.columns([1, 1, 1])
+                        cs4_col1.metric(label="VALOR MEDIANO", help="A mediana é o valor central de um conjunto de dados ordenados", value=format_number(filtrado_cortesEquipe_result['R$'].median()))
+                        cs4_col2.metric(label="QTD. CORTES EQUIPE", help="Quantidade total somada", value=filtrado_cortesEquipe_result["QTD. CORTE"].sum())
+                        cs4_col3.metric(label="VALOR CORTADO EQUIPE", help="Valor total somado", value=format_number(filtrado_cortesEquipe_result['R$'].sum()))
                         
+                        # Aplicar format_number a cada valor da coluna "R$"
+                        filtrado_cortesEquipe_result["R$"] = filtrado_cortesEquipe_result["R$"].apply(format_number)
                         st.dataframe(filtrado_cortesEquipe_result)
 
 
