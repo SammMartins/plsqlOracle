@@ -10,6 +10,8 @@ from configparser import ConfigParser
 import numpy as np
 import pandas as pd
 import streamlit as st
+from st_keyup import st_keyup # Módulo para capturar eventos de teclado
+from streamlit_extras.stylable_container import stylable_container # Módulo para estilizar os containers
 import locale
 import bleach 
 
@@ -104,9 +106,14 @@ with tabs[0]:
         lc1, lc2, lc3 = st.columns([1, 0.5, 1])
         with lc2:
             st.title("LOGIN")
-            usernameSemTratar = st.text_input("Usuário")
-            passwordSemTratar = st.text_input("Senha", type="password", max_chars = 14)
-            login_button = st.button("ACESSAR")
+            usernameSemTratar = st_keyup("Usuário", max_chars = 20)
+            passwordSemTratar = st_keyup("Senha", type="password", max_chars = 14)
+
+            with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button1.css', "r") as file:
+                cssButton1 = file.read()  
+
+            with stylable_container(key="ACESSAR",css_styles = cssButton1):
+                login_button = st.button("ACESSAR", key="ACESSAR", use_container_width=True) # use_container_width para ocupar toda a largura do container
             
             if login_button:
                 usernameInput = bleach.clean(usernameSemTratar)
@@ -128,10 +135,10 @@ with tabs[0]:
 
                 except Exception as e:
                     st.error(":x: Usuário ou senha inválido!")
-                    #raise ValueError("Erro ao obter as informações de conexão do arquivo de configuração") from e
+
                 
                 if usernameInput == username and passwordInput == password:
-                    st.success("Login successful!")
+                    st.success("Login aprovado!")
                     st.session_state['buttons_pressed'][':beginner: INÍCIO'] = True
                     
                 else:
@@ -144,40 +151,7 @@ with tabs[0]:
         lc1, lc2, lc3 = st.columns([1, 0.5, 1])
         with lc2:
             st.title("LOGIN")
-            usernameSemTratar = st.text_input("Usuário")
-            passwordSemTratar = st.text_input("Senha", type="password", max_chars = 12)
-            login_button = st.button("ACESSAR")
-            
-            if login_button:
-                usernameInput = bleach.clean(usernameSemTratar)
-                passwordInput = bleach.clean(passwordSemTratar)
-                with open('/home/ti_premium/dbpath.txt', 'r') as file:
-                    dbpath = file.read().strip().strip("'")
-                config = ConfigParser()
-                files = config.read(dbpath)
-                if not files:
-                    st.error(":x: Erro de leitura")
-                    raise ValueError(f"Não foi possível ler o arquivo: {dbpath}")
-                
-                try:
-                    username = config.get(f'{usernameInput}_user_dashboard', 'username')
-                    password = config.get(f'{usernameInput}_user_dashboard', 'password')
-                    if 'control' not in st.session_state:
-                        # Armazena control no estado da sessão caso já não tenha sido feito
-                        st.session_state['control'] = int(config.get(f'{usernameInput}_user_dashboard', 'control'))
-
-                except Exception as e:
-                    st.error(":x: Usuário ou senha inválido!")
-                    #raise ValueError("Erro ao obter as informações de conexão do arquivo de configuração") from e
-                
-                if usernameInput == username and passwordInput == password:
-                    st.success("Login successful!")
-                    st.session_state['buttons_pressed'][':beginner: INÍCIO'] = True
-                    
-                else:
-                    st.error(":x: Usuário ou senha inválido!")
-                    if 'control' not in st.session_state:
-                        st.session_state['control'] = 0
+            st.success("Seu login está aprovado!")
 
 with tabs[1]:
     if not st.session_state['buttons_pressed'][':dollar: VENDA']:
@@ -2408,16 +2382,22 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 c1,c2,c3 = st.columns([0.7,1.75,0.7])
                 with c3:
                     pedVsEst_result = pedidoVsEstoque()
-                    pedVsEst_result = pedVsEst_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
-                        0: "CODPROD",
-                        1: "DESCRIÇÃO",
-                        2: "PEDIDO",
-                        3: "ESTOQUE",
-                        4: "CORTE"
-                    })
-                    minCorte = int(st.number_input("Filtro quantidade mínima considerada", value=1, placeholder="Digite um número mínimo de cortes", step = 1))
-                filtrado_pedVsEst_result = pedVsEst_result[pedVsEst_result["CORTE"].astype(int) >= minCorte]
-                filtrado_pedVsEst_result['CORTE'] = filtrado_pedVsEst_result['CORTE'].astype(str)
+                    if pedVsEst_result.empty:
+                        pass
+                    else:
+                        pedVsEst_result = pedVsEst_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
+                            0: "CODPROD",
+                            1: "DESCRIÇÃO",
+                            2: "PEDIDO",
+                            3: "ESTOQUE",
+                            4: "CORTE"
+                        })
+                        minCorte = int(st.number_input("Filtro quantidade mínima considerada", value=1, placeholder="Digite um número mínimo de cortes", step = 1))
+                if pedVsEst_result.empty:
+                    pass
+                else:
+                    filtrado_pedVsEst_result = pedVsEst_result[pedVsEst_result["CORTE"].astype(int) >= minCorte]
+                    filtrado_pedVsEst_result['CORTE'] = filtrado_pedVsEst_result['CORTE'].astype(str)
 
                 with c1:
                     st.write("Legenda:")
@@ -2428,10 +2408,13 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 
                 with c2:
                     st.write("TABELA PEDIDO VS ESTOQUE:")
-                    if filtrado_pedVsEst_result.empty:
-                        st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                    if pedVsEst_result.empty:
+                        pass
                     else:
-                        st.dataframe(filtrado_pedVsEst_result)
+                        if filtrado_pedVsEst_result.empty:
+                            st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                        else:
+                            st.dataframe(filtrado_pedVsEst_result)
 
                 with c3:
                     st.divider()
@@ -2453,7 +2436,6 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 st.divider()
                 c1,c2,c3 = st.columns([0.7,2,0.7])
                 with c3:
-                    st.write(dataIni, dataFim)
                     devolucao_result = devolucao(dataIni, dataFim)
                     devolucao_result = devolucao_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
                         0: "NUMNOTA",
@@ -2766,11 +2748,22 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     container4 = st.container(border=True)
                     container4.caption(':blue["QTESTDIA"] É quantidade de estoque para 30 dias úteis do mês. :green["QTVENDDIA"] É quantidade vendida em 30 dias.')
 
-                with c2:
-                    st.write("Tabela de Estoque Gerencial:")
+                with c2:   
+                    st.write("Estoque Gerencial:")
+                    container_superior2 = st.container(border=True)
+                    cs1_col1, cs1_col2, cs1_col3 = container_superior2.columns([1, 1, 1])
+                    
                     if filtrado_estoque266_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados")
                     else:
+                        cs1_col1.metric(label="QTD. SKU's", help="Quantidade total de produtos diferentes", value=(filtrado_estoque266_result.shape[0]))
+
+                        media_estDia = filtrado_estoque266_result["QTDESTDIA"].mean()
+                        media_estDia = f"{media_estDia:.0f} Dias"
+                        cs1_col2.metric(label="MÉD. EST. DIA", help="Média de estoque dia dos itens do fornecedor", value=media_estDia)
+
+                        cs1_col3.metric(label="-", help="-", value="-")
+
                         st.dataframe(filtrado_estoque266_result)
 
                 st.divider() # ----------- Produtos sem venda
@@ -2788,6 +2781,12 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                             4: "ESTOQUE",
                             5: "DIAS SEM VENDA"
                         })
+                        # Extraindo os valores numéricos dos primeiros caracteres da coluna "DIAS SEM VENDA"
+                        prodSemVenda_result["ORDER"] = prodSemVenda_result["DIAS SEM VENDA"].str.extract(r'(\d+)').astype(int)
+                        
+                        # Ordenando o DataFrame pelo valor numérico extraído em ordem decrescente
+                        prodSemVenda_result = prodSemVenda_result.sort_values(by="ORDER", ascending=False)
+
                     st.divider()
                     colunaExcel, colunaPdf = st.columns([0.6, 1])
                     with colunaExcel:
@@ -2806,10 +2805,27 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                             st.markdown(getTablePdf(prodSemVenda_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
                 
                 with c2_2:
-                    st.write("Tabela de Produtos Sem Venda:")
+                    st.write("Produtos Sem Venda:")
+                    container_superior2 = st.container(border=True)
+                    cs2_col1, cs2_col2, cs2_col3 = container_superior2.columns([1, 1, 1])
+                    
                     if prodSemVenda_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados")
                     else:
+                        cs2_col1.metric(label="ITENS SEM VENDA", help="Quantidade total de produtos sem venda", value=(prodSemVenda_result.shape[0]))
+
+                        percent_sem_venda = (prodSemVenda_result.shape[0] / filtrado_estoque266_result.shape[0]) * 100
+                        percent_sem_venda_formatado = f"{percent_sem_venda:.0f}%"
+                        cs2_col2.metric(label="% SEM VENDA", help="Porcentagem de itens sem venda", value=percent_sem_venda_formatado)
+
+                        qtdtotal = prodSemVenda_result["ESTOQUE"].astype(int).sum()
+                        cs2_col3.metric(label="QTD. ESTOQUE", help="Quantidade total de itens parados no estoque", value=qtdtotal)
+
+                        # Nova ordem das colunas
+
+                        ordem_col = ["CODPROD", "DESCRICAO", "DIAS SEM VENDA", "DTULTENT", "QTDULTENT", "ESTOQUE"]
+                        prodSemVenda_result = prodSemVenda_result[ordem_col]
+
                         st.dataframe(prodSemVenda_result)
 
                 with c1_2:
@@ -2829,7 +2845,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                     selected_data = st.date_input(
                         ":date: Data Inicial e Final",
-                        (dia1, hoje),
+                        (dtIniMesAtual, hoje),
                         dia1,
                         hoje,
                         format="DD/MM/YYYY",
@@ -2896,6 +2912,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         cs3_col1.metric(label="VALOR MEDIANO", help="A mediana é o valor central de um conjunto de dados ordenados", value=format_number(cortesFornec_result["R$"].median()))
                         
                         qtdtotal_corte = cortesFornec_result["CORTE TOTAL"].sum()
+                        percent_sem_venda_formatado = f"{percent_sem_venda:.0f}%"
                         cs3_col2.metric(label="QTD. CORTES", help="Quantidade total somada em unidades", value=qtdtotal_corte)
                         
                         vltotal_corte = format_number(cortesFornec_result['R$'].sum())
@@ -2903,6 +2920,8 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         
                         # Aplicar format_number a cada valor da coluna "R$"
                         cortesFornec_result["R$"] = cortesFornec_result["R$"].apply(format_number)
+                        cortesFornec_result["CODFORNEC"] = cortesFornec_result["CODFORNEC"].astype(str)
+                        cortesFornec_result["CORTE TOTAL"] = cortesFornec_result["CORTE TOTAL"].astype(str)
                         st.dataframe(cortesFornec_result)
 
 
@@ -2910,7 +2929,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c1_3:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Quantidades por Fornecedor')
+                    container1.caption(f'Quantidades de Cortes por Fornecedor')
 
                 
                 st.divider() # ----------- Cortes Por supervisor (equipe)
@@ -2925,7 +2944,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                     selected_data = st.date_input(
                         ":date: Data Inicial e Final",
-                        (dia1, hoje),
+                        (dtIniMesAtual, hoje),
                         dia1,
                         hoje,
                         format="DD/MM/YYYY",
@@ -2972,7 +2991,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c1_3:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Quantidades por Produto')
+                    container1.caption(f'Quantidades de Cortes por Produto')
 
                 with c2_3:
                     if cortesEquipe_result.empty:
@@ -2999,6 +3018,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         
                         # Aplicar format_number a cada valor da coluna "R$"
                         filtrado_cortesEquipe_result["R$"] = filtrado_cortesEquipe_result["R$"].apply(format_number)
+                        filtrado_cortesEquipe_result["CODPROD"] = filtrado_cortesEquipe_result["CODPROD"].astype(str)
+                        filtrado_cortesEquipe_result["QTD. PEDIDO"] = filtrado_cortesEquipe_result["QTD. PEDIDO"].astype(str)
+                        filtrado_cortesEquipe_result["QTD. CORTE"] = filtrado_cortesEquipe_result["QTD. CORTE"].astype(str)
+
                         st.dataframe(filtrado_cortesEquipe_result)
 
 
@@ -3182,14 +3205,19 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ----------------- Botão de Recarregar dados Dedo Duro -----------------
         with colum2:
-            recarregarDados = st.button("RECARREGAR DADOS", key=5, type="primary")
+            recarregarDados = st.button("RECARREGAR", key=5, type="primary")
         if recarregarDados:
+            st.toast("Informações sendo recarregadas no bando de dados. Favor aguardar...")
             pedErro_result = pedErro()
             pedCont_result = pedCont()
             pedVsEst_result = pedidoVsEstoque()
             inad_result = inad(vendedorCod)
             devolucao_result = devolucao(dataIni, dataFim)
             cliente_semVenda_result = cliente_semVenda(vendedorCod, supCod, supOnOff, rcaOnOff, selected_codFornec)
+            cortesFornec_result = cortesFornec(data_inicial, data_final, supOnOff, supCod)
+            cortesEquipe_result = cortesEquipe(codFornec, data_inicial, data_final)
+            estoque266_result = estoque266()
+
 
 
 # --------------------------- META --------------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
