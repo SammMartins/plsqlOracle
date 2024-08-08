@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import datetime
-import base64
 import requests
 from io import BytesIO
 import base64

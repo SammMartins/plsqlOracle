@@ -5,6 +5,7 @@ import math
 import time as tm
 import numpy as np
 from configparser import ConfigParser
+from typing import Final
 
 # Módulos Python para Dashboards e outros usos
 import numpy as np
@@ -22,10 +23,10 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
                      cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec)
-
-from grafic import gerar_graficoVendas
+from grafic import  gerar_graficoVendas
 from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
                     format_currency, format_date_value)
+from pdf_generator  import flash_pdf
 
 
 # Inicializa st.session_state
@@ -96,6 +97,10 @@ cssHeader = f"""
 st.markdown(header, unsafe_allow_html=True)
 st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 
+# ------ Estilos CSS personalizados
+with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button1.css', "r") as file:
+    cssButton1 = file.read()  
+
 # ----------------------- Dashboard Layout ----------------------- #
 tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
@@ -109,8 +114,6 @@ with tabs[0]:
             usernameSemTratar = st_keyup("Usuário", max_chars = 20)
             passwordSemTratar = st_keyup("Senha", type="password", max_chars = 14)
 
-            with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button1.css', "r") as file:
-                cssButton1 = file.read()  
 
             with stylable_container(key="ACESSAR",css_styles = cssButton1):
                 login_button = st.button("ACESSAR", key="ACESSAR", use_container_width=True) # use_container_width para ocupar toda a largura do container
@@ -923,7 +926,38 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                 with col2:
                     st.caption("Faturado", help="Apenas pedidos faturados. Essa opção trás um resultados real das vendas. Sempre abatendo devoluções.")
                 with col1:
-                    if st.button("CARREGAR"):
+                    col_Carregar, col_gerar_pdf = st.columns([0.15, 1])
+                    with col_Carregar:
+                        with stylable_container(key="ACESSAR", css_styles=cssButton1):
+                            _Carregar = st.button("CARREGAR")
+                    with col_gerar_pdf:
+                        with stylable_container(key="ACESSAR", css_styles=cssButton1):
+                            gerar_pdf = st.button('GERAR PDF', key="flash_pdf")
+                    if gerar_pdf:
+                        flash_result = flash1464RCA(vendedorCod)
+                        flash_result = flash_result.iloc[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]].rename(columns={
+                            1: "SEÇÃO",
+                            2: "OBJETIVO",
+                            3: "REALIZADO",
+                            4: "ATINGIDO",
+                            5: "TENDÊNCIA",
+                            6: " R. A. F. ",
+                            7: "NECESS. DIA",
+                            8: "MÉDIA DIA",
+                            9: "STATUS"
+                        })
+
+                        formatarMoeda = ["OBJETIVO", "REALIZADO", " R. A. F. ", "NECESS. DIA", "MÉDIA DIA"]
+                        for coluna in formatarMoeda:
+                            flash_result[coluna] = flash_result[coluna].apply(format_number)
+
+                        formatarPorcent = ["ATINGIDO", "TENDÊNCIA"]
+                        for coluna in formatarPorcent:
+                            flash_result[coluna] = flash_result[coluna].apply(lambda x: '{:.1f}%'.format(x * 100))
+                        
+                        st.markdown(flash_pdf(flash_result), unsafe_allow_html=True)
+
+                    if _Carregar:
                         with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
                             # --------------- FAT -----------------------
                             flash_result = flash1464RCA(vendedorCod)
@@ -1060,6 +1094,8 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                                         2: "↓"
                                     })
 
+                                    
+
                                     # ------ DataFrame para HTML 
                                     table_html = flash_result.to_html(classes='table-style', index=False)
                                     table_html = table_html.replace('<td>↑↑↑</td>', '<td class="positivo">↑↑↑</td>') # Difinindo a classe positivo para aplicar estilos
@@ -1141,6 +1177,7 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                                         st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                         st.markdown(dnFlashFrutap, unsafe_allow_html=True)
 
+
                                     # ------------- ITENS DE PERFORMANCE ----------
                                     st.markdown("<br>", unsafe_allow_html=True)
                                     st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
@@ -1148,9 +1185,7 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                                     with col5:
                                         st.markdown(f"<p class='dn'>ÍNDICE TROCA {vendedorName}</p>", unsafe_allow_html=True)
                                         st.markdown(troca_result, unsafe_allow_html=True)
-
-
-
+                                     
 
 
             # -------------------------------- Não Faturado incluso ABATENDO DEVOLUÇÃO ----------------------------------
@@ -1378,6 +1413,7 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                                         st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                         st.markdown(dnFlashFrutap, unsafe_allow_html=True)
 
+
                                     # ------------- ITENS DE PERFORMANCE ----------
                                     st.markdown("<br>", unsafe_allow_html=True)
                                     st.markdown(f"<h3 class='dnH3'>ITENS DE PERFORMANCE VENDEDOR {vendedorName}</h3>", unsafe_allow_html=True)
@@ -1600,6 +1636,8 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
 
                                         st.markdown("<p class='dn' id='frutap'>FRUTAP</p>", unsafe_allow_html=True)
                                         st.markdown(dnFlashFrutap, unsafe_allow_html=True)
+
+
 
 # --------------------------- Vendas ------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':dollar: VENDA':
