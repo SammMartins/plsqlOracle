@@ -22,7 +22,7 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      flash322RCA_semDev, flashDN1464RCA, flash1464SUP, flashDN1464SUP, flash322SUP, flashDN322SUP, 
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
-                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec)
+                     cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec, campanhaGulao)
 from grafic import  gerar_graficoVendas
 from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
                     format_currency, format_date_value)
@@ -1646,9 +1646,51 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
             tm.sleep(1)
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
-        aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":page_facing_up: Por Seção - Inativo :lock:"])
+        aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":money_with_wings: Campanhas"])
 
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
+        with aba1_5: # Campanhas
+            st.header(":money_with_wings: CAMPANHAS DE VENDAS")
+            st.markdown("    ")
+            with st.expander(":red[CAMPANHA GULOZITOS]", expanded=True):
+                c1g, c2g, c3g = st.columns([0.6,1.5,1])
+
+                with c1g:
+                    campanhaGulao_result = campanhaGulao()
+                    st.write("Legenda:")
+                    container1 = st.container(border=True)
+                    container1.caption(f'Campanha Gulozitos válida até dia :blue[31/ago/2024]')
+                    container2 = st.container(border=True)
+                    container2.caption(f"Positiva apenas com :red[5] ou mais :red[Sku's no cliente]")
+
+                with c2g:
+                    st.write("Desempenho na Campanha Gulozitos")
+
+                    if campanhaGulao_result.empty:
+                        st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
+                    else:
+                        campanhaGulao_result = campanhaGulao_result.iloc[:, [0, 1, 2, 3]].rename(columns={
+                            0: "COD",
+                            1: "RCA",
+                            2: "DN",
+                            3: "R$"
+                        })
+                        
+                        container_superior1 = st.container(border=True)
+                        colg1, colg2, colg3 = container_superior1.columns([1, 1, 1])   
+                                             
+                        colg1.metric(label="-", help="-", value='-')
+                        colg2.metric(label="-", help="-", value='-')
+                        colg3.metric(label="-", help="-", value='-')
+
+
+
+                with c3g:
+                    pass
+
+
+    
+        # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_1:
             container = st.container(border=True)
             coluna1, coluna2, coluna3 = st.columns([0.6,0.5,1])
@@ -3245,7 +3287,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         with colum2:
             recarregarDados = st.button("RECARREGAR", key=5, type="primary")
         if recarregarDados:
-            st.toast("Informações sendo recarregadas no bando de dados. Favor aguardar...")
+            st.toast("Informações sendo recarregadas no banco de dados. Favor aguardar...")
             pedErro_result = pedErro()
             pedCont_result = pedCont()
             pedVsEst_result = pedidoVsEstoque()

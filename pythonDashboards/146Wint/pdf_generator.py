@@ -17,7 +17,8 @@ def flash_pdf(df):
         return "Nenhum dado para exibir"
 
     buffer = BytesIO()
-    pdf = SimpleDocTemplate(buffer, pagesize=landscape(A4))
+    pdf = canvas.Canvas(buffer, pagesize=landscape(A4))
+    p = SimpleDocTemplate(buffer, pagesize=landscape(A4))
 
     # Se for um DataFrame, converta para lista de listas
     if hasattr(df, 'values'):
@@ -57,15 +58,14 @@ def flash_pdf(df):
 
     # Adiciona a tabela ao PDF
     elements = [table]
-    pdf.build(elements)
+    p.build(elements)
 
     # Desenha a régua e a retícula no mesmo PDF
     buffer.seek(0)
-    c = canvas.Canvas(buffer, pagesize=landscape(A4))
-    regua(c, "Horizontal")
-    reticula(c)
-    c.showPage()
-    c.save()
+    regua(pdf, "Horizontal")
+    reticula(pdf)
+    pdf.showPage()
+    pdf.save()
 
     buffer.seek(0)
     b64 = base64.b64encode(buffer.read()).decode()
