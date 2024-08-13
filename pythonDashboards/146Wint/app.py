@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import math
 import time as tm
+from matplotlib.pylab import f
 import numpy as np
 from configparser import ConfigParser
 from typing import Final
@@ -100,6 +101,9 @@ st.markdown(cssHeader, unsafe_allow_html=True) # Aplicando os estilos CSS
 # ------ Estilos CSS personalizados
 with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button1.css', "r") as file:
     cssButton1 = file.read()  
+
+with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button2.css', "r") as file:
+    cssButton2 = file.read()  
 
 # ----------------------- Dashboard Layout ----------------------- #
 tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
@@ -928,10 +932,10 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                 with col1:
                     col_Carregar, col_gerar_pdf = st.columns([0.15, 1])
                     with col_Carregar:
-                        with stylable_container(key="ACESSAR", css_styles=cssButton1):
+                        with stylable_container(key="ACESSAR", css_styles=cssButton2):
                             _Carregar = st.button("CARREGAR")
                     with col_gerar_pdf:
-                        with stylable_container(key="ACESSAR", css_styles=cssButton1):
+                        with stylable_container(key="ACESSAR", css_styles=cssButton2):
                             gerar_pdf = st.button('GERAR PDF', key="flash_pdf")
                     if gerar_pdf:
                         flash_result = flash1464RCA(vendedorCod)
@@ -1650,18 +1654,17 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
 
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
         with aba1_5: # Campanhas
-            st.header(":money_with_wings: CAMPANHAS DE VENDAS")
             st.markdown("    ")
-            with st.expander(":red[CAMPANHA GULOZITOS]", expanded=True):
-                c1g, c2g, c3g = st.columns([0.6,1.5,1])
+            with st.expander(":money_with_wings: CAMPANHA GULOZITOS", expanded=True):
+                c1g, c2g, c3g = st.columns([0.6, 1.5, 1])
 
                 with c1g:
                     campanhaGulao_result = campanhaGulao()
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Campanha Gulozitos válida até dia :blue[31/ago/2024]')
+                    container1.caption(f':blue[Campanha Gulozitos válida até dia 31/ago/2024]')
                     container2 = st.container(border=True)
-                    container2.caption(f"Positiva apenas com :red[5] ou mais :red[Sku's no cliente]")
+                    container2.caption(f":red[Positiva apenas com 5 ou mais Sku's no cliente]")
 
                 with c2g:
                     st.write("Desempenho na Campanha Gulozitos")
@@ -1669,20 +1672,46 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     if campanhaGulao_result.empty:
                         st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
                     else:
-                        campanhaGulao_result = campanhaGulao_result.iloc[:, [0, 1, 2, 3]].rename(columns={
+                        # Certifique-se de que todas as colunas necessárias estão sendo selecionadas
+                        campanhaGulao_result = campanhaGulao_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
                             0: "COD",
                             1: "RCA",
                             2: "DN",
-                            3: "R$"
+                            3: "R$",
+                            4: "SUP"
                         })
+
+                        supervisor_map = {
+                            2: "ADAILTON",
+                            8: "VILMAR JR"
+                        }
+
+                        campanhaGulaoSup_result = campanhaGulao_result.groupby("SUP").sum().sort_values(by="DN", ascending=False).reset_index()
                         
                         container_superior1 = st.container(border=True)
                         colg1, colg2, colg3 = container_superior1.columns([1, 1, 1])   
-                                             
-                        colg1.metric(label="-", help="-", value='-')
-                        colg2.metric(label="-", help="-", value='-')
-                        colg3.metric(label="-", help="-", value='-')
+                                            
+                        top_rca = campanhaGulao_result["RCA"].iloc[0]
+                        colg1.metric(label="MELHOR DESEMPENHO", help="O melhor desempenho na campanha", value=f'{top_rca}')
 
+                        colg2.metric(label="TOTAL EM PRÊMIOS", help="Valor total somado das premiações", value=format_number(campanhaGulao_result['R$'].sum()))
+
+                        colg3.metric(label="TOTAL DN", help="Positivações válidas totais da campanha", value=campanhaGulao_result["DN"].sum())
+                        
+                        campanhaGulao_result['R$'] = campanhaGulao_result['R$'].apply(format_number)
+                        campanhaGulao_result = campanhaGulao_result.drop(columns=["SUP"])
+
+                        campanhaGulaoSup_result["Supervisor"] = campanhaGulaoSup_result["SUP"].map(supervisor_map)
+                        campanhaGulaoSup_result = campanhaGulaoSup_result.drop(columns=["RCA", "R$", "COD", "SUP"])
+                        cols = ["Supervisor"] + [col for col in campanhaGulaoSup_result.columns if col != "Supervisor"]
+                        campanhaGulaoSup_result = campanhaGulaoSup_result[cols]
+
+                        data_col1, data_col2 = st.columns(2)
+                        with data_col1:
+                            st.table(campanhaGulao_result)
+
+                        with data_col2:
+                            st.table(campanhaGulaoSup_result)
 
 
                 with c3g:
