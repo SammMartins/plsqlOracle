@@ -13,13 +13,11 @@
 
 [0 - Fundamentos do SQL](#0FS) 
 
-[1 - Manipulação de Dados](#1MD)
+[1 - Consultas Avançadas](#2CA)
 
-[2 - Consultas Avançadas](#2CA)
+[2 - Gerenciamento de Banco de Dados](#3GBD)
 
-[3 - Gerenciamento de Banco de Dados](#3GBD)
-
-[4 - Segurança e Otimização](#4SO)
+[3 - Segurança e Otimização](#4SO)
 
 
 
@@ -45,3 +43,19 @@
 </details>
 
 <br>
+
+<h2 name="2CA">Consultas Avançadas</h2>
+
+<p>As Consultas Avançadas no SQL abrangem técnicas e práticas para elaborar consultas complexas e eficientes, permitindo manipular e extrair informações detalhadas e otimizadas de bancos de dados.</p>
+
+<details>
+<summary><b>Consultas Avançadas</b></summary>
+
+* **Subqueries e CTEs (Common Table Expressions)**: Técnicas para criar consultas aninhadas e reutilizáveis <a href="https://youtu.be/2qCLpE1NZ8c" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* **Window Functions**: Agregação de dados sem agrupar linhas, utilizando funções como `ROW_NUMBER, RANK, OVER` <a href="https://www.youtube.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* **Padrões e Expressões Regulares**: Filtragem e extração de dados usando padrões (`LIKE, REGEXP`) <a href="https://www.youtube.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* **Unions e Intersections**: Combinação e interseção de conjuntos de resultados com `UNION, INTERSECT e EXCEPT` <a href="https://www.youtube.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* **Consultas Recursivas**: Criação de consultas recursivas usando CTEs recursivas para dados hierárquicos <a href="https://www.youtube.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+* **Otimização de Consultas**: Técnicas de otimização, análise de planos de execução e uso de índices para melhorar o desempenho <a href="https://www.youtube.com" target="_blank"> <img src="https://cdn-icons-png.flaticon.com/512/10009/10009413.png" width="12" height="12" /></a>
+
+</details>
