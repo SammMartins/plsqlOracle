@@ -1701,6 +1701,8 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         campanhaGulao_result['R$'] = campanhaGulao_result['R$'].apply(format_number)
                         campanhaGulao_result = campanhaGulao_result.drop(columns=["SUP"])
 
+                        campanhaGulao_result = campanhaGulao_result[campanhaGulao_result["DN"] != 0]
+
                         campanhaGulaoSup_result["Supervisor"] = campanhaGulaoSup_result["SUP"].map(supervisor_map)
                         campanhaGulaoSup_result = campanhaGulaoSup_result.drop(columns=["RCA", "R$", "COD", "SUP"])
                         cols = ["Supervisor"] + [col for col in campanhaGulaoSup_result.columns if col != "Supervisor"]
