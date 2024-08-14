@@ -1691,12 +1691,13 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         container_superior1 = st.container(border=True)
                         colg1, colg2, colg3 = container_superior1.columns([1, 1, 1])   
                                             
+                        colg1.metric(label="PREMIAÇÃO TOTAL", help="Valor total somado das premiações dos vendedores", value=format_number(campanhaGulao_result['R$'].sum()))
+
+                        dn_total = campanhaGulao_result["DN"].sum()
+                        colg2.metric(label="POSITIVAÇÃO TOTAL", help="Positivações válidas totais da campanha", value=f"{dn_total} PDV's")
+
                         top_rca = campanhaGulao_result["RCA"].iloc[0]
-                        colg1.metric(label="MELHOR DESEMPENHO", help="O melhor desempenho na campanha", value=f'{top_rca}')
-
-                        colg2.metric(label="TOTAL EM PRÊMIOS", help="Valor total somado das premiações", value=format_number(campanhaGulao_result['R$'].sum()))
-
-                        colg3.metric(label="TOTAL DN", help="Positivações válidas totais da campanha", value=campanhaGulao_result["DN"].sum())
+                        colg3.metric(label="MELHOR DESEMPENHO", help="O melhor desempenho na campanha", value=f'{top_rca}')
                         
                         campanhaGulao_result['R$'] = campanhaGulao_result['R$'].apply(format_number)
                         campanhaGulao_result = campanhaGulao_result.drop(columns=["SUP"])
@@ -1710,9 +1711,13 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
 
                         data_col1, data_col2 = st.columns(2)
                         with data_col1:
-                            st.table(campanhaGulao_result)
+                            campanhaGulao_result = pd.DataFrame(campanhaGulao_result)
+                            st.dataframe(campanhaGulao_result, width=None, use_container_width=True, hide_index=True)
 
                         with data_col2:
+                            #campanhaGulaoSup_result = pd.DataFrame(campanhaGulaoSup_result)
+                            #st.dataframe(campanhaGulaoSup_result, width=145, use_container_width=False, hide_index=True)
+                            campanhaGulaoSup_result.index = campanhaGulaoSup_result.index + 1
                             st.table(campanhaGulaoSup_result)
 
 
@@ -1784,8 +1789,8 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                                         df2_result[coluna] = df2_result[coluna].apply(format_number)
                                     
                                     with col1:
-                                        st.dataframe(df1_result)
-                                        st.dataframe(df2_result)
+                                        st.dataframe(df1_result, hide_index=True)
+                                        st.dataframe(df2_result, hide_index=True)
                                 else:
                                     formatarMoeda = ["VENDIDO"]
 
@@ -1814,8 +1819,8 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                                         df2_result[coluna] = df2_result[coluna].apply(format_number)
 
                                     with col1:
-                                        st.dataframe(df1_result)
-                                        st.dataframe(df2_result)
+                                        st.dataframe(df1_result, hide_index=True)
+                                        st.dataframe(df2_result, hide_index=True)
 
 
                             # --------------- Modo Metric --------------- #
@@ -2412,7 +2417,7 @@ elif st.session_state['active_tab'] == ':bank: VERBAS':
                 else:
                     col1, col2, col3 = st.columns([0.5, 2, 2])
                     with col2:
-                        st.dataframe(verbas_result)
+                        st.dataframe(verbas_result, hide_index=True)
                 tm.sleep(1.5)
 
 # --------------------------- DEDO DURO ----------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
@@ -2466,7 +2471,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     if filtrado_pedErro_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        st.dataframe(filtrado_pedErro_result)
+                        st.dataframe(filtrado_pedErro_result, hide_index=True)
 
 
         # ---------- Pedidos -------- #
@@ -2525,7 +2530,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         if filtrado_pedVsEst_result.empty:
                             st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                         else:
-                            st.dataframe(filtrado_pedVsEst_result)
+                            st.dataframe(filtrado_pedVsEst_result, hide_index=True)
 
                 with c3:
                     st.divider()
@@ -2597,8 +2602,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     if filtrado_devolucao_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        st.dataframe(filtrado_devolucao_result)
-
+                        st.dataframe(filtrado_devolucao_result, hide_index=True)
 
         # ---------- Inadimplência -- #
         with aba6_4:
@@ -2719,7 +2723,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     if inad_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        st.dataframe(inad_result)
+                        st.dataframe(inad_result, hide_index=True)
 
         # ---------- Estoque ---------- #
         with aba6_5:
@@ -2875,7 +2879,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                         cs1_col3.metric(label="-", help="-", value="-")
 
-                        st.dataframe(filtrado_estoque266_result)
+                        st.dataframe(filtrado_estoque266_result, hide_index=True)
 
                 st.divider() # ----------- Produtos sem venda
                 c1_2, c2_2, c3_2 = st.columns([0.6,1.5,1])
@@ -2937,7 +2941,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         ordem_col = ["CODPROD", "DESCRICAO", "DIAS SEM VENDA", "DTULTENT", "QTDULTENT", "ESTOQUE"]
                         prodSemVenda_result = prodSemVenda_result[ordem_col]
 
-                        st.dataframe(prodSemVenda_result)
+                        st.dataframe(prodSemVenda_result, hide_index=True)
 
                 with c1_2:
                     st.write("Legenda:")
@@ -3033,7 +3037,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         cortesFornec_result["R$"] = cortesFornec_result["R$"].apply(format_number)
                         cortesFornec_result["CODFORNEC"] = cortesFornec_result["CODFORNEC"].astype(str)
                         cortesFornec_result["CORTE TOTAL"] = cortesFornec_result["CORTE TOTAL"].astype(str)
-                        st.dataframe(cortesFornec_result)
+                        st.dataframe(cortesFornec_result, hide_index=True)
 
 
 
@@ -3133,7 +3137,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         filtrado_cortesEquipe_result["QTD. PEDIDO"] = filtrado_cortesEquipe_result["QTD. PEDIDO"].astype(str)
                         filtrado_cortesEquipe_result["QTD. CORTE"] = filtrado_cortesEquipe_result["QTD. CORTE"].astype(str)
 
-                        st.dataframe(filtrado_cortesEquipe_result)
+                        st.dataframe(filtrado_cortesEquipe_result, hide_index=True)
 
 
 
@@ -3309,7 +3313,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     if cliente_semVenda_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados acima :point_up:")
                     else:
-                        st.dataframe(cliente_semVenda_result)
+                        st.dataframe(cliente_semVenda_result, hide_index=True)
 
 
 
@@ -3594,7 +3598,7 @@ elif st.session_state['active_tab'] == ':notebook:':
             st.divider()
             tm.sleep(10)
             result2 = campanhaYoPRO()
-            st.dataframe(result2)
+            st.dataframe(result2, hide_index=True)
             c1, c2, c3 = st.columns([2,0.75,2])
             with c2:
                 if st.button('GERAR EXCEL 2'): # ---- Convertendo para Excel

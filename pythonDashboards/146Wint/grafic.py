@@ -1,5 +1,6 @@
 from turtle import color
 import plotly.express as px
+import pandas as pd
 from dataset import df1, df2
 from utils import data_semana_ini, data_semana_fim, format_number
 
@@ -101,3 +102,4 @@ def gerar_graficoVendas():
         )
 
         return grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
+    
