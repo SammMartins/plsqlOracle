@@ -26,7 +26,7 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec, campanhaGulao)
 from grafic import  gerar_graficoVendas
 from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
-                    format_currency, format_date_value)
+                     format_currency, format_date_value)
 from pdf_generator  import flash_pdf
 
 
@@ -104,6 +104,9 @@ with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button1.css', "r"
 
 with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button2.css', "r") as file:
     cssButton2 = file.read()  
+
+with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/divider1.css', "r") as file:
+    cssDivider = file.read()  
 
 # ----------------------- Dashboard Layout ----------------------- #
 tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
@@ -2901,7 +2904,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         
                         # Ordenando o DataFrame pelo valor numérico extraído em ordem decrescente
                         prodSemVenda_result = prodSemVenda_result.sort_values(by="ORDER", ascending=False)
-
+                    
                     st.divider()
                     colunaExcel, colunaPdf = st.columns([0.6, 1])
                     with colunaExcel:
@@ -2948,8 +2951,12 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     container1 = st.container(border=True)
                     container1.caption(f'Produtos sem venda a mais de 7 Fornecedor {codFornec}')
                 
-                
-                st.divider() # ----------- Cortes Por Fornecedor (indústria)
+                st.markdown("<br>", unsafe_allow_html=True)
+                st.markdown("<br>", unsafe_allow_html=True)
+                with stylable_container(key="divider1",css_styles = cssDivider):
+                    divider = st.divider() # ----------- Cortes Por Fornecedor (indústria)
+                    st.markdown("<br>", unsafe_allow_html=True)
+
                 c1_3, c2_3, c3_3 = st.columns([0.6,1.5,1])
 
                 with c3_3:
@@ -3136,6 +3143,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         filtrado_cortesEquipe_result["CODPROD"] = filtrado_cortesEquipe_result["CODPROD"].astype(str)
                         filtrado_cortesEquipe_result["QTD. PEDIDO"] = filtrado_cortesEquipe_result["QTD. PEDIDO"].astype(str)
                         filtrado_cortesEquipe_result["QTD. CORTE"] = filtrado_cortesEquipe_result["QTD. CORTE"].astype(str)
+                        filtrado_cortesEquipe_result = filtrado_cortesEquipe_result.drop(columns=["QTD. PEDIDO"])
 
                         st.dataframe(filtrado_cortesEquipe_result, hide_index=True)
 
