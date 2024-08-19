@@ -7,7 +7,7 @@
               WHEN VENDAS.CODUSUR = 2 THEN 2000+((2000/6)) ELSE
         (SUM(NVL(VENDAS.VLVENDA,0) - NVL(DEVOLUCAO.VLDEVOLUCAO,0))) * 0.0175 END) AS VERBA,
         (CASE WHEN VENDAS.CODUSUR = 160 THEN  800 -- Referente a verba solicitada 16-08-24
-              WHEN VENDAS.CODUSUR = 2 THEN    750 -- Referente a verba solicitada 09-08-24
+              WHEN VENDAS.CODUSUR = 2 THEN    (750 + 1120) -- Referente a verba solicitada 09-08-24 | Referente a verba solicitada 17-08-24
               WHEN VENDAS.CODUSUR = 156 THEN  0 -- 
               WHEN VENDAS.CODUSUR = 172 THEN  0 -- 
               WHEN VENDAS.CODUSUR = 140 THEN  0 -- 

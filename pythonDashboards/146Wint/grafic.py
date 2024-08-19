@@ -4,9 +4,9 @@ import pandas as pd
 from dataset import df1, df2
 from utils import data_semana_ini, data_semana_fim, format_number
 
-def gerar_graficoVendas():
-    start_of_week = data_semana_ini()
-    end_of_week = data_semana_fim()
+def gerar_graficoVendas(start_of_week, end_of_week):
+    start_of_week = start_of_week
+    end_of_week = end_of_week
     df = df2(start_of_week, end_of_week)
 
     if df.empty:
@@ -18,7 +18,7 @@ def gerar_graficoVendas():
             df,
             x = df.columns[1],
             y = df.columns[2], 
-            title = "VENDAS POR RCA NA SEMANA ATUAL",
+            title = "RANKING DE VENDAS POR RCA",
             range_y = (0, df[2].max()),
             color = df.columns[2],
             color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
@@ -49,7 +49,7 @@ def gerar_graficoVendas():
             df_2,
             x = df.columns[1],
             y = df.columns[2], 
-            title = "VENDAS POR RCA NA SEMANA ATUAL - SUL",
+            title = "RANKING DE VENDAS POR RCA - SUL",
             range_y = (0, df[2].max()),
             color = df.columns[2],
             color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
@@ -78,7 +78,7 @@ def gerar_graficoVendas():
             df_8,
             x = df.columns[1],
             y = df.columns[2], 
-            title = "VENDAS POR RCA NA SEMANA ATUAL - SERTÃO",
+            title = "RANKING DE VENDAS POR RCA - SERTÃO",
             range_y = (0, df[2].max()),
             color = df.columns[2],
             color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
