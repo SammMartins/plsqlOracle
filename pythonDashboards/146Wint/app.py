@@ -2542,10 +2542,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     })
                     st.markdown("    ")
                     selected_errors = st.multiselect(label="Filtro de Erros", options = pedErro_result['TIPO ERRO'].unique().tolist(), default = pedErro_result['TIPO ERRO'].unique().tolist(), placeholder="Filtro de erros", help="Selecione o tipo de erro para filtrar na tabela")
-                # ------ Fora da Coluna
+                
                 filtrado_pedErro_result = pedErro_result[pedErro_result['TIPO ERRO'].isin(selected_errors)]
                 with c3:
-                # ------ Retorna para Coluna
+                
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_pedErro"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(filtrado_pedErro_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
@@ -2597,6 +2597,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 st.divider()
                 c1,c2,c3 = st.columns([0.7,1.75,0.7])
                 with c3:
+
                     pedVsEst_result = pedidoVsEstoque()
                     if pedVsEst_result.empty:
                         pass
@@ -2667,15 +2668,23 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         10: "TIPO",
                         11: "OBSERVAÇÃO"
                     })
+
+                    soma_sup8 = format_number(devolucao_result[devolucao_result['SUP'] == 8]['VALOR'].sum())
+                    quantidade_sup8 = devolucao_result[devolucao_result['SUP'] == 8].shape[0]
+
+                    soma_sup2 = format_number(devolucao_result[devolucao_result['SUP'] == 2]['VALOR'].sum())
+                    quantidade_sup2 = devolucao_result[devolucao_result['SUP'] == 2].shape[0]
+
                     formatarMoeda = ["VALOR", "DEBITO RCA"]
                     for coluna in formatarMoeda:
                         devolucao_result[coluna] = devolucao_result[coluna].apply(format_number)
                     st.markdown("    ")
-                    selected_errors = st.multiselect(label="Filtro de Tipo", key="selected_errors", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
-                # ------ Fora da Coluna
+                    st.markdown("<br><br><br><br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
+                    selected_errors = st.multiselect(label="Filtro de Tipo na Tabela", key="selected_errors", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
+                
                 filtrado_devolucao_result = devolucao_result[devolucao_result['TIPO'].isin(selected_errors)]
                 with c3:
-                # ------ Retorna para Coluna
+                
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_devolucao"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(filtrado_devolucao_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
@@ -2698,10 +2707,23 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c2:
                     st.write("DEVOLUÇÕES")
                     container_superior1 = st.container(border=True)
-                    cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 1, 1, 1])
+                    
                     if filtrado_devolucao_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
+                        cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 1, 1, 1])
+                        cs1_col1.metric(label="QTD. JÚNIOR", help="Valor total de devoluções supervisor JÚNIOR", value=f"{quantidade_sup8}")
+                        
+                        cs1_col2.metric(label="TOTAL JÚNIOR", help="Valor total de devoluções supervisor JÚNIOR", value=f"{soma_sup8}")
+                        
+                        cs1_col3.metric(label="QTD. ADAILTON", help="Quantidade total de devoluções supervisor ADAILTON", value=f"{quantidade_sup2}")
+
+                        cs1_col4.metric(label="TOTAL ADAILTON", help="Quantidade total de devoluções supervisor ADAILTON", value=f"{soma_sup2}")
+                        
+                        container_superior1.divider()
+
+                        cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 1, 1, 1])
+                        
                         qtd_dev_com = devolucao_result[devolucao_result['TIPO'] == 'C'].shape[0]
                         cs1_col1.metric(label=":red[QTD. COMERCIAL]", help="Quantidade total de devoluções por motivos comerciais", value=f"   {qtd_dev_com}")
 
@@ -2936,7 +2958,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     
                     st.markdown("    ")
                     selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
-                # ------ Fora da Coluna
+                
                 filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
                 codFornec = filtrado_estoque266_result["CODFORNEC"].iloc[0]
                 nomeFornec = filtrado_estoque266_result["FORNECEDOR"].iloc[0]
@@ -2945,7 +2967,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
                 filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
                 with c3:
-                # ------ Retorna para Coluna
+                
                     st.divider()
                     colunaExcel, colunaPdf = st.columns([0.6, 1])
                     with colunaExcel:
@@ -3726,7 +3748,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.01")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.02")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
