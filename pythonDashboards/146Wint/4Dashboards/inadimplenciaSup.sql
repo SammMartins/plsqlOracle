@@ -1,4 +1,4 @@
---INADIMPLÊNCIA
+--INADIMPLÊNCIA POR SUPERVISOR
 SELECT  a.codsupervisor,
         A.codusur RCA,
         A.CODCLI || ' ' || SUBSTR(B.CLIENTE,0,20) CLIENTE, 
@@ -26,7 +26,7 @@ FROM pontual.pcprest A
 JOIN pontual.pcclient B ON A.codcli = B.codcli
 WHERE A.dtvenc BETWEEN SYSDATE - 732 AND SYSDATE - 1
 AND A.vpago IS NULL
-AND A.codUSUR IN ({rca})
+AND A.codusur NOT IN (10)
 AND A.CODCLI NOT IN (3480, 15286, 15492, 11185, 7724, 2325) --CLIENTES A DESCONSIDERAR POR SEREM FUNCIONÁRIOS
 AND A.codcob IN ('7563','SERA','C','CHD1')
 
