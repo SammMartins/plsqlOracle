@@ -1,6 +1,11 @@
 --INADIMPLÊNCIA POR SUPERVISOR
 SELECT  a.codsupervisor,
         A.codusur RCA,
+        
+        SUBSTR(USUR.NOME,
+        INSTR(USUR.NOME, ' ') + 1,
+        INSTR(USUR.NOME, ' ', INSTR(USUR.NOME, ' ') + 1) - INSTR(USUR.NOME, ' ') - 1),
+
         A.CODCLI || ' ' || SUBSTR(B.CLIENTE,0,20) CLIENTE, 
         (CASE WHEN 
             (SELECT DISTINCT(X.CODCLI) 
@@ -24,6 +29,7 @@ SELECT  a.codsupervisor,
        
 FROM pontual.pcprest A
 JOIN pontual.pcclient B ON A.codcli = B.codcli
+JOIN pontual.pcusuari USUR ON USUR.CODUSUR = A.CODUSUR
 WHERE A.dtvenc BETWEEN SYSDATE - 732 AND SYSDATE - 1
 AND A.vpago IS NULL
 AND A.codusur NOT IN (10)

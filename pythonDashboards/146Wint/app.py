@@ -2739,27 +2739,38 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                         st.dataframe(filtrado_devolucao_result, hide_index=True)
 
-        # ---------- Inadimplência ---------- #
+
+
+        # ---------------------------- Inadimplência ---------------------------- #
         with aba6_4:
             st.header(":rotating_light: Inadimplência por Cliente")
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 st.divider()
-                sup_col1, sup_col2, sup_col3 = st.columns([1, 1, 2.55])
+                sup_col1, sup_col2, sup_col3 = st.columns([1, 1, 4.75])
                 inad_sup_result = inadimplenciaSup()
-                inad_sup_result = inad_sup_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]].rename(columns={
+                inad_sup_result = inad_sup_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
                     0: "SUP",
-                    1: "RCA",
-                    2: "CLIENTE",
-                    3: "PED. NO SISTEMA?",
-                    4: "TÍTULO R$",
-                    5: "JUROS APROX.",
-                    6: "TOTAL R$",
-                    7: "COBRANÇA",
-                    8: "DIAS EM VENCI.",
-                    9: "EMISSAO",
-                    10: "VENCIMENTO"
+                    1: "COD",
+                    2: "NOME",
+                    3: "CLIENTE",
+                    4: "PED. NO SISTEMA?",
+                    5: "TÍTULO R$",
+                    6: "JUROS APROX.",
+                    7: "TOTAL R$",
+                    8: "COBRANÇA",
+                    9: "DIAS EM VENCI.",
+                    10: "EMISSAO",
+                    11: "VENCIMENTO"
                 })
+
+                sup_maior_inad = inad_sup_result["SUP"].value_counts().idxmax()
+                if sup_maior_inad == 2:
+                    sup_maior_inad = "ADAILTON"
+                elif sup_maior_inad == 8:
+                    sup_maior_inad = "VILMAR JR"
+                else:
+                    sup_maior_inad = "ERRO"
 
                 formatarData = ["EMISSAO", "VENCIMENTO"]
                 for coluna in formatarData:
@@ -2770,7 +2781,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     inad_sup_result[coluna] = inad_sup_result[coluna].apply(format_number)
 
                 with sup_col1:
-                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR", "TODOS"), index=0, key='SUP_8', help="Selecione o supervisor", placeholder=":man: Escolha um supervisor", label_visibility="visible")
+                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='SUP_8', help="Selecione o supervisor", placeholder=":man: Escolha um supervisor", label_visibility="visible")
                     if supName == "ADAILTON":
                         with sup_col2:
                             supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [2], index=0, key='2_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -2783,6 +2794,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                             vlTotal = format_number(float(filtrado_inad_sup_result["TOTAL R$"].replace('[R$]', '', regex=True).astype(float).sum()))
                     else:
                         with sup_col2:
+                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [99], index=0, key='99_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             filtrado_inad_sup_result = inad_sup_result
                             vlTotal = format_number(float(filtrado_inad_sup_result["TOTAL R$"].replace('[R$]', '', regex=True).astype(float).sum()))
 
@@ -2793,7 +2805,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     container1.caption("Selecione o Supervisor acima para visualizar os clientes com débitos na empresa.")
                 with sup_col3:
                     container_superior1 = st.container(border=True)
-                    cs1_col1, cs1_col2, cs1_col3 = container_superior1.columns([1, 1, 1])
+                    cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 0.7, 1.1, 1.1])
 
 
                 with sup_c2:
@@ -2802,14 +2814,25 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
                         cs1_col1.metric(label="VALOR TOTAL", help="Valor total da inadimplência listada", value=vlTotal)
+
+                        qtd_inadimplentes = filtrado_inad_sup_result.shape[0]
+                        cs1_col2.metric(label="QTD. INAD.", help="Quantidade total de clientes inadimplentes", value=qtd_inadimplentes)
                         
-                        filtrado_inad_sup_result = inad_sup_result.drop(columns=["SUP"])
+                        rca_maior_inad = filtrado_inad_sup_result["NOME"].value_counts().idxmax()
+                        cs1_col3.metric(label="RCA MAIOR INAD.", help="Vendedor com a maior quantidade de inadimplencia", value=rca_maior_inad, delta="1º", delta_color="inverse")
+                        
+                        cs1_col4.metric(label="SUP. MAIOR INAD.", help="Supervisor com a maior quantidade de inadimplencia", value=sup_maior_inad, delta="1º", delta_color="inverse")
+                        
+                        filtrado_inad_sup_result = inad_sup_result.drop(columns=["SUP", "COD"])
                         
                         st.dataframe(filtrado_inad_sup_result, hide_index=True)
 
 
+
+
+
                 with stylable_container(key="divider1",css_styles = cssDivider):
-                    divider = st.divider() # ----------- Cortes Por Fornecedor (indústria)
+                    divider = st.divider() # ---------------------------- Cortes Por Fornecedor (indústria) ---------------------------- #
                     st.markdown("<br>", unsafe_allow_html=True)
 
                 col1, col2, col3, col4 = st.columns([1, 1, 0.55, 2])
@@ -3817,7 +3840,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.02")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.03")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
