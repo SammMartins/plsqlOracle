@@ -2764,6 +2764,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     11: "VENCIMENTO"
                 })
 
+                formatarData = ["EMISSAO", "VENCIMENTO"]
+                for coluna in formatarData:
+                    inad_sup_result[coluna] = pd.to_datetime(inad_sup_result[coluna]).dt.strftime('%d/%m/%Y')
+
                 sup_maior_inad = inad_sup_result["SUP"].value_counts().idxmax()
                 if sup_maior_inad == 2:
                     sup_maior_inad = "ADAILTON"
@@ -2772,31 +2776,21 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 else:
                     sup_maior_inad = "ERRO"
 
-                formatarData = ["EMISSAO", "VENCIMENTO"]
-                for coluna in formatarData:
-                    inad_sup_result[coluna] = pd.to_datetime(inad_sup_result[coluna]).dt.strftime('%d/%m/%Y')
-
-                formatarMoeda = ["TÍTULO R$", "JUROS APROX.", "TOTAL R$"]
-                for coluna in formatarMoeda:
-                    inad_sup_result[coluna] = inad_sup_result[coluna].apply(format_number)
-
                 with sup_col1:
                     supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='SUP_8', help="Selecione o supervisor", placeholder=":man: Escolha um supervisor", label_visibility="visible")
                     if supName == "ADAILTON":
                         with sup_col2:
                             supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [2], index=0, key='2_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             filtrado_inad_sup_result = inad_sup_result[inad_sup_result["SUP"].isin([supCod])]
-                            vlTotal = format_number(float(filtrado_inad_sup_result["TOTAL R$"].replace('[R$]', '', regex=True).astype(float).sum()))
                     elif supName == "VILMAR JR":
                         with sup_col2:
                             supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [8], index=0, key='8_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             filtrado_inad_sup_result = inad_sup_result[inad_sup_result["SUP"].isin([supCod])]
-                            vlTotal = format_number(float(filtrado_inad_sup_result["TOTAL R$"].replace('[R$]', '', regex=True).astype(float).sum()))
                     else:
                         with sup_col2:
                             supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [99], index=0, key='99_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             filtrado_inad_sup_result = inad_sup_result
-                            vlTotal = format_number(float(filtrado_inad_sup_result["TOTAL R$"].replace('[R$]', '', regex=True).astype(float).sum()))
+                            
 
                 sup_c1, sup_c2 = st.columns([0.5,2])
                 with sup_c1:
@@ -2813,17 +2807,25 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     if filtrado_inad_sup_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        cs1_col1.metric(label="VALOR TOTAL", help="Valor total da inadimplência listada", value=vlTotal)
+                        vlTotal = filtrado_inad_sup_result["TOTAL R$"].sum()
+                        cs1_col1.metric(label="VALOR TOTAL", help="Valor total da inadimplência listada", value=format_number(vlTotal))
 
-                        qtd_inadimplentes = filtrado_inad_sup_result.shape[0]
+                        qtd_inadimplentes = filtrado_inad_sup_result["CLIENTE"].nunique()
                         cs1_col2.metric(label="QTD. INAD.", help="Quantidade total de clientes inadimplentes", value=qtd_inadimplentes)
                         
                         rca_maior_inad = filtrado_inad_sup_result["NOME"].value_counts().idxmax()
-                        cs1_col3.metric(label="RCA MAIOR INAD.", help="Vendedor com a maior quantidade de inadimplencia", value=rca_maior_inad, delta="1º", delta_color="inverse")
+                        cs1_col3.metric(label="MAIOR QTD. INAD.", help="Vendedor com a maior quantidade de inadimplencia", value=rca_maior_inad, delta="1º", delta_color="inverse")
                         
-                        cs1_col4.metric(label="SUP. MAIOR INAD.", help="Supervisor com a maior quantidade de inadimplencia", value=sup_maior_inad, delta="1º", delta_color="inverse")
+                        soma_por_nome = filtrado_inad_sup_result.groupby("NOME")["TOTAL R$"].sum()
+                        soma_por_nome_ordenado = soma_por_nome.sort_values(ascending=False)
+                        nome_maior_valor = soma_por_nome_ordenado.index[0]
+                        cs1_col4.metric(label="MAIOR VALOR INAD. R$", help="Vendedor com a maior valor de inadimplencia", value=nome_maior_valor, delta="1º", delta_color="inverse")
                         
                         filtrado_inad_sup_result = inad_sup_result.drop(columns=["SUP", "COD"])
+
+                        formatarMoeda = ["TÍTULO R$", "JUROS APROX.", "TOTAL R$"]
+                        for coluna in formatarMoeda:
+                            filtrado_inad_sup_result[coluna] = filtrado_inad_sup_result[coluna].apply(format_number)
                         
                         st.dataframe(filtrado_inad_sup_result, hide_index=True)
 
@@ -2832,15 +2834,21 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
 
                 with stylable_container(key="divider1",css_styles = cssDivider):
-                    divider = st.divider() # ---------------------------- Cortes Por Fornecedor (indústria) ---------------------------- #
+                    divider = st.divider() # ---------------------------- Por Fornecedor VENDEDOR ---------------------------- #
                     st.markdown("<br>", unsafe_allow_html=True)
 
                 col1, col2, col3, col4 = st.columns([1, 1, 0.55, 2])
                 with col1:
-                    vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_4', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
+                    vendedorName = st.selectbox(":man: VENDEDOR", ("LEONARDO", "JEAN", "DANILO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"), index=0, key='rca_4', help="Selecione o vendedor", placeholder=":man: Escolha um Vendedor", label_visibility="visible")
                     if vendedorName == "LEONARDO":
                         with col2:
                             vendedorCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (140,),index=0, key='140_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "JEAN":
+                        with col2:
+                            vendedorCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (149,),index=0, key='149_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                    elif vendedorName == "DANILO":
+                        with col2:
+                            vendedorCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (159,),index=0, key='159_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                     elif vendedorName == "EDNALDO":
                         with col2:
                             vendedorCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (141,),index=0, key='141_4', help="Código RCA preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
