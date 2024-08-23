@@ -2807,7 +2807,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     if filtrado_inad_sup_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
-                        vlTotal = filtrado_inad_sup_result["TOTAL R$"].sum()
+                        vlTotal = filtrado_inad_sup_result["TÍTULO R$"].sum()
                         cs1_col1.metric(label="VALOR TOTAL", help="Valor total da inadimplência listada", value=format_number(vlTotal))
 
                         qtd_inadimplentes = filtrado_inad_sup_result["CLIENTE"].nunique()
@@ -2816,7 +2816,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         rca_maior_inad = filtrado_inad_sup_result["NOME"].value_counts().idxmax()
                         cs1_col3.metric(label="MAIOR QTD. INAD.", help="Vendedor com a maior quantidade de inadimplencia", value=rca_maior_inad, delta="1º", delta_color="inverse")
                         
-                        soma_por_nome = filtrado_inad_sup_result.groupby("NOME")["TOTAL R$"].sum()
+                        soma_por_nome = filtrado_inad_sup_result.groupby("NOME")["TÍTULO R$"].sum()
                         soma_por_nome_ordenado = soma_por_nome.sort_values(ascending=False)
                         nome_maior_valor = soma_por_nome_ordenado.index[0]
                         cs1_col4.metric(label="MAIOR VALOR INAD. R$", help="Vendedor com a maior valor de inadimplencia", value=nome_maior_valor, delta="1º", delta_color="inverse")

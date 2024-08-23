@@ -11,8 +11,8 @@
               WHEN VENDAS.CODUSUR = 156 THEN  0 -- 
               WHEN VENDAS.CODUSUR = 172 THEN  0 -- 
               WHEN VENDAS.CODUSUR = 164 THEN  300 -- Solicitado pelo supervisor dia 21-08-24
-              WHEN VENDAS.CODUSUR = 150 THEN  0 -- 
-              WHEN VENDAS.CODUSUR = 149 THEN  0 -- 
+              WHEN VENDAS.CODUSUR = 153 THEN  400 -- Solicitado pelo RCA 23-08-24
+              WHEN VENDAS.CODUSUR = 150 THEN  300 -- Solicitado dia 23-08-24
               WHEN VENDAS.CODUSUR = 159 THEN  0 -- 
               
          ELSE 0 END) AS ABATIMENTOS, 
