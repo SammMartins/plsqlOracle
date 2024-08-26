@@ -2535,11 +2535,12 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 c1,c2,c3 = st.columns([0.7,1.3,1])
                 with c3:
                     pedErro_result = pedErro()
-                    pedErro_result = pedErro_result.iloc[:, [0, 1, 2, 3]].rename(columns={
+                    pedErro_result = pedErro_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
                         0: "CODCLI",
-                        1: "RCA",
-                        2: "TIPO ERRO",
-                        3: "POSIÇÃO"
+                        1: "COD",
+                        2: "NOME",
+                        3: "TIPO ERRO",
+                        4: "POSIÇÃO"
                     })
                     st.markdown("    ")
                     selected_errors = st.multiselect(label="Filtro de Erros", options = pedErro_result['TIPO ERRO'].unique().tolist(), default = pedErro_result['TIPO ERRO'].unique().tolist(), placeholder="Filtro de erros", help="Selecione o tipo de erro para filtrar na tabela")
