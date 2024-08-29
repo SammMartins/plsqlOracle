@@ -1191,7 +1191,7 @@ def campanhaGulao():
 
     cursor = con.cursor()
 
-    with open(path + 'campanhaGulao.sql', 'r') as arquivo: 
+    with open(path + 'campanhaGulao2.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
     try:

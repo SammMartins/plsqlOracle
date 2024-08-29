@@ -1660,15 +1660,13 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
         with aba1_5: # Campanhas
             st.markdown("    ")
             with st.expander(":money_with_wings: CAMPANHA GULOZITOS", expanded=True):
-                c1g, c2g, c3g = st.columns([0.6, 1.5, 1])
+                c1g, c2g, c3g = st.columns([0.32, 1.5, 0.001])
 
                 with c1g:
                     campanhaGulao_result = campanhaGulao()
                     st.write("Legenda:")
                     container1 = st.container(border=True)
                     container1.caption(f':blue[Campanha Gulozitos válida até dia 31/ago/2024]')
-                    container2 = st.container(border=True)
-                    container2.caption(f":red[Positiva apenas com 5 ou mais Sku's no cliente]")
 
                 with c2g:
                     st.write("Desempenho na Campanha Gulozitos")
@@ -1677,52 +1675,77 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
                     else:
                         # Certifique-se de que todas as colunas necessárias estão sendo selecionadas
-                        campanhaGulao_result = campanhaGulao_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
-                            0: "COD",
-                            1: "RCA",
-                            2: "DN",
-                            3: "R$",
-                            4: "SUP"
+                        campanhaGulao_result = campanhaGulao_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]].rename(columns={
+                            0: "SUP",
+                            1: "COD",
+                            2: "RCA",
+                            3: "BASE",
+                            4: "DN",
+                            5: "%",
+                            6: "TICKET",
+                            7: "DN SKU",
+                            8: "VOL. SKU",
+                            9: "R$"
                         })
 
                         supervisor_map = {
                             2: "ADAILTON",
                             8: "VILMAR JR"
                         }
-
+                        
+                        campanhaGulao_result['TICKET'] = campanhaGulao_result['TICKET'].apply(format_number)
+                        
                         campanhaGulaoSup_result = campanhaGulao_result.groupby("SUP").sum().sort_values(by="DN", ascending=False).reset_index()
+
+                        campanhaGulao_result = campanhaGulao_result.drop(columns=["SUP"])
+
+                        campanhaGulaoSup_result["Supervisor"] = campanhaGulaoSup_result["SUP"].map(supervisor_map)
+                        campanhaGulaoSup_result = campanhaGulaoSup_result.drop(columns=["RCA", "R$", "COD", "SUP", "%", "TICKET", "DN SKU", "VOL. SKU"])
+                        cols = ["Supervisor"] + [col for col in campanhaGulaoSup_result.columns if col != "Supervisor"]
+                        campanhaGulaoSup_result = campanhaGulaoSup_result[cols]
+
+                        campanhaGulaoSup_result["%"] = campanhaGulaoSup_result.apply(
+                            lambda row: f"{int((row['DN'] / row['BASE']) * 100)}%", axis=1
+                        )
+
+
+                        campanhaGulaoSup_result["R$"] = campanhaGulaoSup_result.apply(
+                            lambda row: 325 if int((row['DN'] / row['BASE']) * 100) >= 55 else
+                                        300 if int((row['DN'] / row['BASE']) * 100) >= 50 else
+                                        275 if int((row['DN'] / row['BASE']) * 100) >= 45 else
+                                        250 if int((row['DN'] / row['BASE']) * 100) >= 40 else
+                                        225 if int((row['DN'] / row['BASE']) * 100) >= 35 else
+                                        200 if int((row['DN'] / row['BASE']) * 100) >= 30 else
+                                        0, axis=1
+                        )
+
+
                         
                         container_superior1 = st.container(border=True)
                         colg1, colg2, colg3 = container_superior1.columns([1, 1, 1])   
                                             
-                        colg1.metric(label="PREMIAÇÃO TOTAL", help="Valor total somado das premiações dos vendedores", value=format_number(campanhaGulao_result['R$'].sum()))
+                        colg1.metric(label="PREMIAÇÃO TOTAL", help="Valor total somado das premiações dos vendedores", value=format_number((campanhaGulao_result['R$'].sum()+campanhaGulaoSup_result['R$'].sum())))
 
                         dn_total = campanhaGulao_result["DN"].sum()
                         colg2.metric(label="POSITIVAÇÃO TOTAL", help="Positivações válidas totais da campanha", value=f"{dn_total} PDV's")
 
                         top_rca = campanhaGulao_result["RCA"].iloc[0]
                         colg3.metric(label="MELHOR DESEMPENHO", help="O melhor desempenho na campanha", value=f'{top_rca}')
-                        
-                        campanhaGulao_result['R$'] = campanhaGulao_result['R$'].apply(format_number)
-                        campanhaGulao_result = campanhaGulao_result.drop(columns=["SUP"])
 
-                        campanhaGulao_result = campanhaGulao_result[campanhaGulao_result["DN"] != 0]
+                        campanhaGulao_result["R$"] = campanhaGulao_result["R$"].apply(format_number)
+                        campanhaGulaoSup_result["R$"] = campanhaGulaoSup_result["R$"].apply(format_number)
 
-                        campanhaGulaoSup_result["Supervisor"] = campanhaGulaoSup_result["SUP"].map(supervisor_map)
-                        campanhaGulaoSup_result = campanhaGulaoSup_result.drop(columns=["RCA", "R$", "COD", "SUP"])
-                        cols = ["Supervisor"] + [col for col in campanhaGulaoSup_result.columns if col != "Supervisor"]
-                        campanhaGulaoSup_result = campanhaGulaoSup_result[cols]
+                        campanhaGulaoSup_result["BASE"] = campanhaGulaoSup_result["BASE"].astype(str)
 
-                        data_col1, data_col2 = st.columns(2)
+
+                        data_col1, data_col2 = st.columns([1, 0.6])
                         with data_col1:
                             campanhaGulao_result = pd.DataFrame(campanhaGulao_result)
                             st.dataframe(campanhaGulao_result, width=None, use_container_width=True, hide_index=True)
 
                         with data_col2:
-                            #campanhaGulaoSup_result = pd.DataFrame(campanhaGulaoSup_result)
-                            #st.dataframe(campanhaGulaoSup_result, width=145, use_container_width=False, hide_index=True)
                             campanhaGulaoSup_result.index = campanhaGulaoSup_result.index + 1
-                            st.table(campanhaGulaoSup_result)
+                            st.dataframe(campanhaGulaoSup_result, width=None, use_container_width=True)
 
 
                 with c3g:
@@ -3849,7 +3872,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.04")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.05")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
