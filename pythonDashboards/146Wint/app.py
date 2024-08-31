@@ -157,12 +157,65 @@ with tabs[0]:
                     if 'control' not in st.session_state:
                         st.session_state['control'] = 0
 
+        st.divider()
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col3:
+            containerLogin3 = st.container(border=True)
+            containerLogin3.subheader("Novidades no Dashboard:", divider="gray")
+            containerLogin3.markdown("Painel de campanhas disponível na aba de :dollar: VENDA")
+            containerLogin3.markdown("Painel de cortes disponível na aba de :point_up: DEDO DURO")
+            containerLogin3.subheader("Tutoriais:", divider="gray")
+            containerLogin3.markdown("EM BREVE!")
+
+        with col2:
+            containerLogin2 = st.container(border=True)
+            containerLogin2.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/decisao.png', use_column_width=True)
+
+        with col1:
+            containerLogin1 = st.container(border=True)
+            containerLogin1.subheader("Dashboards e Decisões:", divider="gray")
+            containerLogin1.markdown("Existem três modelos de tomada de decisão: o racional, o intuitivo e o criativo.")
+            containerLogin1.markdown("Pensando no modelo racional, os Dashboards são uma ferramenta indispensável para a tomada de decisão:")
+            containerLogin1.markdown("1. Primeiramente defina o objetivo.")
+            containerLogin1.markdown("2. Busque por dados e informações, através dos diversos painéis disponíveis.")
+            containerLogin1.markdown("3. Realize um brainstorming de soluções. Em outras palavras: reúna a equipe para discutir possíveis soluções.")
+            containerLogin1.markdown("4. Escolha a melhor solução.")
+            containerLogin1.markdown("5. Por fim, crie um planejamento estratégico e mensure de resultados.")
+
+
+
     else:
         # ------------------ TELA DE LOGIN ------------------ #
         lc1, lc2, lc3 = st.columns([1, 0.5, 1])
         with lc2:
             st.title("LOGIN")
             st.success("Seu login está aprovado!")
+
+        st.divider()
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col3:
+            containerLogin3 = st.container(border=True)
+            containerLogin3.subheader("Novidades no Dashboard:", divider="gray")
+            containerLogin3.markdown("Painel de campanhas disponível na aba de :dollar: VENDA")
+            containerLogin3.markdown("Painel de cortes disponível na aba de :point_up: DEDO DURO")
+            containerLogin3.subheader("Tutoriais:", divider="gray")
+            containerLogin3.markdown("EM BREVE!")
+
+        with col2:
+            containerLogin2 = st.container(border=True)
+            containerLogin2.image('/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/decisao.png', use_column_width=True)
+
+        with col1:
+            containerLogin1 = st.container(border=True)
+            containerLogin1.subheader("Dashboards e Decisões:", divider="gray")
+            containerLogin1.markdown("Existem três modelos de tomada de decisão: o racional, o intuitivo e o criativo.")
+            containerLogin1.markdown("Pensando no modelo racional, os Dashboards são uma ferramenta indispensável para a tomada de decisão:")
+            containerLogin1.markdown("1. Primeiramente defina o objetivo.")
+            containerLogin1.markdown("2. Busque por dados e informações, através dos diversos painéis disponíveis.")
+            containerLogin1.markdown("3. Realize um brainstorming de soluções. Em outras palavras: reúna a equipe para discutir possíveis soluções.")
+            containerLogin1.markdown("4. Escolha a melhor solução.")
+            containerLogin1.markdown("5. Por fim, crie um planejamento estratégico e mensure de resultados.")
+
 
 with tabs[1]:
     if not st.session_state['buttons_pressed'][':dollar: VENDA']:
@@ -3872,7 +3925,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.05")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.06")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")

@@ -9,11 +9,11 @@
         (CASE WHEN VENDAS.CODUSUR = 160 THEN  800 -- Referente a verba solicitada 16-08-24
               WHEN VENDAS.CODUSUR = 2 THEN    (750 + 1120) -- Referente a verba solicitada 09-08-24 | Referente a verba solicitada 17-08-24
               WHEN VENDAS.CODUSUR = 141 THEN  200 -- SOLICITADO DIA 24-08-24
-              WHEN VENDAS.CODUSUR = 172 THEN  0 -- 
+              WHEN VENDAS.CODUSUR = 172 THEN  250 -- SOLICITADO DIA 30-08-24
               WHEN VENDAS.CODUSUR = 164 THEN  300 -- Solicitado pelo supervisor dia 21-08-24
               WHEN VENDAS.CODUSUR = 153 THEN  400 -- Solicitado pelo RCA 23-08-24
               WHEN VENDAS.CODUSUR = 150 THEN  300 -- Solicitado dia 23-08-24
-              WHEN VENDAS.CODUSUR = 159 THEN  0 -- 
+              WHEN VENDAS.CODUSUR = 159 THEN  100 -- SOLICITADO DIA 30-08-24
               
          ELSE 0 END) AS ABATIMENTOS, 
          0 AS TOTAL
