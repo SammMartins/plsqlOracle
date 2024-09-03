@@ -1,5 +1,6 @@
 # Módulos da bibliotecas Python
 from datetime import datetime, timedelta
+from turtle import left
 from dateutil.relativedelta import relativedelta
 import math
 import time as tm
@@ -109,6 +110,9 @@ with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/button2.css', "r"
 with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/divider1.css', "r") as file:
     cssDivider = file.read()  
 
+with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/title1.css', "r") as file:
+    cssTitle1 = file.read()  
+
 # ----------------------- Dashboard Layout ----------------------- #
 tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
 
@@ -118,7 +122,7 @@ with tabs[0]:
         # ------------------ TELA DE LOGIN ------------------ #
         lc1, lc2, lc3 = st.columns([1, 0.5, 1])
         with lc2:
-            st.title("LOGIN")
+            st.title("LOGIN", anchor = False)
             usernameSemTratar = st_keyup("Usuário", max_chars = 20)
             passwordSemTratar = st_keyup("Senha", type="password", max_chars = 14)
 
@@ -188,7 +192,7 @@ with tabs[0]:
         # ------------------ TELA DE LOGIN ------------------ #
         lc1, lc2, lc3 = st.columns([1, 0.5, 1])
         with lc2:
-            st.title("LOGIN")
+            st.title("LOGIN", anchor = False)
             st.success("Seu login está aprovado!")
 
         st.divider()
@@ -223,7 +227,7 @@ with tabs[1]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
         with c2:
-            st.title("PAINEL DE VENDAS")
+            st.title("PAINEL DE VENDAS", anchor = False)
             st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
             st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
             if 'control' in st.session_state and st.session_state['control'] >= 5:
@@ -235,7 +239,7 @@ with tabs[1]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/1358/1358684.png', width=180)
         with c2:
-            st.title("PAINEL DE VENDAS")
+            st.title("PAINEL DE VENDAS", anchor = False)
             st.markdown(":page_with_curl: Faturado e não faturado semelhante a rotina 322 Winthor Totvs")
             st.markdown(":iphone: Apenas pedidos digitados pelo vendedor são exibidos")
             if 'control' in st.session_state and st.session_state['control'] >= 5:
@@ -249,7 +253,7 @@ with tabs[2]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
         with c2:
-            st.title("RELATÓRIO FLASH")
+            st.title("RELATÓRIO FLASH", anchor = False)
             st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
             st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
             if 'control' in st.session_state and st.session_state['control'] >= 5:
@@ -261,7 +265,7 @@ with tabs[2]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/7890/7890470.png', width=180)
         with c2:
-            st.title("RELATÓRIO FLASH")
+            st.title("RELATÓRIO FLASH", anchor = False)
             st.markdown(":rocket: Um painel completo sobre seu :blue[desempenho] de vendas")
             st.markdown(":moneybag: Tenha controle sobre sua :green[remuneração] mensal")
             if 'control' in st.session_state and st.session_state['control'] >= 5:
@@ -275,7 +279,7 @@ with tabs[3]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
         with c2:
-            st.title("CONSULTAR META")
+            st.title("CONSULTAR META", anchor = False)
             st.markdown("Painel destinado a :blue[CONSULTA] das metas")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 5:
@@ -287,7 +291,7 @@ with tabs[3]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/8213/8213190.png', width=180)
         with c2:
-            st.title("CONSULTAR META")
+            st.title("CONSULTAR META", anchor = False)
             st.markdown("Painel destinado a :blue[CONSULTA] das metas")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 5:
@@ -301,7 +305,7 @@ with tabs[4]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/5434/5434400.png', width=180)
         with c2:
-            st.title("RELATÓRIO CLIENTES")
+            st.title("RELATÓRIO CLIENTES", anchor = False)
             st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 5:            
@@ -313,7 +317,7 @@ with tabs[4]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/5434/5434400.png', width=180)
         with c2:
-            st.title("RELATÓRIO CLIENTES")
+            st.title("RELATÓRIO CLIENTES", anchor = False)
             st.markdown("Painel destinado a :blue[análise detalhada] dos principais clientes")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 5:            
@@ -327,7 +331,7 @@ with tabs[5]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/1649/1649628.png', width=180)
         with c2:
-            st.title("CONSULTAR VERBA")
+            st.title("CONSULTAR VERBA", anchor = False)
             st.markdown("Painel destinado a consultar :green[VERBAS]")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 5:                     
@@ -339,7 +343,7 @@ with tabs[5]:
         with c1:
             st.image('https://cdn-icons-png.flaticon.com/512/1649/1649628.png', width=180)
         with c2:
-            st.title("CONSULTAR VERBA")
+            st.title("CONSULTAR VERBA", anchor = False)
             st.markdown("Painel destinado a consultar :green[VERBAS]")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 5:                     
@@ -353,7 +357,7 @@ with tabs[6]:
         with colum1:
             st.image('https://cdn-icons-png.flaticon.com/512/4380/4380709.png', width=180)
         with colum2:    
-            st.title(":point_up: DEDO DURO")
+            st.title(":point_up: DEDO DURO", anchor = False)
             st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 3:                  
@@ -365,7 +369,7 @@ with tabs[6]:
         with colum1:
             st.image('https://cdn-icons-png.flaticon.com/512/4380/4380709.png', width=180)
         with colum2:    
-            st.title(":point_up: DEDO DURO")
+            st.title(":point_up: DEDO DURO", anchor = False)
             st.markdown("Painel destinado a apontar :red[ERROS] e :red[PROBLEMAS] diversos")
             st.markdown("<br>", unsafe_allow_html=True)
             if 'control' in st.session_state and st.session_state['control'] >= 3:                  
@@ -406,7 +410,7 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
             dias_decor_result = str(diasDecorridos()).split()[-1]
         # -------------------------------- GERENCIAL -------------------------------- # -------------------------------- #
         with aba2_1:
-            st.title(":building_construction: :red[Painel em construção]")
+            st.title(":building_construction: :red[Painel em construção]", anchor = False)
         # -------------------------------- SUPERVISOR -------------------------------- # -------------------------------- #
         with aba2_2:
             col1, col2, col3, col4 = st.columns([1.1, 1, 1, 1.60])
@@ -2232,7 +2236,7 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
         aba4_1, aba4_2 = st.tabs([':convenience_store: GERAL', ':man: POR VENDEDOR'])
         # --------------------------------- GERAL --------------------------------- #
         with aba4_1:
-            st.header(":top: 100 CLIENTES")
+            st.header(":top: 100 CLIENTES", anchor=False)
             dtIni = datetime.today() - timedelta(days=60)
             dtIni = dtIni.strftime("%d/%m/%Y")
             st.caption(" - " + ":blue[60] DIAS CORRIDOS:" + f" :blue[{dtIni}] ATÉ HOJE")
@@ -2604,7 +2608,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
         aba6_1, aba6_2, aba6_3, aba6_4, aba6_5, aba6_6 = st.tabs([":warning: Erros", ":pencil: Pedidos", ":small_red_triangle_down: Devoluções", ":rotating_light: Inadimplência", ":package: Estoque", ":x: Sem Compra"])
         # ---------- ERROS ---------- #
         with aba6_1:
-            st.header(":warning: Erros Diversos")
+            st.header(":warning: Erros Diversos", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 st.divider()
@@ -2654,7 +2658,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ---------- Pedidos -------- #
         with aba6_2:
-            st.header(":pencil: Supervisão de Pedidos")
+            st.header(":pencil: Supervisão de Pedidos", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 pedCont_result = pedCont()
@@ -2720,7 +2724,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ---------- Devoluções ----- #
         with aba6_3:
-            st.header(":small_red_triangle_down: Devoluções por período")
+            st.header(":small_red_triangle_down: Devoluções por período", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 subcoluna1, subcoluna2, subcoluna3, subcoluna4 = st.columns([0.5, 0.5, 1, 1])
@@ -2820,7 +2824,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ---------------------------- Inadimplência ---------------------------- #
         with aba6_4:
-            st.header(":rotating_light: Inadimplência por Cliente")
+            st.header(":rotating_light: Inadimplência por Cliente", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 st.divider()
@@ -3037,7 +3041,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ---------- Estoque ---------- #
         with aba6_5:
-            st.header(":package: Estoque Gerencial")
+            st.header(":package: Estoque Gerencial", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO SOBRE ESTOQUE :point_down:", expanded=True):
                 st.divider()
@@ -3458,7 +3462,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
         # ---------- SEM COMPRA ---------- #
         with aba6_6:
-            st.header(":x: Clientes Sem Compra")
+            st.header(":x: Clientes Sem Compra", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
                 col1, col2, col3, col4, col5 = st.columns([1, 1, 1.1, 1, 1])
@@ -3901,31 +3905,58 @@ elif st.session_state['active_tab'] == ':dart: META':
 elif st.session_state['active_tab'] == ':notebook:':
     with tabs[7]:
         with st.spinner('Carregando dados...'): 
-            tm.sleep(10)
-            result = campanhaDanone()
-            st.table(result)
-            c1, c2, c3 = st.columns([2,0.75,2])
-            with c2:
-                if st.button('GERAR EXCEL 1'): # ---- Convertendo para Excel
-                    st.markdown(getTableXls(result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                    st.toast('Gerando arquivo Excel...')
-                    tm.sleep(.5)
             st.divider()
-            tm.sleep(10)
-            result2 = campanhaYoPRO()
-            st.dataframe(result2, hide_index=True)
-            c1, c2, c3 = st.columns([2,0.75,2])
-            with c2:
-                if st.button('GERAR EXCEL 2'): # ---- Convertendo para Excel
-                    st.markdown(getTableXls(result2), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-                    st.toast('Gerando arquivo Excel...')
-                    tm.sleep(.5)
+
+            col_header = st.columns(1, gap="small", vertical_alignment="center")
+            with col_header[0]:
+                st.subheader("RANKING DE VENDAS POR REPRESENTANTE", anchor=False)
+            
+
+            left0, center0, right0 = st.columns([0.5, 0.5, 1], gap="small", vertical_alignment="top")
+            
+            with left0:
+                with stylable_container(key="left0", css_styles = cssDivider):
+                    divider = st.divider() 
+                    
+            with center0:
+                with stylable_container(key="left0", css_styles = cssDivider):
+                    divider = st.divider() 
+
+            with right0:
+                container_metric = st.container(border=True)
+
+                left1, center1, right1 = container_metric.columns([0.5, 0.5, 1], gap="small", vertical_alignment="top")
+
+                left1.metric("VENDAS", "R$ 1.000,00")
+                    
+
+
+          
+#            tm.sleep(10)
+#            result = campanhaDanone()
+#            st.table(result)
+#            c1, c2, c3 = st.columns([2,0.75,2])
+#            with c2:
+#                if st.button('GERAR EXCEL 1'): # ---- Convertendo para Excel
+#                    st.markdown(getTableXls(result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+#                    st.toast('Gerando arquivo Excel...')
+#                    tm.sleep(.5)
+#            st.divider()
+#            tm.sleep(10)
+#            result2 = campanhaYoPRO()
+#            st.dataframe(result2, hide_index=True)
+#            c1, c2, c3 = st.columns([2,0.75,2])
+#            with c2:
+#                if st.button('GERAR EXCEL 2'): # ---- Convertendo para Excel
+#                    st.markdown(getTableXls(result2), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
+#                    st.toast('Gerando arquivo Excel...')
+#                    tm.sleep(.5)
 
 
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.06")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.07")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
