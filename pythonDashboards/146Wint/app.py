@@ -3907,31 +3907,82 @@ elif st.session_state['active_tab'] == ':notebook:':
         with st.spinner('Carregando dados...'): 
             st.divider()
 
-            col_header = st.columns(1, gap="small", vertical_alignment="center")
-            with col_header[0]:
-                st.subheader("RANKING DE VENDAS POR REPRESENTANTE", anchor=False)
-            
+            col_header, col_mm, col_yy = st.columns([1, 0.15, 0.15], gap="small", vertical_alignment="center")
+            col_header.subheader("RANKING DE VENDAS POR REPRESENTANTE", anchor=False)
+            col_mm.selectbox(":calendar: MÊS", ("JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"), index=0, key='mes_7', help="Selecione o mês desejado", placeholder=":calendar: Mês", label_visibility="visible")
+            col_yy.number_input(":calendar: ANO", value=2024, help="Selecione o ano desejado", placeholder=":calendar: Ano", step=1, min_value=2023, max_value=2024, key='ano_7', label_visibility="visible")
 
-            left0, center0, right0 = st.columns([0.5, 0.5, 1], gap="small", vertical_alignment="top")
+            st.markdown("<br>", unsafe_allow_html=True)
             
+            left0, right0 = st.columns([0.7, 1.3], gap="small", vertical_alignment="top")
+                    
             with left0:
-                with stylable_container(key="left0", css_styles = cssDivider):
-                    divider = st.divider() 
+                container_metric = st.container(border=False)
+                left1, right1 = container_metric.columns([1, 1], gap="small", vertical_alignment="top")
+
+                du = 21 # diasUteis().values[0][0]
+                dd = 4 # diasDecorridos().values[0][0]
+                dias_uteis_result = str(du) # str(diasUteis()).split()[-1]
+                dias_decor_result = str(dd) # str(diasDecorridos()).split()[-1]
+                velocidade = dd / du
+                velStr = str(math.floor(velocidade * 100)) 
+                right1.markdown("<br>", unsafe_allow_html=True)
+                right1.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
+                right1.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
+                right1.markdown(velStr + "% - VELOCIDADE", unsafe_allow_html=False, help="Velocidade de vendas realizadas no mês.")
+
+                if (velocidade == 0):
+                    left1.image(path + 'Imagens/0porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0 and velocidade <= 0.10):
+                    left1.image(path + 'Imagens/10porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.10 and velocidade <= 0.20):
+                    left1.image(path + 'Imagens/20porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.20 and velocidade <= 0.30):
+                    left1.image(path + 'Imagens/30porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.30 and velocidade <= 0.40):
+                    left1.image(path + 'Imagens/40porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.40 and velocidade <= 0.50):
+                    left1.image(path + 'Imagens/50porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.50 and velocidade <= 0.60):
+                    left1.image(path + 'Imagens/60porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.60 and velocidade <= 0.70):
+                    left1.image(path + 'Imagens/70porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.70 and velocidade <= 0.80):
+                    left1.image(path + 'Imagens/80porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.80 and velocidade <= 0.90):
+                    left1.image(path + 'Imagens/90porcent.png', width=200, caption='VELOCIDADE')
+                elif (velocidade > 0.90 and velocidade <= 1):
+                    left1.image(path + 'Imagens/100porcent.png', width=200, caption='VELOCIDADE')
+
+
+                with right0:
+                    right0.markdown("<br>", unsafe_allow_html=True)
+                    container_metric = st.container(border=False)
+                    left1, center_left1, center_right1, right1 = container_metric.columns([1.1, 1.1, 0.7, 1.1], gap="small", vertical_alignment="top")
+
+                    # Conteúdo da coluna da esquerda
+                    container_left1 = left1.container(border=True)
+                    venda_total = 250000
+                    container_left1.metric(":moneybag: VENDAS", f"R${venda_total:.0f}")
+
+                    # Conteúdo da coluna central esquerda
+                    container_center_left1 = center_left1.container(border=True)
+                    meta_total = 1000000
+                    container_center_left1.metric(":dart: META", f"R${meta_total:.0f}")
+
+                    # Conteúdo da coluna central direita
+                    container_center_right1 = center_right1.container(border=True)
+                    porcent_total = venda_total / meta_total
+                    container_center_right1.metric("% REALIZADO", f"{porcent_total:.0%}")
+
+                    # Conteúdo da coluna da direita
+                    container_right1 = right1.container(border=True)
+                    necessidade = (meta_total - venda_total)
+                    container_right1.metric(":warning: GAP", f"R${necessidade}")
+
+
                     
-            with center0:
-                with stylable_container(key="left0", css_styles = cssDivider):
-                    divider = st.divider() 
 
-            with right0:
-                container_metric = st.container(border=True)
-
-                left1, center1, right1 = container_metric.columns([0.5, 0.5, 1], gap="small", vertical_alignment="top")
-
-                left1.metric("VENDAS", "R$ 1.000,00")
-                    
-
-
-          
 #            tm.sleep(10)
 #            result = campanhaDanone()
 #            st.table(result)
