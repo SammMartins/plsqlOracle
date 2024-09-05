@@ -8,6 +8,7 @@ from matplotlib.pylab import f
 import numpy as np
 from configparser import ConfigParser
 from typing import Final
+import random
 
 # Módulos Python para Dashboards e outros usos
 import numpy as np
@@ -112,6 +113,9 @@ with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/divider1.css', "r
 
 with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/title1.css', "r") as file:
     cssTitle1 = file.read()  
+
+with open('/home/ti_premium/PyDashboards/PremiumDashboards/css/metric1.css', "r") as file:
+    cssMetric1 = file.read()  
 
 # ----------------------- Dashboard Layout ----------------------- #
 tabs = st.tabs([":beginner: INÍCIO", ":dollar: VENDA", ":bar_chart: FLASH", ":dart: META", ":department_store: CLIENTES", ":bank: VERBAS", ":point_up: DEDO DURO", ":notebook:"])
@@ -3907,78 +3911,161 @@ elif st.session_state['active_tab'] == ':notebook:':
         with st.spinner('Carregando dados...'): 
             st.divider()
 
-            col_header, col_mm, col_yy = st.columns([1, 0.15, 0.15], gap="small", vertical_alignment="center")
+            col_header, col_mm, col_yy = st.columns([1, 0.20, 0.20], gap="small", vertical_alignment="center")
             col_header.subheader("RANKING DE VENDAS POR REPRESENTANTE", anchor=False)
             col_mm.selectbox(":calendar: MÊS", ("JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"), index=0, key='mes_7', help="Selecione o mês desejado", placeholder=":calendar: Mês", label_visibility="visible")
             col_yy.number_input(":calendar: ANO", value=2024, help="Selecione o ano desejado", placeholder=":calendar: Ano", step=1, min_value=2023, max_value=2024, key='ano_7', label_visibility="visible")
 
-            st.markdown("<br>", unsafe_allow_html=True)
             
-            left0, right0 = st.columns([0.7, 1.3], gap="small", vertical_alignment="top")
+            left0, right0 = st.columns([0.6, 1.4], gap="small", vertical_alignment="top")
                     
             with left0:
                 container_metric = st.container(border=False)
                 left1, right1 = container_metric.columns([1, 1], gap="small", vertical_alignment="top")
 
-                du = 21 # diasUteis().values[0][0]
-                dd = 4 # diasDecorridos().values[0][0]
+                du = random.randint(19, 22) # diasUteis().values[0][0]
+                dd = random.randint(1, 19) # diasDecorridos().values[0][0]
                 dias_uteis_result = str(du) # str(diasUteis()).split()[-1]
                 dias_decor_result = str(dd) # str(diasDecorridos()).split()[-1]
                 velocidade = dd / du
                 velStr = str(math.floor(velocidade * 100)) 
-                right1.markdown("<br>", unsafe_allow_html=True)
                 right1.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
                 right1.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
                 right1.markdown(velStr + "% - VELOCIDADE", unsafe_allow_html=False, help="Velocidade de vendas realizadas no mês.")
 
                 if (velocidade == 0):
-                    left1.image(path + 'Imagens/0porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/0porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0 and velocidade <= 0.10):
-                    left1.image(path + 'Imagens/10porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/10porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.10 and velocidade <= 0.20):
-                    left1.image(path + 'Imagens/20porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/20porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.20 and velocidade <= 0.30):
-                    left1.image(path + 'Imagens/30porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/30porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.30 and velocidade <= 0.40):
-                    left1.image(path + 'Imagens/40porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/40porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.40 and velocidade <= 0.50):
-                    left1.image(path + 'Imagens/50porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/50porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.50 and velocidade <= 0.60):
-                    left1.image(path + 'Imagens/60porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/60porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.60 and velocidade <= 0.70):
-                    left1.image(path + 'Imagens/70porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/70porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.70 and velocidade <= 0.80):
-                    left1.image(path + 'Imagens/80porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/80porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.80 and velocidade <= 0.90):
-                    left1.image(path + 'Imagens/90porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/90porcent.png', width=150, caption='VELOCIDADE')
                 elif (velocidade > 0.90 and velocidade <= 1):
-                    left1.image(path + 'Imagens/100porcent.png', width=200, caption='VELOCIDADE')
+                    left1.image(path + 'Imagens/100porcent.png', width=150, caption='VELOCIDADE')
 
 
                 with right0:
-                    right0.markdown("<br>", unsafe_allow_html=True)
                     container_metric = st.container(border=False)
-                    left1, center_left1, center_right1, right1 = container_metric.columns([1.1, 1.1, 0.7, 1.1], gap="small", vertical_alignment="top")
+                    left1, center_left1, center_right1, right1 = container_metric.columns([1, 1, 0.7, 1], gap="small", vertical_alignment="top")
 
                     # Conteúdo da coluna da esquerda
                     container_left1 = left1.container(border=True)
-                    venda_total = 250000
-                    container_left1.metric(":moneybag: VENDAS", f"R${venda_total:.0f}")
+                    meta_total = random.randint(600000, 1000000)
+                    with stylable_container(key="METRIC2",css_styles = cssMetric1):
+                        container_left1.metric(":dart: META", format_number(meta_total))
 
                     # Conteúdo da coluna central esquerda
                     container_center_left1 = center_left1.container(border=True)
-                    meta_total = 1000000
-                    container_center_left1.metric(":dart: META", f"R${meta_total:.0f}")
+                    venda_total = random.randint(1000, 1000000)
+                    with stylable_container(key="METRIC1",css_styles = cssMetric1):
+                        container_center_left1.metric(":moneybag: VENDAS", format_number(venda_total))
 
                     # Conteúdo da coluna central direita
                     container_center_right1 = center_right1.container(border=True)
-                    porcent_total = venda_total / meta_total
-                    container_center_right1.metric("% REALIZADO", f"{porcent_total:.0%}")
+                    porcent_total = int((venda_total / meta_total) * 100)
+                    with stylable_container(key="METRIC3",css_styles = cssMetric1):
+                        container_center_right1.metric("% META", f"{porcent_total}%")
 
                     # Conteúdo da coluna da direita
                     container_right1 = right1.container(border=True)
                     necessidade = (meta_total - venda_total)
-                    container_right1.metric(":warning: GAP", f"R${necessidade}")
+                    if necessidade < 0:
+                        with stylable_container(key="METRIC4",css_styles = cssMetric1):
+                            necessidade = necessidade * - 1
+                            container_right1.metric(":white_check_mark: SUPERÁVIT", format_number(necessidade))
+                    else:
+                        with stylable_container(key="METRIC4",css_styles = cssMetric1):
+                            container_right1.metric(":warning: GAP", format_number(necessidade))
+
+            st.divider()
+            left2, right2 = st.columns([0.75, 1.25], gap="small", vertical_alignment="top")
+
+            with left2:
+                sup_dataframe = pd.DataFrame(
+                    {
+                        "name": ["VILMAR JR", "ADAILTON", "JOSUÉ"],
+                        "realizado": [int(venda_total / 3) for _ in range(3)],
+                        "venda": [int(venda_total / 3) for _ in range(3)],
+                        "meta": [int(meta_total / 3) for _ in range(3)],
+                    }
+                )
+
+                st.write("Vendas vs Meta por Supervisor")
+                st.dataframe(
+                    sup_dataframe,
+                    column_config={
+                        "name": "Supervisor",
+                        "realizado": st.column_config.ProgressColumn(
+                            "Realizado",
+                            help="Porcentagem de vendas realizadas em relação à meta",
+                            format ="R$%.0f",
+                            min_value=0,
+                            max_value=int(meta_total / 3),
+                        ),
+                        "venda": st.column_config.NumberColumn(
+                            "Vendas",
+                            # formartar para moeda com 0 casas decimais
+                            format ="R$%.0f",
+                            help="Total de vendas realizadas"
+                        ),
+                        "meta": st.column_config.NumberColumn(
+                            "Meta",
+                            format ="R$%.0f",
+                            help="Total de vendas esperadas"
+                        ),
+                    },
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            with right2:
+                sup_dataframe = pd.DataFrame(
+                    {
+                        "name": ["LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"],
+                        "realizado": [int((venda_total / 3) / 24) for _ in range(24)],
+                        "venda": [int((venda_total / 3) / 24) for _ in range(24)],
+                        "meta": [int((meta_total / 3) / 24) for _ in range(24)]
+                    }
+                )
+
+                st.write("Vendas vs Meta por Vendedor")
+                st.dataframe(
+                    sup_dataframe,
+                    column_config={
+                        "name": "Supervisor",
+                        "realizado": st.column_config.ProgressColumn(
+                            "Realizado",
+                            help="Porcentagem de vendas realizadas em relação à meta",
+                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            min_value=0,
+                            max_value=int((meta_total / 3) / 24),
+                        ),
+                        "venda": st.column_config.NumberColumn(
+                            "Vendas",
+                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            help="Total de vendas realizadas"
+                        ),
+                        "meta": st.column_config.NumberColumn(
+                            "Meta",
+                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            help="Total de vendas esperadas"
+                        ),
+                    },
+                    hide_index=True,
+                )
 
 
                     
