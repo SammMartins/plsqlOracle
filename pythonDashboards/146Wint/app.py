@@ -1766,18 +1766,19 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         campanhaGulaoSup_result = campanhaGulaoSup_result[cols]
 
                         campanhaGulaoSup_result["%"] = campanhaGulaoSup_result.apply(
-                            lambda row: f"{int((row['DN'] / row['BASE']) * 100)}%", axis=1
+                            lambda row: f"{int((row['DN'] / row['BASE']) * 100)}%" if row['BASE'] != 0 else "0%", axis=1
                         )
 
-
                         campanhaGulaoSup_result["R$"] = campanhaGulaoSup_result.apply(
-                            lambda row: 325 if int((row['DN'] / row['BASE']) * 100) >= 55 else
-                                        300 if int((row['DN'] / row['BASE']) * 100) >= 50 else
-                                        275 if int((row['DN'] / row['BASE']) * 100) >= 45 else
-                                        250 if int((row['DN'] / row['BASE']) * 100) >= 40 else
-                                        225 if int((row['DN'] / row['BASE']) * 100) >= 35 else
-                                        200 if int((row['DN'] / row['BASE']) * 100) >= 30 else
-                                        0, axis=1
+                            lambda row: (
+                                325 if row['BASE'] != 0 and int((row['DN'] / row['BASE']) * 100) >= 55 else
+                                300 if row['BASE'] != 0 and int((row['DN'] / row['BASE']) * 100) >= 50 else
+                                275 if row['BASE'] != 0 and int((row['DN'] / row['BASE']) * 100) >= 45 else
+                                250 if row['BASE'] != 0 and int((row['DN'] / row['BASE']) * 100) >= 40 else
+                                225 if row['BASE'] != 0 and int((row['DN'] / row['BASE']) * 100) >= 35 else
+                                200 if row['BASE'] != 0 and int((row['DN'] / row['BASE']) * 100) >= 30 else
+                                0
+                            ), axis=1
                         )
 
 
