@@ -29,9 +29,16 @@ BASE AS (SELECT c.CODUSUR1, COUNT(DISTINCT(c.CODCLI)) BASE
          GROUP BY c.CODUSUR1
          ORDER BY c.CODUSUR1)
 -----------------------------------------------------------------------------------------------------------------------
-SELECT U.codsupervisor, f.codusur || ' - ' || 
+SELECT U.codsupervisor, 
+       (CASE WHEN U.codsupervisor = 2 THEN 'MARCELO'
+             WHEN U.codsupervisor = 8 THEN 'VILMAR JR'
+             WHEN U.codsupervisor = 9 THEN 'JOSEAN'
+             ELSE 'DESCONHECIDO' END) AS SUPERVISOR,
+        f.codusur || ' - ' || 
        SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) AS RCA,
-       NVL(f.valor,0), NVL(D.DN,0), b.base
+       NVL(f.valor,0) VALOR, 
+       NVL(D.DN,0) DN, 
+       b.base
 FROM FAT F
 JOIN DN D on d.codusur = f.codusur
 JOIN pontual.pcusuari u on u.codusur = f.codusur

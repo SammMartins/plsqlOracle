@@ -460,9 +460,9 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                     st.image(path + 'Imagens/100porcent.png', width=200, caption='VELOCIDADE')
 
             with col3:
-                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                if supName == "ADAILTON":
-                    supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,),index=0, key='adailton', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
+                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("MARCELO", "VILMAR JR"), index=0, key='sup', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                if supName == "MARCELO":
+                    supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,),index=0, key='MARCELO', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
                 elif supName == "VILMAR JR":
                     supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (8,),index=0, key='vilmar', help="Código de Supervisor preenchido com base no nome selecionado acima", placeholder="", disabled=True, label_visibility="visible")
                 else:
@@ -1715,7 +1715,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
             tm.sleep(1)
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
-        aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Geral", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":money_with_wings: Campanhas"])
+        aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Resumo", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":money_with_wings: Campanhas"])
 
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
         with aba1_5: # Campanhas
@@ -1750,7 +1750,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         })
 
                         supervisor_map = {
-                            2: "ADAILTON",
+                            2: "MARCELO",
                             8: "VILMAR JR"
                         }
                         
@@ -1817,177 +1817,62 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
     
         # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_1:
-            container = st.container(border=True)
-            coluna1, coluna2, coluna3 = st.columns([0.6,0.5,1])
-            col1, col2, col3 = st.columns([1, 1, 2])
-            with container:
-                with coluna1:
-                    subcoluna1, subcoluna2 = st.columns(2)
-                    with subcoluna1:
-                        dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend1')
-                    with subcoluna2:
-                        dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_vend2')
-                with coluna2:
-                    df2_result = df2(dataIni, dataFim)
-                    if df2_result.empty:
-                        st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
-                    else:
-                        sup_filtro = st.multiselect(
-                            ":male-office-worker: Escolha o Supervisor", 
-                            df2_result[0].unique(), 
-                            key='tabela_vend3'
+            with st.expander("RESUMO DE VENDAS", expanded=True):
+                subcoluna1, subcoluna2, subcoluna3 = st.columns([0.5, 0.5, 2])
+                with subcoluna1:
+                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD-MM-YYYY', key='DEV1')
+                with subcoluna2:
+                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD-MM-YYYY', key='DEV2')
+                
+                with subcoluna3:
+                    vendasRca_result = df2(dataIni, dataFim)
+                    vendasRca_result = vendasRca_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
+                    0: "CODSUP",
+                    1: "SUP",
+                    2: "RCA",
+                    3: "VALOR",
+                    4: "DN",
+                    5: "BASE"
+                    })
+                    selected_sup = st.multiselect("Filtro Supervisor", options = vendasRca_result['SUP'].unique().tolist(), default = vendasRca_result['SUP'].unique().tolist(), placeholder="Filtro de Supervisor", help="Selecione o supervisor")
+                    filtrado_vendasRca_result = vendasRca_result[vendasRca_result['SUP'].isin(selected_sup)]
+                
+                st.divider()
+                
+                c1, c2 = st.columns([0.7, 1.3])
+                with c1:
+                    vendasSup_result = filtrado_vendasRca_result.groupby(["CODSUP", "SUP"])[["VALOR", "DN", "BASE"]].sum().reset_index().sort_values(by='VALOR', ascending=False)
+                    vendasSup_result = vendasSup_result.drop(columns=["CODSUP", "BASE"])
+                    st.dataframe(vendasSup_result, hide_index=True, column_config={
+                        "VALOR": st.column_config.NumberColumn(
+                            "VALOR",
+                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            help="Total de vendas"
+                        ),
+                        "DN": st.column_config.NumberColumn(
+                            "DN",
+                            format ="%.0f", 
+                            help="Positivação de PDV's (clientes)"
                         )
-                with coluna3:
-                    c1, c2 = st.columns([0.5, 1])
-                    with c1:
-                        st.markdown("<br>", unsafe_allow_html=True)
+                    })
 
-                        dfStyle = st.toggle(":red[Modo Tabela]", help="Selecione para exibir valores em formato de tabela")
-                    with c2:
-                        st.markdown("<br>", unsafe_allow_html=True)
-                        # --------------- Modo Tabela --------------- #
-                        if st.button("Carregar Dados", key='tabela_vend'):
-                            if dfStyle:
-                                with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                                    df1_result = df1(dataIni, dataFim)
-                                    df2_result = df2(dataIni, dataFim)
+                with c2:
+                    filtrado_vendasRca_result = filtrado_vendasRca_result.drop(columns=["CODSUP", "SUP", "BASE"])
+                    st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
+                        "VALOR": st.column_config.NumberColumn(
+                            "VALOR",
+                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            help="Total de vendas"
+                        ),
+                        "DN": st.column_config.NumberColumn(
+                            "DN",
+                            format ="%.0f", 
+                            help="Positivação de PDV's (clientes)"
+                        )
+                    })
 
-                                if sup_filtro and len(sup_filtro) < 2:
-                                    formatarMoeda = ["VENDIDO"]
+            
 
-                                    df1_result = df1_result[df1_result[3].isin(sup_filtro)]
-                                    df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
-                                        0: "SUPERVISOR",
-                                        1: "VENDIDO",
-                                        2: "DN"
-                                    })
-                                    
-                                    
-                                    df2_result = df2_result[df2_result[0].isin(sup_filtro)]
-                                    df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
-                                        0: "SUP",
-                                        1: "VENDEDOR",
-                                        2: "VENDIDO",
-                                        3: "DN",
-                                        4: "BASE"
-                                    })
-                                    df2_result = df2_result.drop(columns=["SUP", "BASE"])
-
-                                    for coluna in formatarMoeda:
-                                        df1_result[coluna] = df1_result[coluna].apply(format_number)
-                                        df2_result[coluna] = df2_result[coluna].apply(format_number)
-                                    
-                                    with col1:
-                                        st.dataframe(df1_result, hide_index=True)
-                                        st.dataframe(df2_result, hide_index=True)
-                                else:
-                                    formatarMoeda = ["VENDIDO"]
-
-                                    df1_result = df1_result.iloc[:, [0, 1, 2,]].rename(columns={
-                                        0: "SUPERVISOR",
-                                        1: "VENDIDO",
-                                        2: "DN"
-                                    })
-                                    subtotal = df1_result[["VENDIDO", "DN"]].sum()
-                                    subtotal_df = pd.DataFrame(subtotal).transpose()
-                                    subtotal_df.index = ["total"]
-                                    subtotal_df["SUPERVISOR"] = "Total"
-                                    df1_result = pd.concat([df1_result, subtotal_df])
-                                    
-                                    df2_result = df2_result.iloc[:, [0, 1, 2, 3, 4]].rename(columns={
-                                        0: "SUP",
-                                        1: "VENDEDOR",
-                                        2: "VENDIDO",
-                                        3: "DN",
-                                        4: "BASE"
-                                    })
-                                    df2_result = df2_result.drop(columns=["SUP", "BASE"])
-
-                                    for coluna in formatarMoeda:
-                                        df1_result[coluna] = df1_result[coluna].apply(format_number)
-                                        df2_result[coluna] = df2_result[coluna].apply(format_number)
-
-                                    with col1:
-                                        st.dataframe(df1_result, hide_index=True)
-                                        st.dataframe(df2_result, hide_index=True)
-
-
-                            # --------------- Modo Metric --------------- #
-                            else:
-                                with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                                    df1_result = df1(dataIni, dataFim)
-                                    df2_result = df2(dataIni, dataFim)
-
-                                # -------- Tabela de Vendas por Supervisor --------
-                                if sup_filtro:
-                                    df1_result = df1_result[df1_result[3].isin(sup_filtro)]
-                                    with coluna1: 
-                                        for i in (df1_result[0]):
-                                            st.metric("Supervisor", i)
-                                    with coluna2: 
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            for i in df1_result[1]:
-                                                st.metric("VENDIDO", format_number(i))
-                                        with subcol2:
-                                            for i in df1_result[2]:
-                                                st.metric("DN", i)
-                                    if len(sup_filtro) > 1:
-                                        with coluna1: 
-                                            st.metric("Total", 'TOTAL')
-                                        with coluna2: 
-                                            subcol1, subcol2 = st.columns([2,1])
-                                            with subcol1:
-                                                st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
-                                            with subcol2:
-                                                st.metric("TOTAL DN", df1_result[2].sum())
-                                else:
-                                    with coluna1: 
-                                        for i in (df1_result[0]):
-                                            st.metric("Supervisor", i)
-                                    with coluna2: 
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            for i in df1_result[1]:
-                                                st.metric("VENDIDO", format_number(i))
-                                        with subcol2:
-                                            for i in df1_result[2]:
-                                                st.metric("DN", i)
-                                    with coluna1: 
-                                        st.metric("Total", 'TOTAL')
-                                    with coluna2: 
-                                            subcol1, subcol2 = st.columns([2,1])
-                                            with subcol1:
-                                                st.metric("TOTAL VENDIDO", format_number(df1_result[1].sum()))
-                                            with subcol2:
-                                                st.metric("TOTAL DN", df1_result[2].sum())
-                                
-                                # ----------------- Tabela de Vendas por RCA -----------------
-                                if sup_filtro:
-                                    df2_result = df2_result[df2_result[0].isin(sup_filtro)]
-                                    with coluna1:
-                                        for i in df2_result[1]:
-                                            st.metric("RCA", i)
-                                    with coluna2:
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            for i in df2_result[2]:
-                                                st.metric("VENDIDO", format_number(i))
-                                        with subcol2:
-                                            for i in df2_result[3]:
-                                                st.metric("DN", i)
-                                else:
-                                    with coluna1:
-                                        for i in df2_result[1]:
-                                            st.metric("RCA", i)
-                                    with coluna2:
-                                        subcol1, subcol2 = st.columns([2,1])
-                                        with subcol1:
-                                            for i in df2_result[2]:
-                                                st.metric("VENDIDO", format_number(i))
-                                        with subcol2:
-                                            for i in df2_result[3]:
-                                                st.metric("DN", i)                                                
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_2:
             st.markdown("Legenda:")
@@ -2252,10 +2137,10 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
                 # --------------------- Cabeçalho de itens ---------------------
                 col1, col2, col3, col4 = st.columns([1, 1, 2, 0.55])
                 with col1:
-                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_3', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                    if supName == "ADAILTON":
+                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='sup_3', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                    if supName == "MARCELO":
                         with col2:
-                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_3', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_3', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             supOffOn = "IN"     # -- Está em 2
                     elif supName == "VILMAR JR":
                         with col2:
@@ -2334,10 +2219,10 @@ elif st.session_state['active_tab'] == ':department_store: CLIENTES':
                 # --------------------- Cabeçalho de itens ---------------------
                 col1, col2, col3, col4 = st.columns([1, 1, 2, 0.55])
                 with col1:
-                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_4', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                    if supName == "ADAILTON":
+                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='sup_4', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                    if supName == "MARCELO":
                         with col2:
-                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_4', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_4', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             supOffOn = "IN"     # -- Está em 2
                     elif supName == "VILMAR JR":
                         with col2:
@@ -2803,9 +2688,9 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         
                         cs1_col2.metric(label="TOTAL JÚNIOR", help="Valor total de devoluções supervisor JÚNIOR", value=f"{soma_sup8}")
                         
-                        cs1_col3.metric(label="QTD. ADAILTON", help="Quantidade total de devoluções supervisor ADAILTON", value=f"{quantidade_sup2}")
+                        cs1_col3.metric(label="QTD. MARCELO", help="Quantidade total de devoluções supervisor MARCELO", value=f"{quantidade_sup2}")
 
-                        cs1_col4.metric(label="TOTAL ADAILTON", help="Quantidade total de devoluções supervisor ADAILTON", value=f"{soma_sup2}")
+                        cs1_col4.metric(label="TOTAL MARCELO", help="Quantidade total de devoluções supervisor MARCELO", value=f"{soma_sup2}")
                         
                         container_superior1.divider()
 
@@ -2856,15 +2741,15 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                 sup_maior_inad = inad_sup_result["SUP"].value_counts().idxmax()
                 if sup_maior_inad == 2:
-                    sup_maior_inad = "ADAILTON"
+                    sup_maior_inad = "MARCELO"
                 elif sup_maior_inad == 8:
                     sup_maior_inad = "VILMAR JR"
                 else:
                     sup_maior_inad = "ERRO"
 
                 with sup_col1:
-                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='SUP_8', help="Selecione o supervisor", placeholder=":man: Escolha um supervisor", label_visibility="visible")
-                    if supName == "ADAILTON":
+                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='SUP_8', help="Selecione o supervisor", placeholder=":man: Escolha um supervisor", label_visibility="visible")
+                    if supName == "MARCELO":
                         with sup_col2:
                             supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [2], index=0, key='2_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                             filtrado_inad_sup_result = inad_sup_result[inad_sup_result["SUP"].isin([supCod])]
@@ -3296,10 +3181,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     
                     sup_colum1, sup_colum2 = st.columns([1, 1])
                     with sup_colum1:
-                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_7', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                        if supName == "ADAILTON":
+                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='sup_7', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                        if supName == "MARCELO":
                             with sup_colum2:
-                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                                 supOnOff = "IN"     # -- Está em 2
                         elif supName == "VILMAR JR":
                             with sup_colum2:
@@ -3410,10 +3295,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                     sup_colum1, sup_colum2 = st.columns([1, 1])
                     with sup_colum1:
-                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_6', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                        if supName == "ADAILTON":
+                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("MARCELO", "VILMAR JR"), index=0, key='sup_6', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                        if supName == "MARCELO":
                             with sup_colum2:
-                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                                 supOnOff = "IN"     # -- Está em 2
                         elif supName == "VILMAR JR":
                             with sup_colum2:
@@ -3578,10 +3463,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         
                         if vendedorCod == 0:
                             with col4:
-                                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "ADAILTON", "VILMAR JR"), index=0, key='sup_5', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                                if supName == "ADAILTON":
+                                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='sup_5', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                                if supName == "MARCELO":
                                     with col5:
-                                        supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_5', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                        supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_5', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                                         supOnOff = "IN"     # -- Está em 2
                                 elif supName == "VILMAR JR":
                                     with col5:
@@ -3827,10 +3712,10 @@ elif st.session_state['active_tab'] == ':dart: META':
                 st.markdown(dias_uteis_result + " DIAS ÚTEIS", unsafe_allow_html=False, help="Quantidade de dias úteis para serem realizadas suas vendas.")
                 st.markdown(dias_decor_result + " DECORRIDOS", unsafe_allow_html=False, help="Quantidade de dias úteis decorridos no mês.")
             with col2:
-                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("ADAILTON", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
-                if supName == "ADAILTON":
+                supName = st.selectbox(":male-office-worker: SUPERVISOR", ("MARCELO", "VILMAR JR"), index=0, key='sup_2', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                if supName == "MARCELO":
                     with col3:
-                        supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='adailton_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                        supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                 elif supName == "VILMAR JR":
                     with col3:
                         supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (8,), index=0, key='vilmar_2', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -3997,9 +3882,8 @@ elif st.session_state['active_tab'] == ':notebook:':
             with left2:
                 sup_dataframe = pd.DataFrame(
                     {
-                        "name": ["VILMAR JR", "ADAILTON", "JOSUÉ"],
+                        "name": ["VILMAR JR", "MARCELO", "JOSEAN"],
                         "realizado": [int(venda_total / 3) for _ in range(3)],
-                        "venda": [int(venda_total / 3) for _ in range(3)],
                         "meta": [int(meta_total / 3) for _ in range(3)],
                     }
                 )
@@ -4012,15 +3896,10 @@ elif st.session_state['active_tab'] == ':notebook:':
                         "realizado": st.column_config.ProgressColumn(
                             "Realizado",
                             help="Porcentagem de vendas realizadas em relação à meta",
+                            width="medium",                            
                             format ="R$%.0f",
                             min_value=0,
                             max_value=int(meta_total / 3),
-                        ),
-                        "venda": st.column_config.NumberColumn(
-                            "Vendas",
-                            # formartar para moeda com 0 casas decimais
-                            format ="R$%.0f",
-                            help="Total de vendas realizadas"
                         ),
                         "meta": st.column_config.NumberColumn(
                             "Meta",
@@ -4037,7 +3916,6 @@ elif st.session_state['active_tab'] == ':notebook:':
                     {
                         "name": ["LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"],
                         "realizado": [int((venda_total / 3) / 24) for _ in range(24)],
-                        "venda": [int((venda_total / 3) / 24) for _ in range(24)],
                         "meta": [int((meta_total / 3) / 24) for _ in range(24)]
                     }
                 )
@@ -4050,14 +3928,10 @@ elif st.session_state['active_tab'] == ':notebook:':
                         "realizado": st.column_config.ProgressColumn(
                             "Realizado",
                             help="Porcentagem de vendas realizadas em relação à meta",
-                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            width="medium",
+                            format="R$%.0f", # formartar para moeda com 0 casas decimais
                             min_value=0,
                             max_value=int((meta_total / 3) / 24),
-                        ),
-                        "venda": st.column_config.NumberColumn(
-                            "Vendas",
-                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
-                            help="Total de vendas realizadas"
                         ),
                         "meta": st.column_config.NumberColumn(
                             "Meta",
@@ -4095,9 +3969,8 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.07")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.08")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
-        st.link_button("CyberWise :desktop_computer:", "https://www.instagram.com/cyberwise.tech/", help="Desenvolvido e mantido por CyberWise")
         with st.spinner('Carregando...'):
             tm.sleep(3)
