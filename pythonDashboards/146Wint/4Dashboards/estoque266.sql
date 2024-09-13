@@ -76,4 +76,5 @@ WHERE PARAMETROS.CODFILIAL = PCEST.CODFILIAL
 AND PCEST.CODFILIAL IN('3')                                                        
    AND (((PCPRODUT.OBS2 NOT IN ('FL')) OR (PCPRODUT.OBS2 IS NULL))                                                             
    AND ((PCPRODFILIAL.FORALINHA NOT IN ('S')) OR (PCPRODFILIAL.FORALINHA IS NULL)))                                            
+  AND PCPRODUT.CODPROD NOT IN (14568)
 

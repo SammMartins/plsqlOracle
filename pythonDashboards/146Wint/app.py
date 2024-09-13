@@ -1843,6 +1843,8 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                 with c1:
                     vendasSup_result = filtrado_vendasRca_result.groupby(["CODSUP", "SUP"])[["VALOR", "DN", "BASE"]].sum().reset_index().sort_values(by='VALOR', ascending=False)
                     vendasSup_result = vendasSup_result.drop(columns=["CODSUP", "BASE"])
+                    
+                    st.write("Resumo de Vendas por Supervisor")
                     st.dataframe(vendasSup_result, hide_index=True, column_config={
                         "VALOR": st.column_config.NumberColumn(
                             "VALOR",
@@ -1858,6 +1860,8 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
 
                 with c2:
                     filtrado_vendasRca_result = filtrado_vendasRca_result.drop(columns=["CODSUP", "SUP", "BASE"])
+
+                    st.write("Resumo de Vendas por Vendedor")
                     st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
                         "VALOR": st.column_config.NumberColumn(
                             "VALOR",
@@ -3181,7 +3185,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     
                     sup_colum1, sup_colum2 = st.columns([1, 1])
                     with sup_colum1:
-                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='sup_7', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR", "JOSEAN"), index=0, key='sup_7', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
                         if supName == "MARCELO":
                             with sup_colum2:
                                 supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -3189,6 +3193,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         elif supName == "VILMAR JR":
                             with sup_colum2:
                                 supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (8,), index=0, key='vilmar_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN"     # -- Está em 8
+                        elif supName == "JOSEAN":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (9,), index=0, key='josean_7', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                                 supOnOff = "IN"     # -- Está em 8
                         elif supName == "TODOS":
                             with sup_colum2:
@@ -3295,7 +3303,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                     sup_colum1, sup_colum2 = st.columns([1, 1])
                     with sup_colum1:
-                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("MARCELO", "VILMAR JR"), index=0, key='sup_6', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
+                        supName = st.selectbox(":male-office-worker: SUPERVISOR", ("MARCELO", "VILMAR JR", "JOSEAN"), index=0, key='sup_6', help="Selecione o Supervisor", placeholder=":male-office-worker: Escolha o Supervisor", label_visibility="visible")
                         if supName == "MARCELO":
                             with sup_colum2:
                                 supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (2,), index=0, key='MARCELO_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
@@ -3304,6 +3312,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                             with sup_colum2:
                                 supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (8,), index=0, key='vilmar_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
                                 supOnOff = "IN"     # -- Está em 8
+                        elif supName == "JOSEAN":
+                            with sup_colum2:
+                                supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", (9,), index=0, key='josean_6', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
+                                supOnOff = "IN"     # -- Está em 9
                         else:
                             with sup_colum2:
                                 supCod = st.selectbox("ERRO", (999,), index=0, key='3', help="ERRO: CONTATO O SUPORTE DE TI", placeholder="", disabled=True, label_visibility="visible")
