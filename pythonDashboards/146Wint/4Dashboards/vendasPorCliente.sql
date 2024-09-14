@@ -5,7 +5,7 @@ WITH Fat AS
             SUM(a.vlatend) Valor
         FROM pontual.PCPEDC a
         JOIN pontual.pcclient c on c.codcli = a.codcli
-        WHERE a.DATA BETWEEN sysdate-7 AND sysdate
+        WHERE a.DATA BETWEEN TO_DATE('{dtIni}', 'DD/MM/YYYY') AND TO_DATE('{dtFim}', 'DD/MM/YYYY')
           AND a.DTCANCEL IS NULL
           AND a.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
           AND a.CODCOB IN ('7563','CH','C','D','DH')
@@ -14,9 +14,9 @@ WITH Fat AS
           --AND c.TIPOFJ = 'J' 
           GROUP BY a.codusur,a.CODCLI,a.CODSUPERVISOR)
 -----------------------------------------------------------------------------------------------------------------------
-SELECT  f.codcli || ' - ' || C.CLIENTE,
+SELECT  f.codcli || ' - ' || C.CLIENTE cliente,
         U.codsupervisor, 
-        f.codusur || ' - ' || SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) || ' Sup. ' || U.codsupervisor AS RCA,
+        f.codusur || ' - ' || SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) as RCA,
         F.valor
 FROM FAT F
 JOIN pontual.pcusuari u on u.codusur = f.codusur

@@ -117,8 +117,8 @@ def df3(dataIni, dataFim):
     with open(path + 'vendasPorCliente.sql', 'r') as arquivo: 
         consulta = arquivo.read()
 
-    dataIni = dataIni.strftime('%d-%b-%Y')
-    dataFim = dataFim.strftime('%d-%b-%Y')
+    dataIni = dataIni.strftime('%d-%m-%Y')
+    dataFim = dataFim.strftime('%d-%m-%Y')
 
     consulta = consulta.format(dtIni=dataIni, dtFim=dataFim)
 

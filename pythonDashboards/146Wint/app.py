@@ -1715,7 +1715,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
             tm.sleep(1)
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
-        aba1_1, aba1_2, aba1_3, aba1_4, aba1_5 = st.tabs([":dollar: Resumo", ":bar_chart: Gráfico", ":convenience_store: Por Cliente", ":factory: Por Fornecedor", ":money_with_wings: Campanhas"])
+        aba1_1, aba1_4, aba1_5 = st.tabs([":dollar: Resumo", ":factory: Por Fornecedor", ":money_with_wings: Campanhas"])
 
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
         with aba1_5: # Campanhas
@@ -1780,8 +1780,6 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                                 0
                             ), axis=1
                         )
-
-
                         
                         container_superior1 = st.container(border=True)
                         colg1, colg2, colg3 = container_superior1.columns([1, 1, 1])   
@@ -1817,7 +1815,10 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
     
         # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_1:
-            with st.expander("RESUMO DE VENDAS", expanded=True):
+            containerMain = st.container(border=True)
+
+            with containerMain:
+                st.header(":dollar: RESUMO DE VENDAS")
                 subcoluna1, subcoluna2, subcoluna3 = st.columns([0.5, 0.5, 2])
                 with subcoluna1:
                     dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD-MM-YYYY', key='DEV1')
@@ -1834,12 +1835,12 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     4: "DN",
                     5: "BASE"
                     })
-                    selected_sup = st.multiselect("Filtro Supervisor", options = vendasRca_result['SUP'].unique().tolist(), default = vendasRca_result['SUP'].unique().tolist(), placeholder="Filtro de Supervisor", help="Selecione o supervisor")
+                    selected_sup = st.multiselect(":male-office-worker: Filtro Supervisor", options = vendasRca_result['SUP'].unique().tolist(), default = vendasRca_result['SUP'].unique().tolist(), placeholder="Filtro de Supervisor", help="Selecione o supervisor")
                     filtrado_vendasRca_result = vendasRca_result[vendasRca_result['SUP'].isin(selected_sup)]
                 
                 st.divider()
                 
-                c1, c2 = st.columns([0.7, 1.3])
+                c1, c2 = st.columns([0.6, 1.4])
                 with c1:
                     vendasSup_result = filtrado_vendasRca_result.groupby(["CODSUP", "SUP"])[["VALOR", "DN", "BASE"]].sum().reset_index().sort_values(by='VALOR', ascending=False)
                     vendasSup_result = vendasSup_result.drop(columns=["CODSUP", "BASE"])
@@ -1857,218 +1858,212 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                             help="Positivação de PDV's (clientes)"
                         )
                     })
+                    st.divider()
 
                 with c2:
                     filtrado_vendasRca_result = filtrado_vendasRca_result.drop(columns=["CODSUP", "SUP", "BASE"])
 
-                    st.write("Resumo de Vendas por Vendedor")
-                    st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
+                    left, right = st.columns([0.75, 1.25])
+                    with left:
+                        st.write("Resumo de Vendas por Vendedor")
+                        st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
+                            "VALOR": st.column_config.NumberColumn(
+                                "VALOR",
+                                format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                                help="Total de vendas"
+                            ),
+                            "DN": st.column_config.NumberColumn(
+                                "DN",
+                                format ="%.0f", 
+                                help="Positivação de PDV's (clientes)"
+                            )
+                        })
+                        st.divider()
+
+                    with right:
+                        vendasCli_result = df3(dataIni, dataFim)
+                        vendasCli_result = vendasCli_result.iloc[:, [0, 1, 2, 3]].rename(columns={
+                            0: "CLIENTE",
+                            1: "CODSUP",
+                            2: "RCA",
+                            3: "VALOR"
+                        })
+
+                        selected_rca = st.selectbox(":man: Escolha um RCA", filtrado_vendasRca_result['RCA'].unique(), index=0)
+                        filtrado_vendasCli_result = vendasCli_result[vendasCli_result['RCA'].isin([selected_rca])]
+
+                        st.divider()
+
+                        filtrado_vendasCli_result = filtrado_vendasCli_result.drop(columns=["CODSUP", "RCA"])
+                        st.write(f"Vendas dos Clientes do RCA {selected_rca}")
+                        st.dataframe(filtrado_vendasCli_result, hide_index=True, use_container_width=True, column_config={
                         "VALOR": st.column_config.NumberColumn(
                             "VALOR",
                             format ="R$%.0f", # formartar para moeda com 0 casas decimais
-                            help="Total de vendas"
-                        ),
-                        "DN": st.column_config.NumberColumn(
-                            "DN",
-                            format ="%.0f", 
-                            help="Positivação de PDV's (clientes)"
+                            help="Total de valor em vendas dos pedidos dos clientes"
                         )
-                    })
-
-            
-
-    # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
-        with aba1_2:
-            st.markdown("Legenda:")
-            st.markdown("  1. Os dados abaixo são de vendas incluso os não faturados.")
-            st.markdown("  2. A linha branca tracejada representa o valor da média de vendas de todos os desempenhos.")
-            
-            semana_anterior, semana_atual, mes = st.tabs([":date: Semana Anterior", ":pushpin: Semana Atual", ":calendar: Mês Atual"])
-            
-            with semana_anterior:
-                if st.button("Carregar Dados", key='grafico1_vend_sup'):
-                    with st.spinner('Carregando dados...'):  
-                        today = datetime.today()
-                        start_of_week = today - timedelta(days=today.weekday() + 7)
-                        end_of_week = start_of_week + timedelta(days=6)
-                        df2_result = df2(start_of_week, end_of_week)
-                        grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas(start_of_week, end_of_week)
-                        df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
-                        df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
-                        st.plotly_chart(grafico_vend_sup, use_container_width=True)
-
-                        container1 = st.container(border=True)
-                        metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = container1.columns(5)
-                        with metric_col1:
-                            total_vendido = format_number(df2_result[2].sum())
-                            st.metric(label = "TOTAL EM VENDAS", value = total_vendido)
-                        with metric_col2:
-                            media_vendido = format_number(df2_result[2].mean())
-                            st.metric(label = "MÉDIA DE VENDAS", value = media_vendido)
-                        with metric_col3: 
-                            st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
-                        with metric_col4:
-                            st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-25º")
-
-                        
+                        })
                         st.divider()
-                        coluna1, coluna2 = st.columns(2)
-                        with coluna1:
-                            st.plotly_chart(grafico_top_rca8, use_container_width=True)
-                            subcoluna1, subcoluna2 = st.columns(2)
-                            with subcoluna1:
-                                st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
-                            with subcoluna2:
-                                st.metric(label = "PIOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
-                        with coluna2:
-                            st.plotly_chart(grafico_top_rca2, use_container_width=True)
-                            subcoluna1, subcoluna2 = st.columns(2)
-                            with subcoluna1:
-                                st.metric(label = "MELHOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
-                            with subcoluna2:
-                                st.metric(label = "PIOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-12º")
-            with semana_atual:
-                if st.button("Carregar Dados", key='grafico2_vend_sup'):
-                    with st.spinner('Carregando dados...'):  
-                        today = datetime.today()
-                        start_of_week = today - timedelta(days=today.weekday())
-                        end_of_week = today
-                        df2_result = df2(start_of_week, end_of_week)
-                        grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas(start_of_week, end_of_week)
-                        df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
-                        df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
-                        st.plotly_chart(grafico_vend_sup, use_container_width=True)
 
-                        container1 = st.container(border=True)
-                        metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = container1.columns(5)
-                        with metric_col1:
-                            total_vendido = format_number(df2_result[2].sum())
-                            st.metric(label = "TOTAL EM VENDAS", value = total_vendido)
-                        with metric_col2:
-                            media_vendido = format_number(df2_result[2].mean())
-                            st.metric(label = "MÉDIA DE VENDAS", value = media_vendido)
-                        with metric_col3: 
-                            st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
-                        with metric_col4:
-                            st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-25º")
+            # -------------------------------- # -------------------------------- # -------------------------------- #
+            st.markdown("<br>", unsafe_allow_html=True)
+            containerMain2 = st.container(border=True)
 
-                        st.divider()
-                        coluna1, coluna2 = st.columns(2)
-                        with coluna1:
-                            st.plotly_chart(grafico_top_rca8, use_container_width=True)
-                            subcoluna1, subcoluna2 = st.columns(2)
-                            with subcoluna1:
-                                st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
-                            with subcoluna2:
-                                st.metric(label = "PIOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
-                        with coluna2:
-                            st.plotly_chart(grafico_top_rca2, use_container_width=True)
-                            subcoluna1, subcoluna2 = st.columns(2)
-                            with subcoluna1:
-                                st.metric(label = "MELHOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
-                            with subcoluna2:
-                                st.metric(label = "PIOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-12º")
-
-            with mes:
-                if st.button("Carregar Dados", key='grafico3_vend_sup'):
-                    with st.spinner('Carregando dados...'):  
-                        end =  datetime.today()
-                        start = datetime(end.year, end.month, 1)
-                        df2_result = df2(start, end)
-                        grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas(start, end)
-                        df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
-                        df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
-                        st.plotly_chart(grafico_vend_sup, use_container_width=True)
-
-                        container1 = st.container(border=True)
-                        metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = container1.columns(5)
-                        with metric_col1:
-                            total_vendido = format_number(df2_result[2].sum())
-                            st.metric(label = "TOTAL EM VENDAS", value = total_vendido)
-                        with metric_col2:
-                            media_vendido = format_number(df2_result[2].mean())
-                            st.metric(label = "MÉDIA DE VENDAS", value = media_vendido)
-                        with metric_col3: 
-                            st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
-                        with metric_col4:
-                            st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-25º")
-
-                        st.divider()
-                        coluna1, coluna2 = st.columns(2)
-                        with coluna1:
-                            st.plotly_chart(grafico_top_rca8, use_container_width=True)
-                            subcoluna1, subcoluna2 = st.columns(2)
-                            with subcoluna1:
-                                st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NO MÊS", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
-                            with subcoluna2:
-                                st.metric(label = "PIOR DESEMPENHO DO SERTÃO NO MÊS", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
-                        with coluna2:
-                            st.plotly_chart(grafico_top_rca2, use_container_width=True)
-                            subcoluna1, subcoluna2 = st.columns(2)
-                            with subcoluna1:
-                                st.metric(label = "MELHOR DESEMPENHO DO SUL NO MÊS", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
-                            with subcoluna2:
-                                st.metric(label = "PIOR DESEMPENHO DO SUL NO MÊS", value = df_2[1].tail(1).iloc[0][6:], delta = "-12º")
-
-
-#                st.divider()
-#                ceps_result = ceps()
+            with containerMain2:
+                st.header(":bar_chart: GRÁFICOS DE VENDAS")
+                st.subheader("Legenda:")
+                st.markdown("  1. Os dados abaixo são de vendas incluso os não faturados.")
+                st.markdown("  2. A linha branca tracejada representa o valor da média de vendas de todos os desempenhos.")
                 
-#                ceps_list = {'cep': []}
-#                cep_coordenadas = {'lat': [], 'lon': []}
+                semana_anterior, semana_atual, mes = st.tabs([":date: Semana Anterior", ":pushpin: Semana Atual", ":calendar: Mês Atual"])
+                
+                with semana_anterior:
+                    if st.button("Carregar Dados", key='grafico1_vend_sup'):
+                        with st.spinner('Carregando dados...'):  
+                            today = datetime.today()
+                            start_of_week = today - timedelta(days=today.weekday() + 7)
+                            end_of_week = start_of_week + timedelta(days=6)
+                            df2_result = df2(start_of_week, end_of_week)
+                            grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas(start_of_week, end_of_week)
+                            df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
+                            df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
+                            st.plotly_chart(grafico_vend_sup, use_container_width=True)
 
-#                for cep in ceps_result[0]:  
-#                    ceps_list['cep'].append(str(cep)) 
+                            container1 = st.container(border=True)
+                            metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = container1.columns(5)
+                            with metric_col1:
+                                total_vendido = format_number(df2_result[2].sum())
+                                st.metric(label = "TOTAL EM VENDAS", value = total_vendido)
+                            with metric_col2:
+                                media_vendido = format_number(df2_result[2].mean())
+                                st.metric(label = "MÉDIA DE VENDAS", value = media_vendido)
+                            with metric_col3: 
+                                st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
+                            with metric_col4:
+                                st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-25º")
 
-#                for cep in ceps_list['cep']:
-#                    coordenadas = get_coords_from_cep(cep)
-#                    if coordenadas:
-#                        cep_coordenadas['lat'].append(float(coordenadas[0]))  
-#                        cep_coordenadas['lon'].append(float(coordenadas[1])) 
-#                    else:
-#                        pass
-
-                # Visualizar no mapa Streamlit
-#                st.map(cep_coordenadas)
-
-
-    # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
-        with aba1_3: # add média de venda por cliente
-            container = st.container(border=True)
-            col = st.columns(1)
-            coluna1, coluna2, coluna3 = st.columns(3)
-            with container:
-                with coluna1:
-                    subcoluna1, subcoluna2 = st.columns(2)
-                    with subcoluna1:
-                        dataIni_cli = st.date_input(":date: Data inicial", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli1')
-                    with subcoluna2:
-                        dataFim_cli = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD/MM/YYYY', key='tabela_cli2')
-                with coluna2:
-                    df3_result = df3(dataIni, dataFim)
-                    rca_filtro = st.multiselect(
-                        "Escolha um RCA", 
-                        df3_result[2].unique(), 
-                        default=[],
-                        key='tabela_cli3'
-                    )
-                with coluna3:
-                    st.write(" ") # Espaço em branco para centralizar os widgets
-                    st.write(" ") # Espaço em branco para centralizar os widgets
-                    if st.button("Carregar Dados", key='tabela_cli'):
-                        with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                            df3_result = df3(dataIni_cli, dataFim_cli)
-                        if rca_filtro:
-                            df3_result = df3_result[df3_result[2].isin(rca_filtro)]
+                            
+                            st.divider()
+                            coluna1, coluna2 = st.columns(2)
                             with coluna1:
-                                for i in df3_result[0]:
-                                    st.metric("Cliente", i[:25])
+                                st.plotly_chart(grafico_top_rca8, use_container_width=True)
+                                subcoluna1, subcoluna2 = st.columns(2)
+                                with subcoluna1:
+                                    st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
+                                with subcoluna2:
+                                    st.metric(label = "PIOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
                             with coluna2:
-                                for i in df3_result[2]:
-                                    st.metric("RCA", i)
-                            with coluna3:
-                                for i in df3_result[3]:
-                                    st.metric("VENDIDO", format_number(i))
+                                st.plotly_chart(grafico_top_rca2, use_container_width=True)
+                                subcoluna1, subcoluna2 = st.columns(2)
+                                with subcoluna1:
+                                    st.metric(label = "MELHOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
+                                with subcoluna2:
+                                    st.metric(label = "PIOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-12º")
+                with semana_atual:
+                    if st.button("Carregar Dados", key='grafico2_vend_sup'):
+                        with st.spinner('Carregando dados...'):  
+                            today = datetime.today()
+                            start_of_week = today - timedelta(days=today.weekday())
+                            end_of_week = today
+                            df2_result = df2(start_of_week, end_of_week)
+                            grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas(start_of_week, end_of_week)
+                            df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
+                            df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
+                            st.plotly_chart(grafico_vend_sup, use_container_width=True)
+
+                            container1 = st.container(border=True)
+                            metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = container1.columns(5)
+                            with metric_col1:
+                                total_vendido = format_number(df2_result[2].sum())
+                                st.metric(label = "TOTAL EM VENDAS", value = total_vendido)
+                            with metric_col2:
+                                media_vendido = format_number(df2_result[2].mean())
+                                st.metric(label = "MÉDIA DE VENDAS", value = media_vendido)
+                            with metric_col3: 
+                                st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
+                            with metric_col4:
+                                st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-25º")
+
+                            st.divider()
+                            coluna1, coluna2 = st.columns(2)
+                            with coluna1:
+                                st.plotly_chart(grafico_top_rca8, use_container_width=True)
+                                subcoluna1, subcoluna2 = st.columns(2)
+                                with subcoluna1:
+                                    st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
+                                with subcoluna2:
+                                    st.metric(label = "PIOR DESEMPENHO DO SERTÃO NA SEMANA", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
+                            with coluna2:
+                                st.plotly_chart(grafico_top_rca2, use_container_width=True)
+                                subcoluna1, subcoluna2 = st.columns(2)
+                                with subcoluna1:
+                                    st.metric(label = "MELHOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
+                                with subcoluna2:
+                                    st.metric(label = "PIOR DESEMPENHO DO SUL NA SEMANA", value = df_2[1].tail(1).iloc[0][6:], delta = "-12º")
+
+                with mes:
+                    if st.button("Carregar Dados", key='grafico3_vend_sup'):
+                        with st.spinner('Carregando dados...'):  
+                            end =  datetime.today()
+                            start = datetime(end.year, end.month, 1)
+                            df2_result = df2(start, end)
+                            grafico_vend_sup, grafico_top_rca2, grafico_top_rca8 = gerar_graficoVendas(start, end)
+                            df_2 = df2_result[df2_result[df2_result.columns[0]] == 2]
+                            df_8 = df2_result[df2_result[df2_result.columns[0]] == 8]
+                            st.plotly_chart(grafico_vend_sup, use_container_width=True)
+
+                            container1 = st.container(border=True)
+                            metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = container1.columns(5)
+                            with metric_col1:
+                                total_vendido = format_number(df2_result[2].sum())
+                                st.metric(label = "TOTAL EM VENDAS", value = total_vendido)
+                            with metric_col2:
+                                media_vendido = format_number(df2_result[2].mean())
+                                st.metric(label = "MÉDIA DE VENDAS", value = media_vendido)
+                            with metric_col3: 
+                                st.metric(label = "MELHOR DESEMPENHO", value = df2_result[1].head(1).iloc[0][6:], delta = "1º")
+                            with metric_col4:
+                                st.metric(label = "PIOR DESEMPENHO", value = df2_result[1].tail(1).iloc[0][6:], delta = "-25º")
+
+                            st.divider()
+                            coluna1, coluna2 = st.columns(2)
+                            with coluna1:
+                                st.plotly_chart(grafico_top_rca8, use_container_width=True)
+                                subcoluna1, subcoluna2 = st.columns(2)
+                                with subcoluna1:
+                                    st.metric(label = "MELHOR DESEMPENHO DO SERTÃO NO MÊS", value = df_8[1].head(1).iloc[0][6:], delta = "1º")
+                                with subcoluna2:
+                                    st.metric(label = "PIOR DESEMPENHO DO SERTÃO NO MÊS", value = df_8[1].tail(1).iloc[0][6:], delta = "-13º")
+                            with coluna2:
+                                st.plotly_chart(grafico_top_rca2, use_container_width=True)
+                                subcoluna1, subcoluna2 = st.columns(2)
+                                with subcoluna1:
+                                    st.metric(label = "MELHOR DESEMPENHO DO SUL NO MÊS", value = df_2[1].head(1).iloc[0][6:], delta = "1º")
+                                with subcoluna2:
+                                    st.metric(label = "PIOR DESEMPENHO DO SUL NO MÊS", value = df_2[1].tail(1).iloc[0][6:], delta = "-12º")
+
+
+    #                st.divider()
+    #                ceps_result = ceps()
+                    
+    #                ceps_list = {'cep': []}
+    #                cep_coordenadas = {'lat': [], 'lon': []}
+
+    #                for cep in ceps_result[0]:  
+    #                    ceps_list['cep'].append(str(cep)) 
+
+    #                for cep in ceps_list['cep']:
+    #                    coordenadas = get_coords_from_cep(cep)
+    #                    if coordenadas:
+    #                        cep_coordenadas['lat'].append(float(coordenadas[0]))  
+    #                        cep_coordenadas['lon'].append(float(coordenadas[1])) 
+    #                    else:
+    #                        pass
+
+                    # Visualizar no mapa Streamlit
+    #                st.map(cep_coordenadas)
+
+
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
         with aba1_4:
             container = st.container(border=False)
