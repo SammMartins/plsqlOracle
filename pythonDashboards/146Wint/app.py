@@ -1715,7 +1715,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
             tm.sleep(1)
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
-        aba1_1, aba1_4, aba1_5 = st.tabs([":dollar: Resumo", ":factory: Por Fornecedor", ":money_with_wings: Campanhas"])
+        aba1_1, aba1_5 = st.tabs([":dollar: Resumo", ":money_with_wings: Campanhas"])
 
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
         with aba1_5: # Campanhas
@@ -1903,7 +1903,41 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                             help="Total de valor em vendas dos pedidos dos clientes"
                         )
                         })
+
+                        vendaFornec_result = df4(dataIni, dataFim)
+                        vendaFornec_result = vendaFornec_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
+                            0: "CODFORNEC",
+                            1: "FORNECEDOR",
+                            2: "CODSUP",
+                            3: "SUP",
+                            4: "RCA",
+                            5: "POSITIVAÇÃO",
+                            6: "VALOR"
+                        })
+
                         st.divider()
+
+                        filtrado_vendaFornec_result = vendaFornec_result[vendaFornec_result['RCA'].isin([selected_rca])]
+
+                        filtrado_vendaFornec_result = filtrado_vendaFornec_result.drop(columns=["CODFORNEC", "CODSUP", "SUP", "RCA"])
+
+                        st.write(f"Vendas por Fornecedor do RCA {selected_rca}")
+                        st.dataframe(filtrado_vendaFornec_result, hide_index=True, use_container_width=True, column_config={
+                            "VALOR": st.column_config.NumberColumn(
+                                "VALOR",
+                                format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                                help="Total de valor em vendas dos pedidos dos clientes"
+                            ),
+                            "POSITIVAÇÃO": st.column_config.NumberColumn(
+                                "POSITIVAÇÃO",
+                                format ="%.0f", 
+                                help="Positivação de PDV's (clientes) dos fornecedores"
+                            )
+                        })
+
+                        st.divider()
+
+
 
             # -------------------------------- # -------------------------------- # -------------------------------- #
             st.markdown("<br>", unsafe_allow_html=True)
@@ -2064,60 +2098,6 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
     #                st.map(cep_coordenadas)
 
 
-    # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #
-        with aba1_4:
-            container = st.container(border=False)
-            coluna1, coluna2, coluna3 = st.columns(3)
-            with coluna1:
-                subcol1, subcol2 = st.columns(2)
-                with subcol1:
-                    dataIni_fornec = st.date_input(":date: Data inicial", 
-                                                value=pd.to_datetime('today'), 
-                                                format='DD/MM/YYYY', 
-                                                key='tabela_fornec1')
-                with subcol2:
-                    dataFim_fornec = st.date_input(":date: Data final", 
-                                                value=pd.to_datetime('today'), 
-                                                format='DD/MM/YYYY', 
-                                                key='tabela_fornec2')
-            df4_result = df4(dataIni_fornec, dataFim_fornec)
-            with coluna2:
-                df4_resultF = df4(dataIni_fornec, dataFim_fornec)
-                if df4_resultF.empty:
-                    st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
-                else: 
-                    fornec_filtro = st.selectbox(
-                        "Filtro Fornecedor", 
-                        df4_resultF[1].unique(), 
-                        index=None, 
-                        key='tabela_fornec3',
-                        placeholder="Selecione o Fornecedor...",
-                    )
-            with coluna3:
-                subcol1, subcol2 = st.columns(2)
-                with subcol1:
-                    st.write(" ") # Espaço em branco para centralizar os widgets
-                    st.write(" ") # Espaço em branco para centralizar os widgets
-                    if st.button("Carregar", key='tabela_fornec'):
-                        with st.spinner('Carregando dados...'):  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.  # Pode gerar erro de recarregar todos os elemntos novamente. Usar em tabelas ou gráificos apenas.
-                            if fornec_filtro:
-                                df4_result = df4_result[df4_result[1].isin([fornec_filtro])]
-            if df4_resultF.empty:
-                st.markdown("Sem dados para exibir", help="Não há dados para exibir, verifique os filtros escolhidos.")
-            else: 
-                df4_result = df4_result.iloc[:, [0, 1, 3, 4, 5, 7]]
-                df4_result.iloc[:, 5] = df4_result.iloc[:, 5].astype(float).map(lambda x: 'R${:,.2f}'.format(x))
-                # Renomear colunas
-                df4_result = df4_result.rename(columns={
-                    0: 'Cód',
-                    1: 'Fornecedor',
-                    3: 'Supervisor',
-                    4: 'Cód',
-                    5: 'RCA',
-                    7: 'Valor R$'
-                })
-                html_table = df4_result.to_html(index=False) # Convertendo o DataFrame para HTML
-                st.markdown(html_table, unsafe_allow_html=True) # Exibindo a tabela no Streamlit
 
 # --------------------------- CLIENTES ----------------------------------- # ------------------- # ------------------- # ------------------- # ------------------- # 
 elif st.session_state['active_tab'] == ':department_store: CLIENTES':
@@ -3976,7 +3956,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.08")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.09")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):
