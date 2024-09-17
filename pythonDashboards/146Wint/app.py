@@ -1849,7 +1849,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     st.dataframe(vendasSup_result, hide_index=True, column_config={
                         "VALOR": st.column_config.NumberColumn(
                             "VALOR",
-                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            format ="R$%d", 
                             help="Total de vendas"
                         ),
                         "DN": st.column_config.NumberColumn(
@@ -1869,7 +1869,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
                             "VALOR": st.column_config.NumberColumn(
                                 "VALOR",
-                                format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                                format ="R$%d", # formartar para moeda com 0 casas decimais
                                 help="Total de vendas"
                             ),
                             "DN": st.column_config.NumberColumn(
@@ -1899,7 +1899,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         st.dataframe(filtrado_vendasCli_result, hide_index=True, use_container_width=True, column_config={
                         "VALOR": st.column_config.NumberColumn(
                             "VALOR",
-                            format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                            format ="R$%d", # formartar para moeda com 0 casas decimais
                             help="Total de valor em vendas dos pedidos dos clientes"
                         )
                         })
@@ -1925,7 +1925,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         st.dataframe(filtrado_vendaFornec_result, hide_index=True, use_container_width=True, column_config={
                             "VALOR": st.column_config.NumberColumn(
                                 "VALOR",
-                                format ="R$%.0f", # formartar para moeda com 0 casas decimais
+                                format ="R$%d", # formartar para moeda com 0 casas decimais
                                 help="Total de valor em vendas dos pedidos dos clientes"
                             ),
                             "POSITIVAÇÃO": st.column_config.NumberColumn(
@@ -1948,10 +1948,23 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                 st.subheader("Legenda:")
                 st.markdown("  1. Os dados abaixo são de vendas incluso os não faturados.")
                 st.markdown("  2. A linha branca tracejada representa o valor da média de vendas de todos os desempenhos.")
-                
+
+            with containerMain2:
+                subcoluna1, subcoluna2, subcoluna3 = st.columns([0.5, 0.5, 2])
+                with subcoluna1:
+                    dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD-MM-YYYY', key='DEV3')
+                with subcoluna2:
+                    dataFim = st.date_input(":date: Data final", value=pd.to_datetime('today'), format='DD-MM-YYYY', key='DEV4')
+
+                grafico_vend_sup, grafico_top_rca2, grafico_top_rca8, grafico_top_rca9 = gerar_graficoVendas(dataIni, dataFim)
+
+
+
                 semana_anterior, semana_atual, mes = st.tabs([":date: Semana Anterior", ":pushpin: Semana Atual", ":calendar: Mês Atual"])
-                
                 with semana_anterior:
+                    
+
+
                     if st.button("Carregar Dados", key='grafico1_vend_sup'):
                         with st.spinner('Carregando dados...'):  
                             today = datetime.today()
@@ -3956,7 +3969,7 @@ elif st.session_state['active_tab'] == ':notebook:':
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.09")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.10")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):

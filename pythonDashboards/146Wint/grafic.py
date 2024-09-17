@@ -5,9 +5,8 @@ from dataset import df1, df2
 from utils import data_semana_ini, data_semana_fim, format_number
 
 def gerar_graficoVendas(start_of_week, end_of_week):
-    start_of_week = start_of_week
-    end_of_week = end_of_week
     df = df2(start_of_week, end_of_week)
+    df[2] = pd.to_numeric(df[2], errors='coerce')
 
     if df.empty:
         print("DataFrame está vazio. Não é possível criar o gráfico.")
@@ -72,13 +71,13 @@ def gerar_graficoVendas(start_of_week, end_of_week):
             yref='y'
         )
 
-        # ------------------------- GRÁFICO VENDA POR RCA TIME SERTÃO -------------------------
+        # ------------------------- GRÁFICO VENDA POR RCA TIME VCA -------------------------
         df_8 = df[df[df.columns[0]] == 8]
         grafico_top_rca8 = px.bar(
             df_8,
             x = df.columns[1],
             y = df.columns[2], 
-            title = "RANKING DE VENDAS POR RCA - SERTÃO",
+            title = "RANKING DE VENDAS POR RCA - VCA",
             range_y = (0, df[2].max()),
             color = df.columns[2],
             color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
@@ -101,5 +100,34 @@ def gerar_graficoVendas(start_of_week, end_of_week):
             yref='y'
         )
 
-        return grafico_vend_sup, grafico_top_rca2, grafico_top_rca8
+        # ------------------------- GRÁFICO VENDA POR RCA TIME SERTÃO -------------------------
+        df_9 = df[df[df.columns[0]] == 9]
+        grafico_top_rca9 = px.bar(
+            df_9,
+            x = df.columns[1],
+            y = df.columns[2], 
+            title = "RANKING DE VENDAS POR RCA - SERTÃO",
+            range_y = (0, df[2].max()),
+            color = df.columns[2],
+            color_continuous_scale = [(0, "#e63d42"), (0.5, "#f6d272"), (1, "#008000")]
+        )
+
+        grafico_top_rca9.update_traces(
+            text = df_9[df_9.columns[2]].apply(lambda x: format_number(x)),
+            textposition = 'inside',
+            textfont = dict(color='black', family='Verdana', size=12)
+        )
+
+        grafico_top_rca9.add_shape(
+            type='line',
+            line=dict(dash='dash', color='white'),
+            y0=alvo,
+            y1=alvo,
+            x0=0,
+            x1=1,
+            xref='paper',
+            yref='y'
+        )
+
+        return grafico_vend_sup, grafico_top_rca2, grafico_top_rca8, grafico_top_rca9
     
