@@ -14,7 +14,7 @@ WITH Fat AS
           --AND c.TIPOFJ = 'J' 
           GROUP BY a.codusur,a.CODCLI,a.CODSUPERVISOR)
 -----------------------------------------------------------------------------------------------------------------------
-SELECT  f.codcli || ' - ' || C.CLIENTE cliente,
+SELECT  f.codcli || ' - ' || SUBSTR(C.CLIENTE,0,23) cliente,
         U.codsupervisor, 
         f.codusur || ' - ' || SUBSTR(U.nome, INSTR(U.nome, ' ') + 1, INSTR(U.nome, ' ', INSTR(U.nome, ' ') + 1) - INSTR(U.nome, ' ') - 1) as RCA,
         F.valor
