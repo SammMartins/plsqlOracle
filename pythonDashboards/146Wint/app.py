@@ -26,7 +26,7 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
                      cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec, campanhaGulao,
-                     inadimplenciaSup)
+                     inadimplenciaSup, nomesRCA, nomesFornec)
 from grafic import  gerar_graficoVendas
 from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
                      format_currency, format_date_value)
@@ -74,6 +74,11 @@ meses = {
     12: "DEZEMBRO"
 }
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
+
+# Variáveis de Globais
+nomesRCA_result = nomesRCA() # '0': Código | '1': Nome | '2': Nome Completo
+
+nomesFornec_result = nomesFornec() # '0': Código | '1': Fantasia | '2': Razão Social
 
 # ----------------------- Configuração do dashboard
 st.set_page_config(page_title="PREMIUM DASH", page_icon='https://cdn-icons-png.flaticon.com/512/8556/8556430.png', layout="wide", initial_sidebar_state="expanded")
@@ -1859,12 +1864,15 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
 
                 with subcoluna4:
                     st.markdown("<br>", unsafe_allow_html=True) # Espaçamento
-                    btn_load = st.button("Carregar Gráficos", key='grafico1', use_container_width=True)
+                    # btn_load = st.button("Carregar Gráficos", key='grafico1', use_container_width=True)
                 
 
-                if btn_load:
-                    grafico_vend_sup, grafico_top_rca2, grafico_top_rca8, grafico_top_rca9 = gerar_graficoVendas(dataIni, dataFim)
+                # if btn_load:
+                grafico_vend_sup, grafico_top_rca2, grafico_top_rca8, grafico_top_rca9 = gerar_graficoVendas(dataIni, dataFim)
 
+                if sup_list_selected.empty:
+                    st.error(":x: Erro ao carregar o gráfico. Por favor, escolha um supervisor.")
+                else:
                     if sup_list_selected["CODSUP"].iloc[0] == 2:
                         st.plotly_chart(grafico_top_rca2, use_container_width=True)
                         df2_result_selected = df2_result[df2_result["CODSUP"] == sup_list_selected["CODSUP"].iloc[0]] # Filtra o dataframe com o supervisor selecionado
@@ -1882,7 +1890,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         df2_result_selected = df2_result
 
                     else: # Aviso de erro
-                        st.error("Erro ao carregar o gráfico. Por favor, contate a TI.")
+                        st.error(":x: Erro ao carregar o gráfico. Por favor, contate a TI.")
 
                     qtd_rca = int(df2_result_selected["RCA"].count()) # Quantidade de RCA's
 
@@ -1890,54 +1898,76 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     metric_col1, metric_col2, metric_col3, metric_col4 = containerMetric.columns(4)
                     with metric_col1:
                         total_venda = format_number(df2_result_selected["VALOR"].sum())
-                        st.metric(label = "TOTAL EM VENDAS", value = total_venda)
+                        sup_name = sup_list_selected["SUP"].iloc[0]
+                        st.metric(label = "TOTAL EM VENDAS", value = total_venda, delta=f"Sup. {sup_name}", delta_color="off")
                     with metric_col2:
                         media_venda = format_number(df2_result_selected["VALOR"].mean())
                         st.metric(label = "MÉDIA DE VENDAS", value = media_venda, delta="(Linha branca tracejada)", delta_color="off")
                     with metric_col3: 
                         st.metric(label = "MELHOR DESEMPENHO", value = df2_result_selected["RCA"].head(1).iloc[0][6:], delta = "1º")
                     with metric_col4:
-                        st.metric(label = "PIOR DESEMPENHO", value = df2_result_selected["RCA"].tail(1).iloc[0][6:], delta = f"-{qtd_rca}º")
+                        st.metric(label = "PIOR DESEMPENHO", value = df2_result_selected["RCA"].tail(1).iloc[0][6:], delta = f"{qtd_rca}º", delta_color="inverse")
 
 
                 # ----------------------------------- # ----------------------------------- # ----------------------------------- #
 
                 st.divider()
+                st.markdown("<br> <br>", unsafe_allow_html=True)
 
 
-                if st.button("Carregar Tabelas", key='tabelas1', use_container_width=True):
-                    containerTabela = st.container(border=True)
+                # if st.button("Carregar Tabelas", key='tabelas1', use_container_width=True):
+                containerTabela = st.container(border=True)
 
-                    with containerTabela:
+                with containerTabela:
+                    
+                    subcoluna1 = st.columns([1])[0]
+                    with subcoluna1:
+                        vendasRca_result = df2(dataIni, dataFim)
+
+                        vendasRca_result = vendasRca_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
+                        0: "CODSUP",
+                        1: "SUP",
+                        2: "RCA",
+                        3: "VALOR",
+                        4: "DN",
+                        5: "BASE"
+                        })
                         
-                        subcoluna1 = st.columns([1])[0]
-                        with subcoluna1:
-                            vendasRca_result = df2(dataIni, dataFim)
-
-                            vendasRca_result = vendasRca_result.iloc[:, [0, 1, 2, 3, 4, 5]].rename(columns={
-                            0: "CODSUP",
-                            1: "SUP",
-                            2: "RCA",
-                            3: "VALOR",
-                            4: "DN",
-                            5: "BASE"
-                            })
-                            
-                            selected_sup = st.multiselect(":male-office-worker: Filtrar Supervisor na Tabela", options = vendasRca_result['SUP'].unique().tolist(), default = vendasRca_result['SUP'].unique().tolist(), placeholder="Filtro de Supervisor", help="Selecione o supervisor")
-                            filtrado_vendasRca_result = vendasRca_result[vendasRca_result['SUP'].isin(selected_sup)]
+                        selected_sup = st.multiselect(":male-office-worker: Filtrar Supervisor na Tabela", options = vendasRca_result['SUP'].unique().tolist(), default = None, placeholder="Filtro de Supervisor", help="Selecione o supervisor")
+                        filtrado_vendasRca_result = vendasRca_result[vendasRca_result['SUP'].isin(selected_sup)]
+                    
+                    st.divider()
+                    
+                    c1, c2 = st.columns([0.6, 1.4])
+                    with c1:
+                        vendasSup_result = filtrado_vendasRca_result.groupby(["CODSUP", "SUP"])[["VALOR", "DN", "BASE"]].sum().reset_index().sort_values(by='VALOR', ascending=False)
+                        vendasSup_result = vendasSup_result.drop(columns=["CODSUP", "BASE"])
                         
+                        st.write("Resumo de Vendas por Supervisor")
+                        st.dataframe(vendasSup_result, hide_index=True, column_config={
+                            "VALOR": st.column_config.NumberColumn(
+                                "VALOR",
+                                format ="R$%d", 
+                                help="Total de vendas"
+                            ),
+                            "DN": st.column_config.NumberColumn(
+                                "DN",
+                                format ="%.0f", 
+                                help="Positivação de PDV's (clientes)"
+                            )
+                        })
                         st.divider()
-                        
-                        c1, c2 = st.columns([0.6, 1.4])
-                        with c1:
-                            vendasSup_result = filtrado_vendasRca_result.groupby(["CODSUP", "SUP"])[["VALOR", "DN", "BASE"]].sum().reset_index().sort_values(by='VALOR', ascending=False)
-                            vendasSup_result = vendasSup_result.drop(columns=["CODSUP", "BASE"])
-                            
-                            st.write("Resumo de Vendas por Supervisor")
-                            st.dataframe(vendasSup_result, hide_index=True, column_config={
+
+                    with c2:
+                        filtrado_vendasRca_result = filtrado_vendasRca_result.drop(columns=["CODSUP", "SUP", "BASE"])
+
+                        left, right = st.columns([0.75, 1.25])
+                        with left:
+                            st.write("Resumo de Vendas por Vendedor")
+                            st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
                                 "VALOR": st.column_config.NumberColumn(
                                     "VALOR",
-                                    format ="R$%d", 
+                                    format ="R$%d", # formartar para moeda com 0 casas decimais
                                     help="Total de vendas"
                                 ),
                                 "DN": st.column_config.NumberColumn(
@@ -1948,82 +1978,62 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                             })
                             st.divider()
 
-                        with c2:
-                            filtrado_vendasRca_result = filtrado_vendasRca_result.drop(columns=["CODSUP", "SUP", "BASE"])
+                        with right:
+                            vendasCli_result = df3(dataIni, dataFim)
+                            vendasCli_result = vendasCli_result.iloc[:, [0, 1, 2, 3]].rename(columns={
+                                0: "CLIENTE",
+                                1: "CODSUP",
+                                2: "RCA",
+                                3: "VALOR"
+                            })
 
-                            left, right = st.columns([0.75, 1.25])
-                            with left:
-                                st.write("Resumo de Vendas por Vendedor")
-                                st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
-                                    "VALOR": st.column_config.NumberColumn(
-                                        "VALOR",
-                                        format ="R$%d", # formartar para moeda com 0 casas decimais
-                                        help="Total de vendas"
-                                    ),
-                                    "DN": st.column_config.NumberColumn(
-                                        "DN",
-                                        format ="%.0f", 
-                                        help="Positivação de PDV's (clientes)"
-                                    )
-                                })
-                                st.divider()
+                            selected_rca = st.selectbox(":man: Escolha um RCA", filtrado_vendasRca_result['RCA'].unique(), index=0)
+                            filtrado_vendasCli_result = vendasCli_result[vendasCli_result['RCA'].isin([selected_rca])]
 
-                            with right:
-                                vendasCli_result = df3(dataIni, dataFim)
-                                vendasCli_result = vendasCli_result.iloc[:, [0, 1, 2, 3]].rename(columns={
-                                    0: "CLIENTE",
-                                    1: "CODSUP",
-                                    2: "RCA",
-                                    3: "VALOR"
-                                })
+                            st.divider()
 
-                                selected_rca = st.selectbox(":man: Escolha um RCA", filtrado_vendasRca_result['RCA'].unique(), index=0)
-                                filtrado_vendasCli_result = vendasCli_result[vendasCli_result['RCA'].isin([selected_rca])]
+                            filtrado_vendasCli_result = filtrado_vendasCli_result.drop(columns=["CODSUP", "RCA"])
+                            st.write(f"Vendas dos Clientes do RCA {selected_rca}")
+                            st.dataframe(filtrado_vendasCli_result, hide_index=True, use_container_width=True, column_config={
+                            "VALOR": st.column_config.NumberColumn(
+                                "VALOR",
+                                format ="R$%d", # formartar para moeda com 0 casas decimais
+                                help="Total de valor em vendas dos pedidos dos clientes"
+                            )
+                            })
 
-                                st.divider()
+                            vendaFornec_result = df4(dataIni, dataFim)
+                            vendaFornec_result = vendaFornec_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
+                                0: "CODFORNEC",
+                                1: "FORNECEDOR",
+                                2: "CODSUP",
+                                3: "SUP",
+                                4: "RCA",
+                                5: "POSITIVAÇÃO",
+                                6: "VALOR"
+                            })
 
-                                filtrado_vendasCli_result = filtrado_vendasCli_result.drop(columns=["CODSUP", "RCA"])
-                                st.write(f"Vendas dos Clientes do RCA {selected_rca}")
-                                st.dataframe(filtrado_vendasCli_result, hide_index=True, use_container_width=True, column_config={
+                            st.divider()
+
+                            filtrado_vendaFornec_result = vendaFornec_result[vendaFornec_result['RCA'].isin([selected_rca])]
+
+                            filtrado_vendaFornec_result = filtrado_vendaFornec_result.drop(columns=["CODFORNEC", "CODSUP", "SUP", "RCA"])
+
+                            st.write(f"Vendas por Fornecedor do RCA {selected_rca}")
+                            st.dataframe(filtrado_vendaFornec_result, hide_index=True, use_container_width=True, column_config={
                                 "VALOR": st.column_config.NumberColumn(
                                     "VALOR",
                                     format ="R$%d", # formartar para moeda com 0 casas decimais
                                     help="Total de valor em vendas dos pedidos dos clientes"
+                                ),
+                                "POSITIVAÇÃO": st.column_config.NumberColumn(
+                                    "DN",
+                                    format ="%.0f", 
+                                    help="Positivação de PDV's (clientes) dos fornecedores"
                                 )
-                                })
+                            })
 
-                                vendaFornec_result = df4(dataIni, dataFim)
-                                vendaFornec_result = vendaFornec_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
-                                    0: "CODFORNEC",
-                                    1: "FORNECEDOR",
-                                    2: "CODSUP",
-                                    3: "SUP",
-                                    4: "RCA",
-                                    5: "POSITIVAÇÃO",
-                                    6: "VALOR"
-                                })
-
-                                st.divider()
-
-                                filtrado_vendaFornec_result = vendaFornec_result[vendaFornec_result['RCA'].isin([selected_rca])]
-
-                                filtrado_vendaFornec_result = filtrado_vendaFornec_result.drop(columns=["CODFORNEC", "CODSUP", "SUP", "RCA"])
-
-                                st.write(f"Vendas por Fornecedor do RCA {selected_rca}")
-                                st.dataframe(filtrado_vendaFornec_result, hide_index=True, use_container_width=True, column_config={
-                                    "VALOR": st.column_config.NumberColumn(
-                                        "VALOR",
-                                        format ="R$%d", # formartar para moeda com 0 casas decimais
-                                        help="Total de valor em vendas dos pedidos dos clientes"
-                                    ),
-                                    "POSITIVAÇÃO": st.column_config.NumberColumn(
-                                        "DN",
-                                        format ="%.0f", 
-                                        help="Positivação de PDV's (clientes) dos fornecedores"
-                                    )
-                                })
-
-                                st.divider()
+                            st.divider()
 
                     
 
@@ -3880,34 +3890,11 @@ elif st.session_state['active_tab'] == ':notebook:':
                 )
 
 
-                    
-
-#            tm.sleep(10)
-#            result = campanhaDanone()
-#            st.table(result)
-#            c1, c2, c3 = st.columns([2,0.75,2])
-#            with c2:
-#                if st.button('GERAR EXCEL 1'): # ---- Convertendo para Excel
-#                    st.markdown(getTableXls(result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-#                    st.toast('Gerando arquivo Excel...')
-#                    tm.sleep(.5)
-#            st.divider()
-#            tm.sleep(10)
-#            result2 = campanhaYoPRO()
-#            st.dataframe(result2, hide_index=True)
-#            c1, c2, c3 = st.columns([2,0.75,2])
-#            with c2:
-#                if st.button('GERAR EXCEL 2'): # ---- Convertendo para Excel
-#                    st.markdown(getTableXls(result2), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
-#                    st.toast('Gerando arquivo Excel...')
-#                    tm.sleep(.5)
-
-
 st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.12")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.13")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):
