@@ -26,7 +26,7 @@ from dataset import (df1, df2, df3, df4, diasUteis, diasDecorridos, flash322RCA,
                      top100Cli, top100Cli_comparativo, metaCalc, metaSupCalc, verbas, trocaRCA, top10CliRCA, 
                      pedErro, devolucao, campanhaDanone, inad, pedCont, estoque266, qtdVendaProd, prodSemVenda, 
                      cliente_semVenda, pedidoVsEstoque, campanhaYoPRO, ceps, cortesEquipe, cortesFornec, campanhaGulao,
-                     inadimplenciaSup, nomesRCA, nomesFornec)
+                     inadimplenciaSup, nomesRCA, nomesFornec, nomesSup)
 from grafic import  gerar_graficoVendas
 from utils import   (format_number, data_semana_ini, data_semana_fim, getTableXls, getTablePdf, get_coords_from_cep, 
                      format_currency, format_date_value)
@@ -75,10 +75,12 @@ meses = {
 }
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
-# Variáveis de Globais
+# Variáveis de Globais ---------------------------------------------------
 nomesRCA_result = nomesRCA() # '0': Código | '1': Nome | '2': Nome Completo
 
 nomesFornec_result = nomesFornec() # '0': Código | '1': Fantasia | '2': Razão Social
+
+nomesSup_result = nomesSup() # '0': Código | '1': Nome | '2': Nome Completo | '3': Código de RCA
 
 # ----------------------- Configuração do dashboard
 st.set_page_config(page_title="PREMIUM DASH", page_icon='https://cdn-icons-png.flaticon.com/512/8556/8556430.png', layout="wide", initial_sidebar_state="expanded")
@@ -1831,7 +1833,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                 st.subheader("Legenda:")
                 st.markdown("  1. Escolha o período desejado para visualizar os dados.")
                 st.markdown("  2. Se atente aos filtros de Supervisor e RCA para visualizar os dados corretamente.")
-                st.markdown("  3. Os dados inclui os pedidos não faturados.")
+                st.markdown("  3. Os dados incluem os pedidos não faturados.")
 
             with containerMain:
                 st.divider()
@@ -1910,8 +1912,6 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
 
 
                 # ----------------------------------- # ----------------------------------- # ----------------------------------- #
-
-                st.divider()
                 st.markdown("<br> <br>", unsafe_allow_html=True)
 
 
@@ -1944,7 +1944,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         vendasSup_result = vendasSup_result.drop(columns=["CODSUP", "BASE"])
                         
                         st.write("Resumo de Vendas por Supervisor")
-                        st.dataframe(vendasSup_result, hide_index=True, column_config={
+                        st.dataframe(vendasSup_result, hide_index=True, use_container_width=True, column_config={
                             "VALOR": st.column_config.NumberColumn(
                                 "VALOR",
                                 format ="R$%d", 
@@ -1964,7 +1964,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                         left, right = st.columns([0.75, 1.25])
                         with left:
                             st.write("Resumo de Vendas por Vendedor")
-                            st.dataframe(filtrado_vendasRca_result, hide_index=True, column_config={
+                            st.dataframe(filtrado_vendasRca_result, hide_index=True, use_container_width=True, column_config={
                                 "VALOR": st.column_config.NumberColumn(
                                     "VALOR",
                                     format ="R$%d", # formartar para moeda com 0 casas decimais
@@ -2034,7 +2034,6 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                             })
 
                             st.divider()
-
                     
 
     #                st.divider()
@@ -3827,11 +3826,12 @@ elif st.session_state['active_tab'] == ':notebook:':
             left2, right2 = st.columns([0.75, 1.25], gap="small", vertical_alignment="top")
 
             with left2:
+                nomesSup_result_array = np.array(nomesSup_result[1]) # Transformar Uma coluna da tabela para lista
                 sup_dataframe = pd.DataFrame(
                     {
-                        "name": ["VILMAR JR", "MARCELO", "JOSEAN"],
-                        "realizado": [int(venda_total / 3) for _ in range(3)],
-                        "meta": [int(meta_total / 3) for _ in range(3)],
+                        "name": nomesSup_result_array,
+                        "realizado": [int(venda_total / int(len(nomesSup_result_array))) for _ in range(int(len(nomesSup_result_array)))],
+                        "meta": [int(meta_total / int(len(nomesSup_result_array))) for _ in range(int(len(nomesSup_result_array)))],
                     }
                 )
 
@@ -3846,7 +3846,7 @@ elif st.session_state['active_tab'] == ':notebook:':
                             width="medium",                            
                             format ="R$%.0f",
                             min_value=0,
-                            max_value=int(meta_total / 3),
+                            max_value=int(meta_total / int(len(nomesSup_result_array))),
                         ),
                         "meta": st.column_config.NumberColumn(
                             "Meta",
@@ -3859,11 +3859,13 @@ elif st.session_state['active_tab'] == ':notebook:':
                 )
 
             with right2:
+                nomesRCA_result_array = np.array([nome for nome in nomesRCA_result[1] if nome not in nomesSup_result_array]) # Transformar Uma coluna da tabela para lista dos nomes que não constam na lista de supervisores
+
                 sup_dataframe = pd.DataFrame(
                     {
-                        "name": ["LEONARDO", "EDNALDO", "VAGNER", "DEIVID", "BISMARCK", "LUCIANA", "MATHEUS", "MARCIO", "LEANDRO", "REGINALDO", "ROBSON", "JOAO", "TAYANE", "MURILO", "LUCAS", "DEYVISON", "ZEFERINO", "EPAMINONDAS", "GLAUBER", "TARCISIO", "THIAGO", "FILIPE", "ROMILSON", "VALDEME"],
-                        "realizado": [int((venda_total / 3) / 24) for _ in range(24)],
-                        "meta": [int((meta_total / 3) / 24) for _ in range(24)]
+                        "name": nomesRCA_result_array,
+                        "realizado": [int((venda_total / int(len(nomesSup_result_array))) / int(len(nomesRCA_result_array))) for _ in range(len(nomesRCA_result_array))],
+                        "meta": [int((meta_total / int(len(nomesSup_result_array))) / int(len(nomesRCA_result_array))) for _ in range(len(nomesRCA_result_array))]
                     }
                 )
 
@@ -3871,14 +3873,14 @@ elif st.session_state['active_tab'] == ':notebook:':
                 st.dataframe(
                     sup_dataframe,
                     column_config={
-                        "name": "Supervisor",
+                        "name": "RCA",
                         "realizado": st.column_config.ProgressColumn(
                             "Realizado",
                             help="Porcentagem de vendas realizadas em relação à meta",
                             width="medium",
                             format="R$%.0f", # formartar para moeda com 0 casas decimais
                             min_value=0,
-                            max_value=int((meta_total / 3) / 24),
+                            max_value=int((meta_total / int(len(nomesSup_result_array))) / int(len(nomesRCA_result_array))),
                         ),
                         "meta": st.column_config.NumberColumn(
                             "Meta",
@@ -3890,11 +3892,12 @@ elif st.session_state['active_tab'] == ':notebook:':
                 )
 
 
+
 st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.13")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.14")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):

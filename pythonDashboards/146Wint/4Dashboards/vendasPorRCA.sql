@@ -8,7 +8,7 @@ WITH Fat AS
           AND a.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
           AND a.CODCOB IN ('7563','CH','C','D','DH')
           AND a.vlbonific = 0
-          AND A.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
+          AND A.NUMPEDRCA IS NOT NULL OR A.NUMPEDRCA = 0 -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
           --AND c.TIPOFJ = 'J' 
           GROUP BY a.codusur),
 -----------------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ DN AS (SELECT ped.codusur codusur,
                 JOIN pontual.pcprodut prod on pedi.codprod = prod.codprod
             WHERE ped.DATA BETWEEN TO_DATE('{dtIni}', 'DD/MM/YYYY') AND TO_DATE('{dtFim}', 'DD/MM/YYYY')
                 AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-                AND ped.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
+                AND ped.NUMPEDRCA IS NOT NULL OR ped.NUMPEDRCA = 0 -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
             GROUP BY ped.codusur),
 -----------------------------------------------------------------------------------------------------------------------
 BASE AS (SELECT c.CODUSUR1, COUNT(DISTINCT(c.CODCLI)) BASE

@@ -10,7 +10,7 @@ WITH Fat AS
           AND a.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
           AND a.CODCOB IN ('7563','CH','C','D','DH')
           AND a.vlbonific = 0
-          AND A.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
+          AND A.NUMPEDRCA IS NOT NULL OR A.NUMPEDRCA = 0 -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
           --AND c.TIPOFJ = 'J' 
           GROUP BY a.codusur,a.CODCLI,a.CODSUPERVISOR)
 -----------------------------------------------------------------------------------------------------------------------

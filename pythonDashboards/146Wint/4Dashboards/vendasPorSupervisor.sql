@@ -8,7 +8,7 @@ WITH Fat AS
           AND a.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
           AND a.CODCOB IN ('7563','CH','C','D','DH')
           AND a.vlbonific = 0
-          AND A.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
+          AND A.NUMPEDRCA IS NOT NULL OR A.NUMPEDRCA = 0 -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
           --AND c.TIPOFJ = 'J' 
           GROUP BY a.codsupervisor),
 -----------------------------------------------------------------------------------------------------------------------
@@ -20,11 +20,12 @@ DN AS (SELECT ped.codsupervisor codsupervisor,
             WHERE ped.DATA BETWEEN '{dtIni}' AND '{dtFim}'
                 AND PED.DTCANCEL IS NULL
                 AND PED.CONDVENDA IN (1, 2, 3, 7, 9, 14, 15, 17, 18, 19, 98)
-                AND ped.NUMPEDRCA IS NOT NULL -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
+                AND ped.NUMPEDRCA IS NOT NULL OR ped.NUMPEDRCA = 0 -- GARANTE APENAS PEDIDOS DIGITADOS PELO RCA
             GROUP BY ped.codsupervisor)
 -----------------------------------------------------------------------------------------------------------------------
-SELECT (CASE WHEN f.codsupervisor = 2 THEN 'ADAILTON'
+SELECT (CASE WHEN f.codsupervisor = 2 THEN 'MARCELO'
              WHEN f.codsupervisor = 8 THEN 'VILMAR'
+             WHEN f.codsupervisor = 9 THEN 'JOSEAN'
              ELSE 'ERRO! CONTATE A TI' END) SUPERVISOR,
              f.valor VENDIDO, D.DN DN, f.codsupervisor
 FROM FAT F
