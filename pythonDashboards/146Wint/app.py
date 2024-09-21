@@ -76,7 +76,7 @@ meses = {
 path = '/home/ti_premium/PyDashboards/PremiumDashboards/'
 
 # Variáveis de Globais ---------------------------------------------------
-nomesRCA_result = nomesRCA() # '0': Código | '1': Nome | '2': Nome Completo
+nomesRCA_result = nomesRCA() # '0': Código | '1': Nome | '2': Nome Completo | '3': Código de Supervisor
 
 nomesFornec_result = nomesFornec() # '0': Código | '1': Fantasia | '2': Razão Social
 
@@ -2595,10 +2595,17 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                 else:
                     rca_maior_qtd = filtrado_devolucao_result['RCA'].str[6:].value_counts().idxmax() # RCA que mais aparece na tabela - Retirando os 6 primeiros caracteres
+
                     mot_maior_qtd = filtrado_devolucao_result['MOTORISTA'].value_counts().idxmax()             
+
                     soma_sup = format_number(filtrado_devolucao_result['VALOR'].sum())
+                    soma_total = format_number(devolucao_result['VALOR'].sum())
+                    porcent = round((filtrado_devolucao_result['VALOR'].sum() / devolucao_result['VALOR'].sum()) * 100, 0)
+
+                    quantidade_total = devolucao_result['NUMNOTA'].shape[0]
                     quantidade_sup = filtrado_devolucao_result['NUMNOTA'].shape[0]
 
+                    maior_qtd_tipo = filtrado_devolucao_result['MOTIVO'].value_counts().idxmax()
 
                     formatarMoeda = ["VALOR", "DEBITO RCA"]
                     for coluna in formatarMoeda:
@@ -2636,16 +2643,16 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 1, 1, 1])
                         
                         qtd_dev_com = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'C'].shape[0]
-                        cs1_col1.metric(label=":red[QTD. COMERCIAL]", help="Quantidade total de devoluções por motivos comerciais", value=f"   {qtd_dev_com}")
+                        cs1_col1.metric(label=":red[QTD. COMERCIAL]", help="Quantidade total de devoluções por motivos comerciais", value=f"{qtd_dev_com}")
 
                         qtd_dev_log = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'L'].shape[0]
-                        cs1_col2.metric(label=":blue[QTD. LOGÍSTICO]", help="Quantidade total de devoluções por motivos logísticos", value=f"   {qtd_dev_log}")
+                        cs1_col2.metric(label=":blue[QTD. LOGÍSTICO]", help="Quantidade total de devoluções por motivos logísticos", value=f"{qtd_dev_log}")
 
                         qtd_dev_adm = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'A'].shape[0]
-                        cs1_col3.metric(label=":orange[QTD. ADMINISTRATIVO]", help="Quantidade total de devoluções por motivos administrativos", value=f"   {qtd_dev_adm}")
+                        cs1_col3.metric(label=":orange[QTD. ADMINISTRATIVO]", help="Quantidade total de devoluções por motivos administrativos", value=f"{qtd_dev_adm}")
 
                         qtd_dev_out = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'O'].shape[0]
-                        cs1_col4.metric(label="QTD. OUTROS", help="Quantidade total de devoluções por outros motivos", value=f"   {qtd_dev_out}")
+                        cs1_col4.metric(label="QTD. OUTROS", help="Quantidade total de devoluções por outros motivos", value=f"{qtd_dev_out}")
 
                         filtrado_devolucao_result = filtrado_devolucao_result.drop(columns=['SUP'])
                         st.dataframe(filtrado_devolucao_result, hide_index=True, use_container_width=True)
@@ -2653,13 +2660,19 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         container_superior2 = st.container(border=True)
                         cs2_col1, cs2_col2, cs2_col3, cs2_col4 = container_superior2.columns([0.7, 1.1, 1.1, 1.1])
 
-                        cs2_col1.metric(label="QTD. TOTAL", help="Quantidade total de devoluções", value=f"{quantidade_sup}")
+                        cs2_col1.metric(label="QTD. TOTAL", help="Quantidade total de devoluções", value=f"{quantidade_sup}", delta=f"{quantidade_sup} de {quantidade_total}", delta_color="inverse")
                         
-                        cs2_col2.metric(label="VALOR TOTAL R$", help="Valor total de devoluções", value=f"{soma_sup}")
+                        cs2_col2.metric(label="VALOR TOTAL R$", help="Valor total de devoluções", value=f"{soma_sup}", delta=f"{porcent}% do Total", delta_color="inverse")
 
-                        cs2_col3.metric(label="RCA MAIOR QTD.", help="Vendedor com mais devoluções", value=f"{rca_maior_qtd}", delta='1º', delta_color="inverse")
+                        cs2_col3.metric(label="RCA MAIOR QTD.", help="Vendedor com mais devoluções", value=f"{rca_maior_qtd}")
 
-                        cs2_col4.metric(label="MOT. MAIOR QTD.", help="Motorista com mais devoluções", value=f"{mot_maior_qtd}", delta='1º', delta_color="inverse")
+                        cs2_col4.metric(label="MOT. MAIOR QTD.", help="Motorista com mais devoluções", value=f"{mot_maior_qtd}")
+
+                        left = container_superior2.columns(1)
+                        left[0].metric(label="MOTIVO COM MAIS OCORRÊNCIAS", help="Motivo de devolução que mais ocorreu", value=f"{maior_qtd_tipo}")
+                        
+
+
                         
 
 
