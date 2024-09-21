@@ -2555,7 +2555,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
             st.header(":small_red_triangle_down: Devoluções por período", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
-                subcoluna1, subcoluna2, subcoluna3, subcoluna4 = st.columns([0.5, 0.5, 1, 1])
+                subcoluna1, subcoluna2, subcoluna3, subcoluna4 = st.columns([0.5, 0.5, 1.1, 0.9])
                 with subcoluna1:
                     dataIni = st.date_input(":date: Data inicial", value=pd.to_datetime('today') - pd.offsets.MonthBegin(1), format='DD-MM-YYYY', key='DEV1')
                 with subcoluna2:
@@ -2578,23 +2578,35 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         10: "TIPO",
                         11: "OBSERVAÇÃO"
                     })
+                
+                with subcoluna3:
+                    sup_option = st.multiselect(label=":male-office-worker: Filtro de Supervisor", key="selected_sup", options = nomesSup_result[1].unique().tolist(), default = nomesSup_result[1].unique(), placeholder="Filtro de Supervisor", help="Selecione o supervisor para filtrar na tabela")
+                    selected_sup = nomesSup_result[nomesSup_result[1].isin(sup_option)]
+                
+                with subcoluna4:
+                    selected_errors = st.multiselect(label=":small_orange_diamond: Filtro de Tipo", key="selected_errors", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
+                    
+                    filtrado_devolucao_result = devolucao_result[
+                        devolucao_result['TIPO'].isin(selected_errors) & 
+                        devolucao_result['SUP'].isin(selected_sup[0])
+                    ]
 
-                    soma_sup8 = format_number(devolucao_result[devolucao_result['SUP'] == 8]['VALOR'].sum())
-                    quantidade_sup8 = devolucao_result[devolucao_result['SUP'] == 8].shape[0]
+                if filtrado_devolucao_result.empty:
+                        st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
+                else:
+                    rca_maior_qtd = filtrado_devolucao_result['RCA'].str[6:].value_counts().idxmax() # RCA que mais aparece na tabela - Retirando os 6 primeiros caracteres
+                    mot_maior_qtd = filtrado_devolucao_result['MOTORISTA'].value_counts().idxmax()             
+                    soma_sup = format_number(filtrado_devolucao_result['VALOR'].sum())
+                    quantidade_sup = filtrado_devolucao_result['NUMNOTA'].shape[0]
 
-                    soma_sup2 = format_number(devolucao_result[devolucao_result['SUP'] == 2]['VALOR'].sum())
-                    quantidade_sup2 = devolucao_result[devolucao_result['SUP'] == 2].shape[0]
 
                     formatarMoeda = ["VALOR", "DEBITO RCA"]
                     for coluna in formatarMoeda:
-                        devolucao_result[coluna] = devolucao_result[coluna].apply(format_number)
-                    st.markdown("    ")
-                    st.markdown("<br><br><br><br><br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
-                    selected_errors = st.multiselect(label="Filtro de Tipo na Tabela", key="selected_errors", options = devolucao_result['TIPO'].unique().tolist(), default = devolucao_result['TIPO'].unique().tolist(), placeholder="Filtro de Tipo", help="Selecione o tipo de devolução para filtrar na tabela")
-                
-                filtrado_devolucao_result = devolucao_result[devolucao_result['TIPO'].isin(selected_errors)]
+                        filtrado_devolucao_result[coluna] = filtrado_devolucao_result[coluna].apply(format_number)
+
+                st.markdown("    ")
+
                 with c3:
-                
                     st.divider()
                     if st.button('GERAR EXCEL', key="excel_devolucao"): # ---- Convertendo para Excel
                         st.markdown(getTableXls(filtrado_devolucao_result), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download
@@ -2604,7 +2616,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c1:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption("Os valores ao lado são referentes ao total de devoluções por tipo.")
+                    container1.caption("Os valores 'QTD.' são referentes ao total de devoluções por tipo.")
                     container2 = st.container(border=True)
                     container2.caption(":red[Tipo C] significa devoluções por desacordos ou erros :red[Comerciais].")
                     container3 = st.container(border=True)
@@ -2622,32 +2634,33 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados.")
                     else:
                         cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 1, 1, 1])
-                        cs1_col1.metric(label="QTD. JÚNIOR", help="Valor total de devoluções supervisor JÚNIOR", value=f"{quantidade_sup8}")
                         
-                        cs1_col2.metric(label="TOTAL JÚNIOR", help="Valor total de devoluções supervisor JÚNIOR", value=f"{soma_sup8}")
-                        
-                        cs1_col3.metric(label="QTD. MARCELO", help="Quantidade total de devoluções supervisor MARCELO", value=f"{quantidade_sup2}")
-
-                        cs1_col4.metric(label="TOTAL MARCELO", help="Quantidade total de devoluções supervisor MARCELO", value=f"{soma_sup2}")
-                        
-                        container_superior1.divider()
-
-                        cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 1, 1, 1])
-                        
-                        qtd_dev_com = devolucao_result[devolucao_result['TIPO'] == 'C'].shape[0]
+                        qtd_dev_com = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'C'].shape[0]
                         cs1_col1.metric(label=":red[QTD. COMERCIAL]", help="Quantidade total de devoluções por motivos comerciais", value=f"   {qtd_dev_com}")
 
-                        qtd_dev_log = devolucao_result[devolucao_result['TIPO'] == 'L'].shape[0]
+                        qtd_dev_log = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'L'].shape[0]
                         cs1_col2.metric(label=":blue[QTD. LOGÍSTICO]", help="Quantidade total de devoluções por motivos logísticos", value=f"   {qtd_dev_log}")
 
-                        qtd_dev_adm = devolucao_result[devolucao_result['TIPO'] == 'A'].shape[0]
+                        qtd_dev_adm = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'A'].shape[0]
                         cs1_col3.metric(label=":orange[QTD. ADMINISTRATIVO]", help="Quantidade total de devoluções por motivos administrativos", value=f"   {qtd_dev_adm}")
 
-                        qtd_dev_out = devolucao_result[devolucao_result['TIPO'] == 'O'].shape[0]
+                        qtd_dev_out = filtrado_devolucao_result[filtrado_devolucao_result['TIPO'] == 'O'].shape[0]
                         cs1_col4.metric(label="QTD. OUTROS", help="Quantidade total de devoluções por outros motivos", value=f"   {qtd_dev_out}")
 
-                        st.dataframe(filtrado_devolucao_result, hide_index=True)
+                        filtrado_devolucao_result = filtrado_devolucao_result.drop(columns=['SUP'])
+                        st.dataframe(filtrado_devolucao_result, hide_index=True, use_container_width=True)
 
+                        container_superior2 = st.container(border=True)
+                        cs2_col1, cs2_col2, cs2_col3, cs2_col4 = container_superior2.columns([0.7, 1.1, 1.1, 1.1])
+
+                        cs2_col1.metric(label="QTD. TOTAL", help="Quantidade total de devoluções", value=f"{quantidade_sup}")
+                        
+                        cs2_col2.metric(label="VALOR TOTAL R$", help="Valor total de devoluções", value=f"{soma_sup}")
+
+                        cs2_col3.metric(label="RCA MAIOR QTD.", help="Vendedor com mais devoluções", value=f"{rca_maior_qtd}", delta='1º', delta_color="inverse")
+
+                        cs2_col4.metric(label="MOT. MAIOR QTD.", help="Motorista com mais devoluções", value=f"{mot_maior_qtd}", delta='1º', delta_color="inverse")
+                        
 
 
         # ---------------------------- Inadimplência ---------------------------- #
@@ -3897,7 +3910,7 @@ st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.14")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.15")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):
