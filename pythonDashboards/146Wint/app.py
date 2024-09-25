@@ -996,8 +996,8 @@ if st.session_state['active_tab'] == ':bar_chart: FLASH':
                         O FLASH é um relatório primordial para o acompanhamento de vendas e remuneração.
                         Ele foi criado com objetivo de facilitar o acompanhamento do Vendedor. 
                         Em seu modelo antigo, era necessário atualizar uma planilha Excel de forma manual
-                        por alguém apto. 
-                        ''')
+                        por alguém apto. ''')
+#1000                        
                         st.image("/home/ti_premium/PyDashboards/PremiumDashboards/Imagens/oldFlash.png")
             # -------------------------------- Faturado Apenas ----------------------------------------------
             if notFatOn == False:
@@ -1996,12 +1996,12 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                             st.write(f"Vendas dos Clientes do RCA {selected_rca}")
                             st.dataframe(filtrado_vendasCli_result, hide_index=True, use_container_width=True, column_config={
                             "VALOR": st.column_config.NumberColumn(
-                                "VALOR",
+                                "VALOR",                               
                                 format ="R$%d", # formartar para moeda com 0 casas decimais
                                 help="Total de valor em vendas dos pedidos dos clientes"
                             )
                             })
-
+#2000
                             vendaFornec_result = df4(dataIni, dataFim)
                             vendaFornec_result = vendaFornec_result.iloc[:, [0, 1, 2, 3, 4, 5, 6]].rename(columns={
                                 0: "CODFORNEC",
@@ -2762,7 +2762,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
 
                 with stylable_container(key="divider1",css_styles = cssDivider):
-                    divider = st.divider() # ---------------------------- Por Fornecedor VENDEDOR ---------------------------- #
+                    divider = st.divider() # ---------------------------- Por VENDEDOR ---------------------------- #
                     st.markdown("<br>", unsafe_allow_html=True)
 
                 col1, col2, col3, col4 = st.columns([1, 1, 0.55, 2])
@@ -2886,12 +2886,16 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     else:
                         st.dataframe(inad_result, hide_index=True)
 
-        # ---------- Estoque ---------- #
+
+
+        # -------------------- Estoque Gerencial & Cortes de produtos -------------------- #
         with aba6_5:
             st.header(":package: Estoque Gerencial", anchor=False)
             st.markdown("    ")
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO SOBRE ESTOQUE :point_down:", expanded=True):
-                st.divider()
+            containerEstoque = st.container(border=True)
+
+#            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO SOBRE ESTOQUE :point_down:", expanded=True):
+            with containerEstoque:
                 # Data atual
                 now = datetime.now() - timedelta(days=1) # Data atual menos um dia
                 # Mês 0 - Mês Atual
@@ -2955,14 +2959,19 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         7: "UN MASTER",
                         8: "QTEST",
                         9: "QTD ESTOQUE",
-                        10: "QTBLOQMENOSAVARIA",
-                        11: "QTD EST CX", # QTD ESTOQUE / UN. MASTER = QTD CAIXA
+                        10: "VL VENDA EST.",
+                        11: "QTBLOQMENOSAVARIA",
+                        12: "QTD EST CX", # QTD ESTOQUE / UN. MASTER = QTD CAIXA
                     })
 
 
                     formatarData = ["DTULTENT"]
                     for coluna in formatarData:
                         estoque266_result[coluna] = pd.to_datetime(estoque266_result[coluna]).dt.strftime('%d/%m/%Y')
+
+                    formatarMoeda = ["VL VENDA EST."]
+                    for coluna in formatarMoeda:
+                        inad_result[coluna] = inad_result[coluna].apply(format_number)                        
                     
                     estoque266_result = estoque266_result.drop(columns=["QTBLOQMENOSAVARIA", "QTEST", "UN MASTER"])
 
@@ -2984,17 +2993,19 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     estoque266_result['QTDESTDIA'] = estoque266_result['QTDESTDIA'].astype(float).round(0).astype(int)
                     
                     st.markdown("    ")
-                    selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
+                    fornecedores = nomesFornec_result # '0': Código | '1': Fantasia | '2': Razão Social 
+                    selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", options=fornecedores[1].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
+                    fonecedor_selected = fornecedores[fornecedores[1].isin([selected_fornec])]
+                    codFornec = fonecedor_selected[0].iloc[0]
+                    nomeFornec = fonecedor_selected[2].iloc[0]
                 
-                filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
-                codFornec = filtrado_estoque266_result["CODFORNEC"].iloc[0]
-                nomeFornec = filtrado_estoque266_result["FORNECEDOR"].iloc[0]
+                filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([nomeFornec])]
                 filtrado_estoque266_result = filtrado_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
                 filtrado_estoque266_result = filtrado_estoque266_result.sort_values(by='QTDESTDIA', ascending=False)
                 filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
                 filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
+#3000                
                 with c3:
-                
                     st.divider()
                     colunaExcel, colunaPdf = st.columns([0.6, 1])
                     with colunaExcel:
@@ -3108,13 +3119,19 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.write("Legenda:")
                     container1 = st.container(border=True)
                     container1.caption(f'Produtos sem venda a mais de 7 Fornecedor {codFornec}')
-                
-            with stylable_container(key="divider1",css_styles = cssDivider):
-                divider = st.divider() # ----------- Cortes Por Fornecedor (indústria)
-                st.markdown("<br>", unsafe_allow_html=True)
 
-            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO SOBRE CORTES :point_down:", expanded=True):
-                st.divider()
+            st.markdown("<br>", unsafe_allow_html=True)
+            with stylable_container(key="divider1",css_styles = cssDivider):
+                divider = st.divider() # ---------------------------------------- Cortes Por Fornecedor (indústria)
+                st.markdown("<br>", unsafe_allow_html=True)
+            st.header(":x: Painel de Cortes", anchor=False)
+            st.markdown("    ")
+            containerCorte = st.container(border=True)
+
+            
+
+#            with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO SOBRE CORTES :point_down:", expanded=True):
+            with containerCorte:
                 c1_3, c2_3, c3_3 = st.columns([0.6,1.5,1])
 
                 with c3_3:
@@ -3218,12 +3235,18 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                 
                 st.divider() # ----------- Cortes Por supervisor (equipe)
+
                 c1_3, c2_3, c3_3 = st.columns([0.6,1.5,1])
 
                 with c3_3:
                     st.write("   ")
-                    selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", options=estoque266_result['FORNECEDOR'].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela", key="selected_fornec2")
-                    filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([selected_fornec])]
+                    fornecedores = nomesFornec_result # '0': Código | '1': Fantasia | '2': Razão Social 
+                    selected_fornec = st.selectbox(label=":factory: Filtro de Fornecedor", key="selected_fornec2", options=fornecedores[1].unique().tolist(), index=0, placeholder="Filtro de Fornecedor", help="Selecione para filtrar na tabela")
+                    fonecedor_selected = fornecedores[fornecedores[1].isin([selected_fornec])]
+                    codFornec = fonecedor_selected[0].iloc[0]
+                    nomeFornec = fonecedor_selected[2].iloc[0]
+
+                    filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([nomeFornec])]
                     codFornec = filtrado_estoque266_result["CODFORNEC"].iloc[0]
                     nomeFornec = filtrado_estoque266_result["FORNECEDOR"].iloc[0]
 
@@ -3917,8 +3940,10 @@ st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.15")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.16")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):
             tm.sleep(3)
+
+#4000 
