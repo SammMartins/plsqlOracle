@@ -2596,11 +2596,11 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 else:
                     rca_maior_qtd = filtrado_devolucao_result['RCA'].str[6:].value_counts().idxmax() # RCA que mais aparece na tabela - Retirando os 6 primeiros caracteres
 
-                    mot_maior_qtd = filtrado_devolucao_result['MOTORISTA'].value_counts().idxmax()             
+                    mot_maior_qtd = filtrado_devolucao_result['MOTORISTA'].value_counts().idxmax()
 
                     soma_sup = format_number(filtrado_devolucao_result['VALOR'].sum())
                     soma_total = format_number(devolucao_result['VALOR'].sum())
-                    porcent = round((filtrado_devolucao_result['VALOR'].sum() / devolucao_result['VALOR'].sum()) * 100, 0)
+                    porcent = round((filtrado_devolucao_result['VALOR'].sum() / devolucao_result['VALOR'].sum()) * 100, 1)
 
                     quantidade_total = devolucao_result['NUMNOTA'].shape[0]
                     quantidade_sup = filtrado_devolucao_result['NUMNOTA'].shape[0]
@@ -2681,8 +2681,9 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
             st.header(":rotating_light: Inadimplência por Cliente", anchor=False)
             st.markdown("    ")
             with st.expander(":red[CLIQUE AQUI] PARA VISUALIZAR O RELATÓRIO DO DEDO DURO :point_down:", expanded=True):
+
                 st.divider()
-                sup_col1, sup_col2, sup_col3 = st.columns([1, 1, 4.75])
+                sup_col1, sup_col3 = st.columns([1, 4])
                 inad_sup_result = inadimplenciaSup()
                 inad_sup_result = inad_sup_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
                     0: "SUP",
@@ -2709,22 +2710,13 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 elif sup_maior_inad == 8:
                     sup_maior_inad = "VILMAR JR"
                 else:
-                    sup_maior_inad = "ERRO"
+                    sup_maior_inad = "JOSEAN"
 
                 with sup_col1:
-                    supName = st.selectbox(":male-office-worker: SUPERVISOR", ("TODOS", "MARCELO", "VILMAR JR"), index=0, key='SUP_8', help="Selecione o supervisor", placeholder=":man: Escolha um supervisor", label_visibility="visible")
-                    if supName == "MARCELO":
-                        with sup_col2:
-                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [2], index=0, key='2_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                            filtrado_inad_sup_result = inad_sup_result[inad_sup_result["SUP"].isin([supCod])]
-                    elif supName == "VILMAR JR":
-                        with sup_col2:
-                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [8], index=0, key='8_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                            filtrado_inad_sup_result = inad_sup_result[inad_sup_result["SUP"].isin([supCod])]
-                    else:
-                        with sup_col2:
-                            supCod = st.selectbox(":desktop_computer: CÓDIGO WINTHOR", [99], index=0, key='99_8', help="Código Supervisor preenchido com base no nome selecionado", placeholder="", disabled=True, label_visibility="visible")
-                            filtrado_inad_sup_result = inad_sup_result
+                    sup_option = st.multiselect(label=":male-office-worker: Filtro de Supervisor", key="selected_sup_inad", options = nomesSup_result[1].unique().tolist(), default = nomesSup_result[1].unique(), placeholder="Filtro de Supervisor", help="Selecione o supervisor para filtrar na tabela")
+                    selected_sup = nomesSup_result[nomesSup_result[1].isin(sup_option)]
+                    filtrado_inad_sup_result = inad_sup_result[inad_sup_result['SUP'].isin(selected_sup[0])]
+
                             
 
                 sup_c1, sup_c2 = st.columns([0.5,2])
@@ -2732,6 +2724,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     st.write("Legenda:")
                     container1 = st.container(border=True)
                     container1.caption("Selecione o Supervisor acima para visualizar os clientes com débitos na empresa.")
+
                 with sup_col3:
                     container_superior1 = st.container(border=True)
                     cs1_col1, cs1_col2, cs1_col3, cs1_col4 = container_superior1.columns([1, 0.7, 1.1, 1.1])
@@ -2756,7 +2749,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         nome_maior_valor = soma_por_nome_ordenado.index[0]
                         cs1_col4.metric(label="MAIOR VALOR INAD. R$", help="Vendedor com a maior valor de inadimplencia", value=nome_maior_valor, delta="1º", delta_color="inverse")
                         
-                        filtrado_inad_sup_result = inad_sup_result.drop(columns=["SUP", "COD"])
+                        filtrado_inad_sup_result = filtrado_inad_sup_result.drop(columns=["SUP", "COD"])
 
                         formatarMoeda = ["TÍTULO R$", "JUROS APROX.", "TOTAL R$"]
                         for coluna in formatarMoeda:
@@ -3213,6 +3206,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         cortesFornec_result["R$"] = cortesFornec_result["R$"].apply(format_number)
                         cortesFornec_result["CODFORNEC"] = cortesFornec_result["CODFORNEC"].astype(str)
                         cortesFornec_result["CORTE TOTAL"] = cortesFornec_result["CORTE TOTAL"].astype(str)
+
                         st.dataframe(cortesFornec_result, hide_index=True)
 
 

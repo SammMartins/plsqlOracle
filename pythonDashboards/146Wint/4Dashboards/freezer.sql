@@ -23,13 +23,16 @@ SAIDA AS (
     AND
         M.QT > 0
     AND
-        M.CODOPER = 'ER' -- SR = SAIDA | ER = ENTRADA
+        M.CODOPER = 'SR' -- SR = SAIDA | ER = ENTRADA
 ),
 
 CLIENTE AS (
     SELECT 
         C.CODCLI
         ,C.CLIENTE
+        ,C.fantasia
+        ,C.codusur1
+        ,C.cgcent
     FROM
         PONTUAL.PCCLIENT C
     WHERE
@@ -41,6 +44,8 @@ SELECT
     S.DTMOV
     ,S.CODCLI
     ,C.CLIENTE
+    ,C.fantasia
+    ,C.cgcent
     ,S.NUMNOTA
     ,S.CODPROD
     ,F.DESCRICAO
@@ -49,3 +54,7 @@ FROM
     SAIDA S
     LEFT JOIN FREEZER F ON S.CODPROD = F.CODPROD
     LEFT JOIN CLIENTE C ON S.CODCLI = C.CODCLI
+--WHERE
+    --C.CODUSUR1 != 164
+    --AND C.CLIENTE LIKE '%BARBOSA%'
+--AND S.CODCLI = 4473
