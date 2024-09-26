@@ -1873,7 +1873,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                 grafico_vend_sup, grafico_top_rca2, grafico_top_rca8, grafico_top_rca9 = gerar_graficoVendas(dataIni, dataFim)
 
                 if sup_list_selected.empty:
-                    st.error(":x: Erro ao carregar o gráfico. Por favor, escolha um supervisor.")
+                    st.error(":x: Erro ao carregar o gráfico por falta de seleção de supervisor. Por favor, escolha um supervisor. ")
                 else:
                     if sup_list_selected["CODSUP"].iloc[0] == 2:
                         st.plotly_chart(grafico_top_rca2, use_container_width=True)
@@ -2921,7 +2921,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 dtIniMes3 = dtIniMes3.strftime('%d-%m-%Y')
                 dtFimMes3 = dtFimMes3.strftime('%d-%m-%Y')         
 
-                c1,c2,c3 = st.columns([0.6,1.5,1])
+                c1, c2, c3 = st.columns([0.5, 1.75, 0.6])
                 with c3:
                     qtdVendaMes0_result = qtdVendaProd(dtIniMesAtual, dtFimMesAtual)
                     qtdVendaMes0_result = qtdVendaMes0_result.iloc[:, [0, 1,]].rename(columns={
@@ -2948,7 +2948,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     })
 
                     estoque266_result = estoque266()
-                    estoque266_result = estoque266_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]].rename(columns={
+                    estoque266_result = estoque266_result.iloc[:, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]].rename(columns={
                         0: "CODPROD",
                         1: "DTULTENT",
                         2: "DESCRICAO",
@@ -2958,22 +2958,23 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         6: "QTDULTENT",
                         7: "UN MASTER",
                         8: "QTEST",
-                        9: "QTD ESTOQUE",
-                        10: "VL VENDA EST.",
-                        11: "QTBLOQMENOSAVARIA",
-                        12: "QTD EST CX", # QTD ESTOQUE / UN. MASTER = QTD CAIXA
+                        9: "QTD EST",
+                        10: "CUSTO EST.",
+                        11: "R$ EST.",
+                        12: "QTBLOQMENOSAVARIA",
+                        13: "QTD EST CX", # QTD ESTOQUE / UN. MASTER = QTD CAIXA
                     })
 
+                    estoque266_result = estoque266_result.drop(columns=["QTBLOQMENOSAVARIA", "QTEST", "UN MASTER"])
 
                     formatarData = ["DTULTENT"]
                     for coluna in formatarData:
                         estoque266_result[coluna] = pd.to_datetime(estoque266_result[coluna]).dt.strftime('%d/%m/%Y')
 
-                    formatarMoeda = ["VL VENDA EST."]
-                    for coluna in formatarMoeda:
-                        inad_result[coluna] = inad_result[coluna].apply(format_number)                        
+                    #formatarMoeda = ["CUSTO EST.", "R$ EST."]  ### Formatação alterada para st.column_config.NumberColumn 
+                    #for coluna in formatarMoeda:
+                        #estoque266_result[coluna] = estoque266_result[coluna].apply(format_number)                        
                     
-                    estoque266_result = estoque266_result.drop(columns=["QTBLOQMENOSAVARIA", "QTEST", "UN MASTER"])
 
                     estoque266_result = estoque266_result.merge(qtdVendaMes3_result, on='CODPROD', how='left').fillna('0')
                     estoque266_result = estoque266_result.merge(qtdVendaMes2_result, on='CODPROD', how='left').fillna('0')
@@ -2985,7 +2986,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                                                                         (x['MÊS 2'].astype(float)) + 
                                                                         (x['MÊS 3'].astype(float))) / 4) / 30).round(0).astype(int))
 
-                    estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD ESTOQUE"].astype(float) / 
+                    estoque266_result = estoque266_result.assign(QTDESTDIA = lambda x: ((x["QTD EST"].astype(float) / 
                                                                                         x["QTDVENDDIA"].astype(float)).fillna(0).replace([np.inf, -np.inf], 0).round(0).astype(int)))
                     
                     estoque266_result['QTDVENDDIA'] = estoque266_result['QTDVENDDIA'].astype(float).round(0).astype(int)
@@ -3007,7 +3008,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 #3000                
                 with c3:
                     st.divider()
-                    colunaExcel, colunaPdf = st.columns([0.6, 1])
+                    colunaExcel, colunaPdf = st.columns([1, 1])
                     with colunaExcel:
                         if st.button('GERAR EXCEL', key="excel_estoque"): # ---- Convertendo para Excel
                             st.toast('Gerando arquivo Excel...')
@@ -3038,7 +3039,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c2:   
                     st.write("Estoque Gerencial:")
                     container_superior2 = st.container(border=True)
-                    cs1_col1, cs1_col2, cs1_col3 = container_superior2.columns([1, 1, 1])
+                    cs1_col1, cs1_col2, cs1_col3, cs2_col4 = container_superior2.columns([0.6, 0.7, 1, 1])
                     
                     if filtrado_estoque266_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados")
@@ -3049,9 +3050,67 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         media_estDia = f"{media_estDia:.0f} Dias"
                         cs1_col2.metric(label="MÉD. EST. DIA", help="Média de estoque dia dos itens do fornecedor", value=media_estDia)
 
-                        cs1_col3.metric(label="-", help="-", value="-")
+                        custo_tot = filtrado_estoque266_result["CUSTO EST."].sum()
+                        cs1_col3.metric(label="CUSTO TOTAL", help="Custo total dos produtos em estoque", value=format_number(custo_tot))
+                        
+                        cs2_col4.metric(label="-", help="-", value="-")
 
-                        st.dataframe(filtrado_estoque266_result, hide_index=True)
+                        st.dataframe(filtrado_estoque266_result, hide_index=True, use_container_width=True, column_config={
+                            "CODPROD": st.column_config.NumberColumn(
+                                help="CÓDIGO DO PRODUTO",
+                                format="%d"
+                            ),
+                            "DTULTENT": st.column_config.TextColumn(
+                                help="DATA DO PRODUTO"
+                            ),
+                            "DESCRICAO": st.column_config.TextColumn(
+                                help="NOME DO PRODUTO E SUA DESCRIÇÃO"
+                            ),
+                            "QTDULTENT": st.column_config.NumberColumn(
+                                help="QUANTIDADE DA ÚLTIMA ENTRADA",
+                                format="%d"
+                            ),
+                            "QTD EST": st.column_config.NumberColumn(
+                                help="QUANTIDADE EM ESTOQUE DO PRODUTO",
+                                format="%d"
+                            ),
+                            "CUSTO EST.": st.column_config.NumberColumn(
+                                help="CUSTO TOTAL DOS PRODUTOS EM ESTOQUE",
+                                format="R$%d"
+                            ),
+                            "R$ EST.": st.column_config.NumberColumn(
+                                "VALOR EST.",
+                                help="VALOR DE TABELA TOTAL DOS PRODUTOS EM ESTOQUE",
+                                format="R$%d"
+                            ),
+                            "QTD EST CX": st.column_config.TextColumn(
+                                help="QUANTIDADE EM ESTOQUE CONVERTIDO EM CAIXA MASTER"
+                            ),
+                            "MÊS 3": st.column_config.NumberColumn(
+                                help="VENDAS DO PRODUTO NO MÊS 3 (3º MÊS ANTERIOR AO ATUAL)",
+                                format="%d"
+                            ),
+                            "MÊS 2": st.column_config.NumberColumn(
+                                help="VENDAS DO PRODUTO NO MÊS 2 (2º MÊS ANTERIOR AO ATUAL)",
+                                format="%d"
+                            ),
+                            "MÊS 1": st.column_config.NumberColumn(
+                                help="VENDAS DO PRODUTO NO MÊS 1 (1º MÊS ANTERIOR AO ATUAL)",
+                                format="%d"
+                            ),
+                            "MÊS ATUAL": st.column_config.NumberColumn(
+                                help="VENDAS DO PRODUTO NO MÊS ATUAL",
+                                format="%d"
+                            ),
+                            "QTDVENDDIA": st.column_config.NumberColumn(
+                                help="QUANTIDADE VENDIDA POR DIA DESSE PRODUTO COM BASE NO HISTÓRICO",
+                                format="%d"
+                            ),
+                            "QTDESTDIA": st.column_config.NumberColumn(
+                                help="DIAS DE ESTOQUE COM BASE NA VENDA DIA DO PRODUTO E NO ESTOQUE ATUAL",
+                                format="%d"
+                            )
+                        })
 
                 st.divider() # ----------- Produtos sem venda
                 c1_2, c2_2, c3_2 = st.columns([0.6,1.5,1])
