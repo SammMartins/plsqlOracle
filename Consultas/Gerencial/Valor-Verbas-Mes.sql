@@ -11,7 +11,7 @@
               WHEN VENDAS.CODUSUR = 141 THEN  0 
               WHEN VENDAS.CODUSUR = 172 THEN  0 
               WHEN VENDAS.CODUSUR = 164 THEN  0 
-              WHEN VENDAS.CODUSUR = 153 THEN  0
+              WHEN VENDAS.CODUSUR = 156 THEN  150
               WHEN VENDAS.CODUSUR = 150 THEN  0 
               WHEN VENDAS.CODUSUR = 159 THEN  0 
               

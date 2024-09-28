@@ -2921,7 +2921,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 dtIniMes3 = dtIniMes3.strftime('%d-%m-%Y')
                 dtFimMes3 = dtFimMes3.strftime('%d-%m-%Y')         
 
-                c1, c2, c3 = st.columns([0.5, 1.75, 0.6])
+                c2, c3 = st.columns([1.0, 0.4])
                 with c3:
                     qtdVendaMes0_result = qtdVendaProd(dtIniMesAtual, dtFimMesAtual)
                     qtdVendaMes0_result = qtdVendaMes0_result.iloc[:, [0, 1,]].rename(columns={
@@ -2999,12 +2999,21 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     fonecedor_selected = fornecedores[fornecedores[1].isin([selected_fornec])]
                     codFornec = fonecedor_selected[0].iloc[0]
                     nomeFornec = fonecedor_selected[2].iloc[0]
-                
-                filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([nomeFornec])]
-                filtrado_estoque266_result = filtrado_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
-                filtrado_estoque266_result = filtrado_estoque266_result.sort_values(by='QTDESTDIA', ascending=False)
-                filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
-                filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
+
+                    filtrado_estoque266_result = estoque266_result[estoque266_result['FORNECEDOR'].isin([nomeFornec])]
+                    filtrado_estoque266_result = filtrado_estoque266_result.drop(columns=["FORNECEDOR", "CODFORNEC"])
+                    filtrado_estoque266_result = filtrado_estoque266_result.sort_values(by='QTDESTDIA', ascending=False)
+                    filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
+                    filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
+                    
+                    min_QTDESTDIA = int(filtrado_estoque266_result["QTDESTDIA"].min())
+                    max_QTDESTDIA = int(filtrado_estoque266_result["QTDESTDIA"].max())
+                    faixa = st.slider(":package: Faixe de Valor do Estoque Dia", value=[min_QTDESTDIA, max_QTDESTDIA], min_value=0, max_value=max_QTDESTDIA, step=1, key="slider_estoque", help="Selecione o valor do estoque dia para filtrar na tabela")
+                    if faixa:
+                        with st.spinner(':package: Carregando...'):
+                            filtrado_estoque266_result = filtrado_estoque266_result[(filtrado_estoque266_result['QTDESTDIA'] >= faixa[0]) & (filtrado_estoque266_result['QTDESTDIA'] <= faixa[1])]
+                            tm.sleep(3)
+
 #3000                
                 with c3:
                     st.divider()
@@ -3025,21 +3034,10 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
 
                             st.markdown(getTablePdf(filtrado_estoque266_result_pdf), unsafe_allow_html=True) # ---- Disponibilizando o arquivo para Download em PDF
                 
-                with c1:
-                    st.write("Legenda:")
-                    container1 = st.container(border=True)
-                    container1.caption(':orange["DTULTENT"] É a data da última entrada do produto. :orange["QTDULTENT"] É a quantidade da última entrada do produto.')
-                    container2 = st.container(border=True)
-                    container2.caption(':blue["QTD EST CX"] É a quantidade disponível de produtos em Caixas Master.')
-                    container3 = st.container(border=True)
-                    container3.caption(':green["MÊS 1"] Se refere ao :green[mês anterior] ao mês atual. Mês 2 e 3 antecedem em sequência.')
-                    container4 = st.container(border=True)
-                    container4.caption(':blue["QTESTDIA"] É quantidade de estoque para 30 dias úteis do mês. :green["QTVENDDIA"] É quantidade vendida em 30 dias.')
-
                 with c2:   
                     st.write("Estoque Gerencial:")
                     container_superior2 = st.container(border=True)
-                    cs1_col1, cs1_col2, cs1_col3, cs2_col4 = container_superior2.columns([0.6, 0.7, 1, 1])
+                    cs1_col1, cs1_col2, cs1_col3, cs2_col4 = container_superior2.columns([0.5, 0.5, 1, 1])
                     
                     if filtrado_estoque266_result.empty:
                         st.warning("Sem dados para exibir. Verifique os filtros selecionados")
@@ -3047,13 +3045,14 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         cs1_col1.metric(label="QTD. SKU's", help="Quantidade total de produtos diferentes", value=(filtrado_estoque266_result.shape[0]))
 
                         media_estDia = filtrado_estoque266_result["QTDESTDIA"].mean()
-                        media_estDia = f"{media_estDia:.0f} Dias"
+                        media_estDia = f"{media_estDia:.0f}"
                         cs1_col2.metric(label="MÉD. EST. DIA", help="Média de estoque dia dos itens do fornecedor", value=media_estDia)
 
                         custo_tot = filtrado_estoque266_result["CUSTO EST."].sum()
                         cs1_col3.metric(label="CUSTO TOTAL", help="Custo total dos produtos em estoque", value=format_number(custo_tot))
                         
-                        cs2_col4.metric(label="-", help="-", value="-")
+                        valor_tot = filtrado_estoque266_result["R$ EST."].sum()
+                        cs2_col4.metric(label="VALOR TOTAL", help="Valor total de venda dos produtos em estoque", value=format_number(valor_tot))
 
                         st.dataframe(filtrado_estoque266_result, hide_index=True, use_container_width=True, column_config={
                             "CODPROD": st.column_config.NumberColumn(
@@ -3999,7 +3998,7 @@ st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
 st.divider()
 col1, col2, col3 = st.columns([2.5,1,2.5])
 with col2:
-    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.16")
+    st.image('https://cdn-icons-png.flaticon.com/512/8556/8556430.png', width=200, caption="Plataforma BI - Versão 2.18")
     c1, c2 = st.columns([0.4, 1.6])
     with c2:
         with st.spinner('Carregando...'):
