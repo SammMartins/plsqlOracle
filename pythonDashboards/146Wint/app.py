@@ -1725,10 +1725,10 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
             tm.sleep(1)
         st.divider()
         st.markdown("<br>", unsafe_allow_html=True)
-        aba1_1, aba1_5 = st.tabs([":dollar: Resumo", ":money_with_wings: Campanhas"])
+        aba1_1, aba1_2 = st.tabs([":dollar: Resumo", ":money_with_wings: Campanhas"])
 
     # -------------------------------- # -------------------------------- # -------------------------------- # -------------------------------- #     
-        with aba1_5: # Campanhas
+        with aba1_2: # Campanhas
             st.markdown("    ")
             with st.expander(":money_with_wings: CAMPANHA GULOZITOS", expanded=True):
                 c1g, c2g, c3g = st.columns([0.32, 1.5, 0.001])
@@ -1860,8 +1860,7 @@ elif st.session_state['active_tab'] == ':dollar: VENDA':
                     new_row = pd.DataFrame({"CODSUP": [99], "SUP": ["TODOS"]})
                     sup_list = pd.concat([sup_list, new_row], ignore_index=True)
 
-
-                    selected_sup = st.selectbox(":male-office-worker: Filtrar Supervisor nos Gráficos", options = sup_list['SUP'].unique().tolist(), index=None, placeholder="Filtro de Supervisor", help="Selecione o supervisor")
+                    selected_sup = st.selectbox(":male-office-worker: Filtrar Supervisor nos Gráficos", options = sup_list['SUP'].unique().tolist(), index=3, placeholder="Filtro de Supervisor", help="Selecione o supervisor")
                     sup_list_selected = sup_list[sup_list['SUP'].isin([selected_sup])]
 
                 with subcoluna4:
@@ -3006,9 +3005,12 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].fillna(0).replace([np.inf, -np.inf], 0)
                     filtrado_estoque266_result[['QTDULTENT']] = filtrado_estoque266_result[['QTDULTENT']].astype(float).round(0).astype(int).astype(str)
                     
+                    percent_sem_venda = filtrado_estoque266_result.shape[0] # Coleta do DF para usar mais a frente
+
+
                     min_QTDESTDIA = int(filtrado_estoque266_result["QTDESTDIA"].min())
                     max_QTDESTDIA = int(filtrado_estoque266_result["QTDESTDIA"].max())
-                    faixa = st.slider(":package: Faixe de Valor do Estoque Dia", value=[min_QTDESTDIA, max_QTDESTDIA], min_value=0, max_value=max_QTDESTDIA, step=1, key="slider_estoque", help="Selecione o valor do estoque dia para filtrar na tabela")
+                    faixa = st.slider(":package: Faixa de Quantidade de Estoque Dia.", value=[min_QTDESTDIA, max_QTDESTDIA], min_value=0, max_value=max_QTDESTDIA, step=1, key="slider_estoque", help="Selecione o valor do estoque dia para filtrar na tabela")
                     if faixa:
                         with st.spinner(':package: Carregando...'):
                             filtrado_estoque266_result = filtrado_estoque266_result[(filtrado_estoque266_result['QTDESTDIA'] >= faixa[0]) & (filtrado_estoque266_result['QTDESTDIA'] <= faixa[1])]
@@ -3054,6 +3056,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                         valor_tot = filtrado_estoque266_result["R$ EST."].sum()
                         cs2_col4.metric(label="VALOR TOTAL", help="Valor total de venda dos produtos em estoque", value=format_number(valor_tot))
 
+                        filtrado_estoque266_result = filtrado_estoque266_result.drop(columns=["QTD EST CX"])
                         st.dataframe(filtrado_estoque266_result, hide_index=True, use_container_width=True, column_config={
                             "CODPROD": st.column_config.NumberColumn(
                                 help="CÓDIGO DO PRODUTO",
@@ -3081,9 +3084,6 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                                 "VALOR EST.",
                                 help="VALOR DE TABELA TOTAL DOS PRODUTOS EM ESTOQUE",
                                 format="R$%d"
-                            ),
-                            "QTD EST CX": st.column_config.TextColumn(
-                                help="QUANTIDADE EM ESTOQUE CONVERTIDO EM CAIXA MASTER"
                             ),
                             "MÊS 3": st.column_config.NumberColumn(
                                 help="VENDAS DO PRODUTO NO MÊS 3 (3º MÊS ANTERIOR AO ATUAL)",
@@ -3159,7 +3159,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                     else:
                         cs2_col1.metric(label="ITENS SEM VENDA", help="Quantidade total de produtos sem venda", value=(prodSemVenda_result.shape[0]))
 
-                        percent_sem_venda = (prodSemVenda_result.shape[0] / filtrado_estoque266_result.shape[0]) * 100
+                        percent_sem_venda = (prodSemVenda_result.shape[0] / percent_sem_venda) * 100
                         percent_sem_venda_formatado = f"{percent_sem_venda:.0f}%"
                         cs2_col2.metric(label="% SEM VENDA", help="Porcentagem de itens sem venda", value=percent_sem_venda_formatado)
 
@@ -3176,7 +3176,7 @@ elif st.session_state['active_tab'] == ':point_up: DEDO DURO':
                 with c1_2:
                     st.write("Legenda:")
                     container1 = st.container(border=True)
-                    container1.caption(f'Produtos sem venda a mais de 7 Fornecedor {codFornec}')
+                    container1.caption(f'Produtos sem venda a mais de 7 dias do Fornecedor {codFornec}')
 
             st.markdown("<br>", unsafe_allow_html=True)
             with stylable_container(key="divider1",css_styles = cssDivider):
